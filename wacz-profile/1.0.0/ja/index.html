@@ -89,19 +89,69 @@
 <section>
   <h2>Package layout</h2>
   <p>
-    [[WACZ]] が要求するエントリに加えて、適合するパッケージは ZIP アーカイブの直下に
-    <code>fuzzy.json</code> という名前のエントリを持っても<em class="rfc2119">よい</em>。
-    これは replay 時にキャッシュバスターのクエリパラメータを正規化するための規則を保持します。
+    [[WACZ]] は既にアーカイブ直下への追加ファイルを許しており、それを持つために
+    パッケージが何をすべきかも定めています。本仕様はそれらの要求を繰り返しません。
+    そうしたファイルのうち 1 つについて、その形を定めます。
   </p>
-  <p>
-    パッケージは CDXJ 索引を <code>.gz</code> で終わるパスに置いては<em class="rfc2119">ならない</em>。
-    索引は ZIP エントリ <code>indexes/index.cdxj</code> に非圧縮で格納され
-    <em class="rfc2119">なければならない</em>。理由は <a href="#replay-constraints"></a> を参照。
-  </p>
-  <p>
-    <code>fuzzy.json</code> を認識しない読み手はこれを無視し<em class="rfc2119">なければならない</em>。
-    アーカイブを読むために必要な情報は持っていません。
-  </p>
+
+  <section>
+    <h3>The <code>fuzzy.json</code> entry</h3>
+    <p>
+      パッケージが直下に <dfn>fuzzy.json</dfn> という名前のエントリを持つ場合、その
+      エントリはここで定める形の JSON オブジェクトで<em class="rfc2119">なければならない</em>。
+      このエントリは、取り込みがどのクエリパラメータをキャッシュバスターとして扱ったかを
+      記録します。URL を正規化する読み手が、取り込みと同じ仮定を適用できるようにするためです。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>version</code></td><td>number</td><td>はい</td>
+            <td><code>1</code> で<em class="rfc2119">なければならない</em>。</td></tr>
+        <tr><td><code>rules</code></td><td>array</td><td>はい</td>
+            <td>0 個以上の規則オブジェクト（下記）。</td></tr>
+      </tbody>
+    </table>
+    <p><code>rules</code> の各要素は、以下を持つオブジェクトで<em class="rfc2119">なければならない</em>。</p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>rule</code></td><td>string</td><td>はい</td>
+            <td><code>"strip-query-param"</code> で<em class="rfc2119">なければならない</em>。
+            本版はこれ以外の値を定義しません。</td></tr>
+        <tr><td><code>name</code></td><td>string</td><td>はい</td>
+            <td>2 つの URL を比較する前に落とすクエリパラメータ名。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+{
+  "version": 1,
+  "rules": [
+    { "rule": "strip-query-param", "name": "_" },
+    { "rule": "strip-query-param", "name": "ts" }
+  ]
+}</pre>
+    <p>
+      <code>rules</code> は空でも<em class="rfc2119">よい</em>。空の配列と
+      <code>fuzzy.json</code> が無いことは同じではありません。前者は「取り込みは
+      どのパラメータもキャッシュバスターとみなさなかった」という主張であり、後者は
+      取り込みが何も述べていないということです。
+    </p>
+    <p>
+      このエントリは助言的です。これを無視する読み手も、依然としてアーカイブを読めなければ
+      <em class="rfc2119">ならない</em>。また <code>rule</code> の値を認識しない読み手は、
+      パッケージを拒むのではなくその要素を無視し<em class="rfc2119">なければならない</em>。
+    </p>
+    <p class="note">
+      今日使われている replay エンジンは自前のキャッシュバスター推測を持っており、この
+      ファイルを読みません。それでも書くのは、仮定を復元可能にしておくためです ——
+      独自の正規化を組む読み手や、その推測が変わった後に来た読み手には、取り込みが何を
+      仮定したかを知る手立てが他にありません。
+    </p>
+  </section>
 </section>
 
 <section>
@@ -367,6 +417,11 @@
     <li>
       CDXJ 索引の値は、数値に見えるものも含めて string で
       <em class="rfc2119">なければならない</em>。
+    </li>
+    <li>
+      CDXJ 索引は非圧縮で、<code>.gz</code> で終わらないパスに格納され
+      <em class="rfc2119">なければならない</em>。読み手は拡張子で位置を特定し、
+      展開を行いません。
     </li>
   </ul>
   <p class="note">
