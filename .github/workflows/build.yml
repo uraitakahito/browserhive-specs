@@ -1,0 +1,98 @@
+name: CI
+
+# ReSpec の原稿をビルド時に静的 HTML へ焼き、検査してから gh-pages へ配置する。
+#
+# ブラウザで ReSpec を走らせる方式にしないのは、失敗が失敗として現れないため。
+# script が 404 でもページは 200 で返り、崩れた見た目を人が見に行くまで誰も
+# 気づかない (uraitakahito/specs で実際に起きた)。ここでは壊れていれば CI が
+# 止まり、公開されない。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: w3c/spec-prod@v2
+        with:
+          TOOLCHAIN: respec
+          SOURCE: wacz-profile/1.0.0/index.html
+          DESTINATION: wacz-profile/1.0.0/index.html
+          # markup 検査 (W3C nu validator) は既定で true。依存しているので明記する。
+          VALIDATE_MARKUP: true
+          # spec-prod のリンク検査は使えない。link-checker 1.4.2 が superagent
+          # 3.8.3 に依存していて、リダイレクトを踏むと
+          #   TypeError: Cannot convert undefined or null to object
+          #     at cleanHeader (superagent/lib/utils.js:61)
+          #     at Request._redirect (superagent/lib/node/index.js:427)
+          # で落ちる。リンク切れの報告ではなくツール自体のクラッシュなので、
+          # 何が悪いのか分からないまま赤くなる。しかも ReSpec は github: 設定から
+          # .../issues/new/choose を自動生成し、これが未ログインだと 302 で
+          # ログイン画面へ飛ぶ ── 何もしなくても必ず踏む。
+          # 代わりに下の linkcheck job がリダイレクトを追って最終状態を見る。
+          VALIDATE_LINKS: false
+          ARTIFACT_NAME: built-spec
+          GH_PAGES_BRANCH: gh-pages
+
+  linkcheck:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: built-spec
+          path: built
+      - name: Every link in the built document resolves
+        run: |
+          # 外部リンクの検査は一過性の失敗と本物の切れを見分けないと使いものに
+          # ならない。実際に初回で 429 (GitHub のレート制限) と 503 (w3.org の
+          # 一時障害) を踏んだ。どちらも数十秒後には 200 を返した。
+          #
+          # 判定:
+          #   200            通す
+          #   429 / 5xx / 0  間を置いて再試行。最後まで駄目なら落とす
+          #   その他 4xx     即座に落とす (本物の切れ)
+          check() {
+            local url=$1 code
+            for attempt in 1 2 3; do
+              code=$(curl -sL -o /dev/null -w '%{http_code}' \
+                     -A 'Mozilla/5.0 (compatible; browserhive-specs linkcheck)' \
+                     --max-time 30 "$url" || echo 000)
+              case "$code" in
+                200) echo "  200 $url"; return 0 ;;
+                429|5??|000) sleep $((attempt * 10)) ;;
+                *) echo "::error::$url -> $code"; return 1 ;;
+              esac
+            done
+            echo "::error::$url -> $code (3 回試して駄目)"
+            return 1
+          }
+
+          # 検査するのは「著者が書いたリンク」だけにする。
+          #
+          # ReSpec は github: の設定から、リポジトリ・commits・issues・pulls への
+          # リンクを自動生成する。これらは構成から機械的に導かれるので、検査して
+          # 情報が増えない。むしろ実害があって、GitHub は runner からの未認証
+          # アクセスを強くレート制限し、commits/ は 3 回再試行しても 429 のまま
+          # だった。公開先の github.io も、初回 deploy までは必ず 404 になる。
+          #
+          # 落としたいのは本文中の引用が死んでいる場合なので、そこだけ見る。
+          OWNER=${GITHUB_REPOSITORY%%/*}
+          SKIP="^https://(github\.com/${GITHUB_REPOSITORY}|${OWNER}\.github\.io/${GITHUB_REPOSITORY#*/})"
+
+          FAIL=0
+          REFS=$(grep -oE '(href|src)="https?://[^"]*"' built/index.html \
+                 | sed -E 's/^(href|src)="//; s/"$//' | sort -u)
+          for U in $REFS; do
+            if echo "$U" | grep -qE "$SKIP"; then
+              echo "  skip $U (toolchain が生成した定型リンク)"
+              continue
+            fi
+            check "$U" || FAIL=1
+          done
+          exit $FAIL

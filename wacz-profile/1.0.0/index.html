@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BrowserHive WACZ Profile 1.0.0</title>
+<!--
+  ReSpec is loaded from an absolute URL on purpose.
+
+  This document is served from a project GitHub Pages site, so its base is
+  /browserhive-specs/ rather than the domain root. A relative path copied from
+  a spec that lives at a domain root (../../assets/…) resolves past the site
+  root here and 404s, and ReSpec fails silently when it does — the page still
+  returns 200, just unstyled and unprocessed. An absolute URL cannot drift that
+  way. spec-prod also bakes the output at build time, so readers never depend
+  on this script resolving at all.
+-->
+<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
+<script class="remove">
+  var respecConfig = {
+    specStatus: "unofficial",
+    shortName: "browserhive-wacz-profile",
+    editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
+    github: "uraitakahito/browserhive-specs",
+    // No localBiblio: [[WACZ]] and [[WARC]] both resolve through SpecRef.
+    lint: false,
+  };
+</script>
+</head>
+<body>
+
+<section id="abstract">
+  <p>
+    This specification profiles [[WACZ]]. It constrains how a WACZ package is
+    written and defines the additional members BrowserHive records inside it,
+    so that a reader holding only the archive can tell what the capture did and
+    did not obtain.
+  </p>
+</section>
+
+<section id="sotd">
+  <p>
+    This is a working draft. It has no standing beyond the BrowserHive project
+    and is not endorsed by the publishers of [[WACZ]].
+  </p>
+</section>
+
+<section>
+  <h2>Scope</h2>
+  <p>
+    A file conforming to this profile is a conforming WACZ package. This
+    document adds requirements; it removes none.
+  </p>
+</section>
+
+</body>
+</html>
