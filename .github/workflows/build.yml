@@ -1,7 +1,6 @@
 name: CI
 
-# ReSpec の原稿をビルド時に静的 HTML へ焼き、リンクと markup を検査してから
-# gh-pages へ配置する。
+# ReSpec の原稿をビルド時に静的 HTML へ焼き、検査してから gh-pages へ配置する。
 #
 # ブラウザで ReSpec を走らせる方式にしないのは、失敗が失敗として現れないため。
 # script が 404 でもページは 200 で返り、崩れた見た目を人が見に行くまで誰も
@@ -24,10 +23,44 @@ jobs:
           TOOLCHAIN: respec
           SOURCE: wacz-profile/1.0.0/index.html
           DESTINATION: wacz-profile/1.0.0/index.html
-          # 既定は false。明示しないとリンク検査は走らず、緑は「壊れていない」
-          # ではなく「見ていない」を意味することになる。
-          VALIDATE_LINKS: true
-          # 既定で true だが、依存している以上は書いておく。
+          # markup 検査 (W3C nu validator) は既定で true。依存しているので明記する。
           VALIDATE_MARKUP: true
-          # push のときだけ配置する (PR ではビルドと検査のみ)。
+          # spec-prod のリンク検査は使えない。link-checker 1.4.2 が superagent
+          # 3.8.3 に依存していて、リダイレクトを踏むと
+          #   TypeError: Cannot convert undefined or null to object
+          #     at cleanHeader (superagent/lib/utils.js:61)
+          #     at Request._redirect (superagent/lib/node/index.js:427)
+          # で落ちる。リンク切れの報告ではなくツール自体のクラッシュなので、
+          # 何が悪いのか分からないまま赤くなる。しかも ReSpec は github: 設定から
+          # .../issues/new/choose を自動生成し、これが未ログインだと 302 で
+          # ログイン画面へ飛ぶ ── 何もしなくても必ず踏む。
+          # 代わりに下の linkcheck job がリダイレクトを追って最終状態を見る。
+          VALIDATE_LINKS: false
+          ARTIFACT_NAME: built-spec
           GH_PAGES_BRANCH: gh-pages
+
+  linkcheck:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: built-spec
+          path: built
+      - name: Every link in the built document resolves
+        run: |
+          FAIL=0
+          # 生成物から外部リンクを拾う。-L で追って最終状態を見るので、
+          # 正当なリダイレクト (github の issues/new など) は通る。
+          REFS=$(grep -oE '(href|src)="https?://[^"]*"' built/index.html \
+                 | sed -E 's/^(href|src)="//; s/"$//' | sort -u)
+          for U in $REFS; do
+            C=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 30 "$U" || echo 000)
+            if [ "$C" = "200" ]; then
+              echo "  200 $U"
+            else
+              echo "::error::$U -> $C"
+              FAIL=1
+            fi
+          done
+          exit $FAIL
