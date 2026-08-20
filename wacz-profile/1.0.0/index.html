@@ -31,24 +31,406 @@
 <section id="abstract">
   <p>
     This specification profiles [[WACZ]]. It constrains how a WACZ package is
-    written and defines the additional members BrowserHive records inside it,
-    so that a reader holding only the archive can tell what the capture did and
-    did not obtain.
+    written and defines the additional members BrowserHive records inside it, so
+    that a reader holding only the archive can tell what the capture obtained,
+    what it did not, and under what settings it ran.
   </p>
 </section>
 
 <section id="sotd">
   <p>
-    This is a working draft. It has no standing beyond the BrowserHive project
-    and is not endorsed by the publishers of [[WACZ]].
+    This is a working draft. It describes what BrowserHive writes today. It has
+    no standing beyond that project and is not endorsed by the publishers of
+    [[WACZ]].
+  </p>
+</section>
+
+<section class="informative">
+  <h2>Introduction</h2>
+  <p>
+    A [[WACZ]] package says what was captured. It does not say what was
+    <em>missed</em>, nor under what conditions the capture ran. Those facts are
+    knowable only at capture time, and they are lost once the capturing process
+    exits.
+  </p>
+  <p>
+    That loss matters because the archive is the thing that travels. A reader
+    opening a package three years later has no access to the logs, the API
+    response, or the machine that produced it. If the package cannot answer
+    &ldquo;is anything missing here?&rdquo;, nothing else can.
+  </p>
+  <p>
+    This profile therefore requires a package to carry its own account of the
+    capture: which bodies are absent and why, which limits were in force, which
+    certificates the origins presented. None of these change what
+    [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
 
 <section>
-  <h2>Scope</h2>
+  <h2>Conformance</h2>
   <p>
-    A file conforming to this profile is a conforming WACZ package. This
-    document adds requirements; it removes none.
+    The conformance target of this specification is a <dfn>package</dfn>: a
+    single file. Conformance is a property of files, not of the software that
+    writes them. An implementation may write conforming and non-conforming
+    packages at different times, and this specification says nothing about
+    which.
+  </p>
+  <p>
+    A conforming package is a conforming [[WACZ]] package. This specification
+    adds requirements. It removes none, and it relaxes none.
+  </p>
+  <p>
+    Where this specification uses the terms <em class="rfc2119">MUST</em>,
+    <em class="rfc2119">MUST NOT</em>, <em class="rfc2119">SHOULD</em> and
+    <em class="rfc2119">MAY</em>, they are to be interpreted as described in
+    [[RFC2119]].
+  </p>
+  <p>
+    JSON member names are case-sensitive. Where a member is described as
+    holding a timestamp, its value <em class="rfc2119">MUST</em> be an
+    [[RFC3339]] date-time in UTC.
+  </p>
+</section>
+
+<section>
+  <h2>Package layout</h2>
+  <p>
+    In addition to the entries [[WACZ]] requires, a conforming package
+    <em class="rfc2119">MAY</em> contain an entry named
+    <code>fuzzy.json</code> at the root of the ZIP archive, holding rules for
+    normalising cache-busting query parameters during replay.
+  </p>
+  <p>
+    A package <em class="rfc2119">MUST NOT</em> place its CDXJ index at a path
+    ending in <code>.gz</code>. The index
+    <em class="rfc2119">MUST</em> be stored uncompressed within the ZIP entry
+    <code>indexes/index.cdxj</code>. See <a href="#replay-constraints"></a> for
+    why.
+  </p>
+  <p>
+    Readers that do not recognise <code>fuzzy.json</code>
+    <em class="rfc2119">MUST</em> ignore it. It carries no information required
+    to read the archive.
+  </p>
+</section>
+
+<section>
+  <h2>The <code>browserhive:capture</code> member</h2>
+
+  <p>
+    The <code>datapackage.json</code> of a conforming package
+    <em class="rfc2119">MUST</em> contain a member named
+    <dfn data-lt="browserhive:capture">browserhive:capture</dfn> whose value is
+    a JSON object.
+  </p>
+  <p>
+    This member <em class="rfc2119">MUST NOT</em> be nested inside
+    <code>config</code> or <code>metadata</code>. Those names carry meaning for
+    [[WACZ]] readers; see <a href="#replay-constraints"></a>.
+  </p>
+  <p>
+    Members of <code>browserhive:capture</code> not defined here
+    <em class="rfc2119">MAY</em> be present. Readers
+    <em class="rfc2119">MUST</em> ignore members they do not recognise.
+  </p>
+
+  <section>
+    <h3>Conformance declaration</h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>conformsTo</dfn> whose value is the URL of the version of this
+      specification the package claims to satisfy.
+    </p>
+    <pre class="json">
+"browserhive:capture": {
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/"
+}</pre>
+    <p>
+      The declaration is carried here rather than in the
+      <code>profile</code> member of <code>datapackage.json</code>, which
+      <a href="#replay-constraints">is not available for this purpose</a>.
+    </p>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> infer conformance from the mere
+      presence of <a>browserhive:capture</a>. Without
+      <a>conformsTo</a>, the version a package was written against is unknown.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>build</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>build</dfn> identifying, in machine-readable form, the
+      software that produced the package.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>version</code></td><td>string</td><td>yes</td><td>Release identifier.</td></tr>
+        <tr><td><code>revision</code></td><td>string</td><td>yes</td><td>Source revision the build was made from.</td></tr>
+        <tr><td><code>buildTime</code></td><td>string</td><td>yes</td><td>When the software was built.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      [[WACZ]] already defines <code>software</code>. That member is prose, and
+      no two producers write it alike, so nothing parses it. <code>build</code>
+      exists so the same facts can be read by machine without guessing at a
+      format.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>browser</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
+      member <dfn>browser</dfn> describing the browser that performed the
+      capture. If present, it <em class="rfc2119">MUST</em> contain a member
+      <code>product</code> whose value is a string.
+    </p>
+    <p>
+      The member is absent when the browser could not be asked. It
+      <em class="rfc2119">MUST NOT</em> be written with a placeholder value.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>settings</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>settings</dfn> recording the settings that were
+      <em>in force</em> for this capture.
+    </p>
+    <p>
+      Values <em class="rfc2119">MUST</em> be the resolved values, not the values
+      a request asked for. A request that says nothing still runs under some
+      setting, and it is that setting the archive has to report.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>signature</code></td><td>string</td><td>yes</td>
+            <td>Either <code>"required"</code> or <code>"none"</code>: whether this
+            capture was permitted to be published unsigned.</td></tr>
+        <tr><td><code>viewport</code></td><td>object</td><td>yes</td>
+            <td>Members <code>width</code> and <code>height</code>, both integers, in CSS pixels.</td></tr>
+        <tr><td><code>devicePixelRatios</code></td><td>array of number</td><td>yes</td>
+            <td>One entry per rendering pass.</td></tr>
+        <tr><td><code>cache</code></td><td>string</td><td>yes</td>
+            <td>How the capture treated the browser HTTP cache.</td></tr>
+        <tr><td><code>archiveMode</code></td><td>string</td><td>yes</td>
+            <td>How many passes were made into this package.</td></tr>
+        <tr><td><code>behaviors</code></td><td>array of string</td><td>yes</td>
+            <td>Behaviors that actually ran, not those that were enabled.</td></tr>
+        <tr><td><code>limits</code></td><td>object</td><td>yes</td>
+            <td>Members <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, both integers.</td></tr>
+        <tr><td><code>acceptLanguage</code></td><td>string</td><td>no</td>
+            <td>Present only when the capture set one, since it changes what origins return.</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      <code>devicePixelRatios</code> is a list rather than a number because a
+      multi-pass capture sweeps the page more than once. Recording a single
+      value would tell a reader that one rendering is absent when it is present.
+    </p>
+    <p>
+      <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
+      body was dropped. It is the only place the archive can say
+      <em>which line</em> a truncated body crossed.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>completeness</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>completeness</dfn>, the package's own account of the bodies it
+      does not hold.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>bodylessUrls</code></td><td>array of string</td><td>yes</td>
+            <td>URLs that appeared only as <code>304</code>. The body never crossed
+            the wire, so the archive cannot hold it.</td></tr>
+        <tr><td><code>truncatedUrls</code></td><td>array of string</td><td>yes</td>
+            <td>URLs whose body the capture dropped on reaching a size limit.</td></tr>
+        <tr><td><code>complete</code></td><td>boolean</td><td>yes</td>
+            <td><code>true</code> if and only if both arrays are empty.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Both arrays <em class="rfc2119">MUST</em> be sorted, so that two captures
+      of the same page produce comparable output.
+    </p>
+    <p>
+      The two are separate members because they call for different responses.
+      A <code>304</code> is the origin's doing and cannot be recovered from
+      here; a body dropped at a limit is this side's doing and returns if the
+      limit is raised.
+    </p>
+    <p>
+      Responses that legitimately carry no body
+      <em class="rfc2119">MUST NOT</em> be listed: redirects, <code>204</code>,
+      and bodies omitted by a content-type filter the requester configured.
+      Reporting the last of these would tell the reader only what they had
+      already decided.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>coverage</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
+      member <dfn>coverage</dfn> describing how far down the page the capture
+      reached.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>scrollExhausted</code></td><td>boolean</td><td>yes</td>
+            <td><code>true</code> when scrolling stopped at a step limit rather than
+            at the end of the page &mdash; that is, when material below was never requested.</td></tr>
+        <tr><td><code>scrollSteps</code></td><td>number</td><td>yes</td><td>Steps actually taken.</td></tr>
+        <tr><td><code>scrolledPx</code></td><td>number</td><td>yes</td>
+            <td>Approximate depth reached: steps multiplied by viewport height.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>coverage</code> <em class="rfc2119">MUST</em> be absent when no
+      scrolling behavior reported. It <em class="rfc2119">MUST NOT</em> be
+      written with default values: <code>scrollExhausted: false</code> asserts
+      that the page was covered, and a capture that never scrolled has not
+      earned that claim.
+    </p>
+  </section>
+
+  <section>
+    <h3><code>tls</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
+      member <dfn>tls</dfn> recording what the browser saw of each HTTPS
+      connection. If present it <em class="rfc2119">MUST</em> contain
+      <code>hosts</code> and <code>chains</code>.
+    </p>
+
+    <h4><code>tls.hosts</code></h4>
+    <p>
+      An object keyed by host. Each value is either an object with the members
+      below, or <code>null</code>.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>protocol</code></td><td>string</td><td>yes</td><td>Negotiated TLS version.</td></tr>
+        <tr><td><code>cipher</code></td><td>string</td><td>yes</td><td>Negotiated cipher.</td></tr>
+        <tr><td><code>subject</code></td><td>string</td><td>yes</td><td>Subject common name, as the browser reported it.</td></tr>
+        <tr><td><code>issuer</code></td><td>string</td><td>yes</td><td>Issuer common name.</td></tr>
+        <tr><td><code>validFrom</code></td><td>string</td><td>yes</td><td>Start of the certificate's validity period.</td></tr>
+        <tr><td><code>validTo</code></td><td>string</td><td>yes</td><td>End of that period.</td></tr>
+        <tr><td><code>chainRef</code></td><td>string</td><td>no</td><td>Key into <code>tls.chains</code>. Absent when no chain could be obtained.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      A host reached over HTTPS whose connection revealed no details
+      <em class="rfc2119">MUST</em> be recorded with the value
+      <code>null</code>. Omitting the key instead would read as
+      &ldquo;this host was plain HTTP&rdquo;, which is a different fact.
+    </p>
+    <p>
+      A missing <code>chainRef</code> <em class="rfc2119">MUST NOT</em> be read
+      as &ldquo;this host presented no certificate&rdquo;. Chain retrieval can
+      fail for reasons unrelated to the host.
+    </p>
+
+    <h4><code>tls.chains</code></h4>
+    <p>
+      An object whose keys are the values used by <code>chainRef</code> and
+      whose values are arrays of base64-encoded DER certificates. Each array
+      <em class="rfc2119">MUST</em> be ordered leaf first.
+    </p>
+    <p>
+      Hosts sharing a chain <em class="rfc2119">SHOULD</em> share one entry.
+      Certificates are commonly reused across the hosts of one page, and storing
+      a copy per host inflates the package for no gain.
+    </p>
+    <p class="note">
+      Chains are stored rather than referenced. Certificate Transparency holds
+      the same bytes, but evidence that depends on a third-party service
+      remaining reachable is weaker for that dependence &mdash; and a private
+      CA's chain, which is the case worth examining, was never logged there at
+      all.
+    </p>
+  </section>
+</section>
+
+<section id="replay-constraints">
+  <h2>Constraints inherited from replay</h2>
+  <p>
+    The requirements in this section do not come from [[WACZ]]. They come from
+    what existing readers of WACZ packages do, and a package that ignores them
+    is unreadable in practice even though it satisfies the base specification.
+  </p>
+  <ul>
+    <li>
+      The <code>profile</code> member of <code>datapackage.json</code>
+      <em class="rfc2119">MUST</em> be <code>"data-package"</code>. Readers
+      switch on this value and reject values they do not know, so it is not
+      available to identify this profile. See
+      <a href="#conformance-declaration"></a>.
+    </li>
+    <li>
+      <code>config</code> and <code>metadata</code> in
+      <code>datapackage.json</code> <em class="rfc2119">MUST NOT</em> be used to
+      carry values defined by this specification. Readers assign them meaning.
+    </li>
+    <li>
+      The payload of a WARC <code>response</code> record
+      <em class="rfc2119">MUST</em> be in HTTP/1.1 form, whatever protocol
+      version carried the exchange.
+    </li>
+    <li>
+      Values in the CDXJ index <em class="rfc2119">MUST</em> be strings, including
+      those that look numeric.
+    </li>
+  </ul>
+  <p class="note">
+    These are recorded here so a package author can satisfy them. Why each one
+    exists is a matter of implementation history and is documented outside this
+    specification.
+  </p>
+</section>
+
+<section class="informative">
+  <h2>Security and privacy considerations</h2>
+  <p>
+    <a>tls</a> is not proof of provenance. Certificates are public: anyone can
+    obtain one and present a copy. Holding these fields says nothing about who
+    answered a request. Two narrower things are worth the storage &mdash;
+    <code>issuer</code> changes when a connection is intercepted, and the
+    validity period can be checked against the time the capture claims &mdash;
+    and neither survives the capture unless it is written down.
+  </p>
+  <p>
+    <a>completeness</a> asserts absence, not correctness. It reports bodies this
+    package empirically does not hold. It does not assert that the bodies it
+    does hold are what the origin served.
+  </p>
+  <p>
+    A package records URLs in <a>completeness</a> and host names in
+    <a>tls</a>. Where the captured page carried personal data in URLs, those
+    URLs travel with the archive.
   </p>
 </section>
 
