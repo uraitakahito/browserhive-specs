@@ -73,10 +73,26 @@ jobs:
             return 1
           }
 
+          # 検査するのは「著者が書いたリンク」だけにする。
+          #
+          # ReSpec は github: の設定から、リポジトリ・commits・issues・pulls への
+          # リンクを自動生成する。これらは構成から機械的に導かれるので、検査して
+          # 情報が増えない。むしろ実害があって、GitHub は runner からの未認証
+          # アクセスを強くレート制限し、commits/ は 3 回再試行しても 429 のまま
+          # だった。公開先の github.io も、初回 deploy までは必ず 404 になる。
+          #
+          # 落としたいのは本文中の引用が死んでいる場合なので、そこだけ見る。
+          OWNER=${GITHUB_REPOSITORY%%/*}
+          SKIP="^https://(github\.com/${GITHUB_REPOSITORY}|${OWNER}\.github\.io/${GITHUB_REPOSITORY#*/})"
+
           FAIL=0
           REFS=$(grep -oE '(href|src)="https?://[^"]*"' built/index.html \
                  | sed -E 's/^(href|src)="//; s/"$//' | sort -u)
           for U in $REFS; do
+            if echo "$U" | grep -qE "$SKIP"; then
+              echo "  skip $U (toolchain が生成した定型リンク)"
+              continue
+            fi
             check "$U" || FAIL=1
           done
           exit $FAIL
