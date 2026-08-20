@@ -2,9 +2,11 @@
 
 [BrowserHive](https://github.com/uraitakahito/browserhive) が書き出すファイル形式の仕様。
 
-| 仕様 | 版 |
-|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 |
+| 仕様 | 版 | 日本語訳 |
+|---|---|---|
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
+
+正典は英語版。訳は非公式で、食い違った場合は英語版が優先する。
 
 ## 作り方
 

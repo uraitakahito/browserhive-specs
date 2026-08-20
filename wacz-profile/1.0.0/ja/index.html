@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>BrowserHive WACZ Profile 1.0.0 (日本語訳)</title>
+<!--
+  英語版と同じ理由で ReSpec を絶対 URL から読む。詳しくは ../index.html を参照。
+
+  見出しは訳していない。ReSpec が見出しから id を生成するので、訳すと英語版と
+  id がずれ、節への参照が言語をまたいで通らなくなる。
+-->
+<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
+<script class="remove">
+  var respecConfig = {
+    specStatus: "unofficial",
+    shortName: "browserhive-wacz-profile-ja",
+    editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
+    github: "uraitakahito/browserhive-specs",
+    lint: false,
+  };
+</script>
+</head>
+<body>
+
+<section id="abstract">
+  <p class="note" title="非公式翻訳 (Unofficial translation)">
+    これは BrowserHive WACZ Profile 1.0.0 の日本語訳です。<strong>正典は
+    <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
+    訳と原典が食い違った場合は原典が優先します。
+  </p>
+  <p>
+    本仕様は [[WACZ]] のプロファイルです。WACZ パッケージの書き方を制約し、BrowserHive が
+    その中に記録する追加の member を定めます。アーカイブだけを手にした読み手が、その取り込みが
+    何を取得し何を取得できなかったか、どのような設定の下で走ったかを判断できるようにするためです。
+  </p>
+</section>
+
+<section id="sotd">
+  <p>
+    これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
+    以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
+  </p>
+</section>
+
+<section class="informative">
+  <h2>Introduction</h2>
+  <p>
+    [[WACZ]] のパッケージは、何が取り込まれたかを述べます。しかし何が<em>抜けたか</em>は述べず、
+    どのような条件下で取り込みが走ったかも述べません。それらは取り込み時にしか知り得ず、
+    取り込みを行ったプロセスが終了した時点で失われます。
+  </p>
+  <p>
+    この喪失が問題になるのは、旅をするのがアーカイブの方だからです。3 年後にパッケージを開いた
+    読み手には、ログも API の応答も、それを作った機械も残っていません。「ここに欠けているものは
+    あるか」にパッケージ自身が答えられないなら、他の誰も答えられません。
+  </p>
+  <p>
+    そこで本プロファイルは、パッケージが取り込みについての自身の申告を運ぶことを要求します ——
+    どの本文が欠けていてそれはなぜか、どの上限が効いていたか、各オリジンがどの証明書を提示したか。
+    これらは [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを
+    記録します。
+  </p>
+</section>
+
+<section>
+  <h2>Conformance</h2>
+  <p>
+    本仕様の適合対象は<dfn>パッケージ</dfn>、すなわちファイル 1 つです。適合はファイルの性質で
+    あって、それを書くソフトウェアの性質ではありません。ある実装が、あるときは適合する
+    パッケージを、別のときは適合しないパッケージを書くことはあり得ます。本仕様はそのどちらで
+    あるかについて何も述べません。
+  </p>
+  <p>
+    適合するパッケージは、適合する [[WACZ]] パッケージです。本仕様は要求を<em>追加</em>します。
+    取り除くことも、緩めることもしません。
+  </p>
+  <p>
+    本仕様における <em class="rfc2119">MUST</em>（〜しなければならない）、
+    <em class="rfc2119">MUST NOT</em>（〜してはならない）、
+    <em class="rfc2119">SHOULD</em>（〜すべきである）、
+    <em class="rfc2119">MAY</em>（〜してもよい）は [[RFC2119]] の記述に従って解釈されます。
+  </p>
+  <p>
+    JSON の member 名は大文字と小文字を区別します。timestamp を保持すると記した member の値は、
+    UTC の [[RFC3339]] date-time で<em class="rfc2119">なければならない</em>。
+  </p>
+</section>
+
+<section>
+  <h2>Package layout</h2>
+  <p>
+    [[WACZ]] が要求するエントリに加えて、適合するパッケージは ZIP アーカイブの直下に
+    <code>fuzzy.json</code> という名前のエントリを持っても<em class="rfc2119">よい</em>。
+    これは replay 時にキャッシュバスターのクエリパラメータを正規化するための規則を保持します。
+  </p>
+  <p>
+    パッケージは CDXJ 索引を <code>.gz</code> で終わるパスに置いては<em class="rfc2119">ならない</em>。
+    索引は ZIP エントリ <code>indexes/index.cdxj</code> に非圧縮で格納され
+    <em class="rfc2119">なければならない</em>。理由は <a href="#replay-constraints"></a> を参照。
+  </p>
+  <p>
+    <code>fuzzy.json</code> を認識しない読み手はこれを無視し<em class="rfc2119">なければならない</em>。
+    アーカイブを読むために必要な情報は持っていません。
+  </p>
+</section>
+
+<section>
+  <h2>The <code>browserhive:capture</code> member</h2>
+
+  <p>
+    適合するパッケージの <code>datapackage.json</code> は、値が JSON オブジェクトである
+    <dfn data-lt="browserhive:capture">browserhive:capture</dfn> という名前の member を持た
+    <em class="rfc2119">なければならない</em>。
+  </p>
+  <p>
+    この member を <code>config</code> または <code>metadata</code> の中に置いては
+    <em class="rfc2119">ならない</em>。これらの名前は [[WACZ]] の読み手にとって意味を持ちます
+    （<a href="#replay-constraints"></a> を参照）。
+  </p>
+  <p>
+    ここで定義されていない member が <code>browserhive:capture</code> に存在しても
+    <em class="rfc2119">よい</em>。読み手は認識しない member を無視し
+    <em class="rfc2119">なければならない</em>。
+  </p>
+
+  <section>
+    <h3>Conformance declaration</h3>
+    <p>
+      <code>browserhive:capture</code> は、そのパッケージが満たすと主張する本仕様の版の URL を
+      値とする <dfn>conformsTo</dfn> という member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <pre class="json">
+"browserhive:capture": {
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/"
+}</pre>
+    <p>
+      宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
+      <a href="#replay-constraints">そちらがこの用途に使えない</a>ためです。
+    </p>
+    <p>
+      読み手は <a>browserhive:capture</a> が存在するというだけで適合を推定しては
+      <em class="rfc2119">ならない</em>。<a>conformsTo</a> が無ければ、そのパッケージが
+      どの版に向けて書かれたかは不明です。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>build</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、パッケージを作ったソフトウェアを機械可読な形で
+      識別する <dfn>build</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>version</code></td><td>string</td><td>はい</td><td>リリースの識別子。</td></tr>
+        <tr><td><code>revision</code></td><td>string</td><td>はい</td><td>ビルド元のソース revision。</td></tr>
+        <tr><td><code>buildTime</code></td><td>string</td><td>はい</td><td>ソフトウェアがビルドされた時刻。</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      [[WACZ]] は既に <code>software</code> を定めています。あちらは散文で、書き方が producer
+      ごとに違うため誰も解析しません。<code>build</code> があるのは、同じ事実を形式を推測せずに
+      機械が読めるようにするためです。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>browser</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みを行った browser を記述する <dfn>browser</dfn>
+      member を持っても<em class="rfc2119">よい</em>。存在する場合、値が string である
+      <code>product</code> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <p>
+      browser に尋ねられなかった場合、この member は存在しません。代用の値を入れて書いては
+      <em class="rfc2119">ならない</em>。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>settings</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、この取り込みに<em>効いていた</em>設定を記録する
+      <dfn>settings</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <p>
+      値は解決後の値で<em class="rfc2119">なければならない</em>。要求が指定した値ではありません。
+      何も指定しない要求も何らかの設定の下で走っており、アーカイブが報告すべきなのはその設定です。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>signature</code></td><td>string</td><td>はい</td>
+            <td><code>"required"</code> または <code>"none"</code>。この取り込みが署名なしで
+            出されてよかったか。</td></tr>
+        <tr><td><code>viewport</code></td><td>object</td><td>はい</td>
+            <td>member <code>width</code> と <code>height</code>。ともに整数、単位は CSS ピクセル。</td></tr>
+        <tr><td><code>devicePixelRatios</code></td><td>array of number</td><td>はい</td>
+            <td>描画パスごとに 1 要素。</td></tr>
+        <tr><td><code>cache</code></td><td>string</td><td>はい</td>
+            <td>取り込みが browser の HTTP キャッシュをどう扱ったか。</td></tr>
+        <tr><td><code>archiveMode</code></td><td>string</td><td>はい</td>
+            <td>このパッケージへ何回の掃引を行ったか。</td></tr>
+        <tr><td><code>behaviors</code></td><td>array of string</td><td>はい</td>
+            <td>実際に走った behavior。有効化されていたものではありません。</td></tr>
+        <tr><td><code>limits</code></td><td>object</td><td>はい</td>
+            <td>member <code>maxResponseBytes</code> と <code>maxTaskBytes</code>。ともに整数。</td></tr>
+        <tr><td><code>acceptLanguage</code></td><td>string</td><td>いいえ</td>
+            <td>取り込みが設定したときにのみ存在する。オリジンが返すものが変わるため。</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      <code>devicePixelRatios</code> が数値ではなくリストなのは、multi-pass の取り込みが
+      ページを 2 回以上掃引するためです。単一の値で記録すると、在る描画が無いと読み手に
+      伝えてしまいます。
+    </p>
+    <p>
+      本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
+      <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
+      アーカイブが言える場所は、ここだけです。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>completeness</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、そのパッケージが保持していない本文についての
+      自身の申告である <dfn>completeness</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>bodylessUrls</code></td><td>array of string</td><td>はい</td>
+            <td><code>304</code> としてしか現れなかった URL。本文が wire を渡っていないので、
+            アーカイブは保持し得ません。</td></tr>
+        <tr><td><code>truncatedUrls</code></td><td>array of string</td><td>はい</td>
+            <td>サイズ上限に達して取り込みが本文を落とした URL。</td></tr>
+        <tr><td><code>complete</code></td><td>boolean</td><td>はい</td>
+            <td>両方の配列が空のとき、かつそのときに限り <code>true</code>。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      同じページの 2 つの取り込みを比較できるよう、両方の配列は整列されて
+      <em class="rfc2119">いなければならない</em>。
+    </p>
+    <p>
+      2 つが別の member なのは、求められる対応が違うからです。<code>304</code> はオリジン側の
+      事情でここからは回復できませんが、上限で落とした本文はこちら側の事情で、上限を上げれば
+      戻ります。
+    </p>
+    <p>
+      正当に本文を持たないレスポンスを列挙しては<em class="rfc2119">ならない</em> ——
+      redirect、<code>204</code>、および要求者が設定した content-type フィルタで省かれた本文。
+      最後のものを報告しても、読み手が既に決めたこと以上を何も伝えません。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>coverage</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みがページのどこまで下れたかを記述する
+      <dfn>coverage</dfn> member を持っても<em class="rfc2119">よい</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>scrollExhausted</code></td><td>boolean</td><td>はい</td>
+            <td>スクロールがページの終端ではなく段数の上限で止まったとき <code>true</code> ——
+            つまりその下にあるものが一度も要求されていないとき。</td></tr>
+        <tr><td><code>scrollSteps</code></td><td>number</td><td>はい</td><td>実際に進んだ段数。</td></tr>
+        <tr><td><code>scrolledPx</code></td><td>number</td><td>はい</td>
+            <td>到達した深さの概算。段数 × viewport の高さ。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      スクロールの behavior が何も報告しなかった場合、<code>coverage</code> は存在しては
+      <em class="rfc2119">ならない</em>。既定値を入れて書いては<em class="rfc2119">ならない</em> ——
+      <code>scrollExhausted: false</code> はページを覆えたという主張であり、一度もスクロール
+      しなかった取り込みはその主張を得ていません。
+    </p>
+  </section>
+
+  <section>
+    <h3><code>tls</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、各 HTTPS 接続について browser が見たものを記録する
+      <dfn>tls</dfn> member を持っても<em class="rfc2119">よい</em>。存在する場合、
+      <code>hosts</code> と <code>chains</code> を持た<em class="rfc2119">なければならない</em>。
+    </p>
+
+    <h4><code>tls.hosts</code></h4>
+    <p>host を鍵とするオブジェクト。各値は以下の member を持つオブジェクトか、<code>null</code>。</p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>protocol</code></td><td>string</td><td>はい</td><td>ネゴシエートされた TLS の版。</td></tr>
+        <tr><td><code>cipher</code></td><td>string</td><td>はい</td><td>ネゴシエートされた cipher。</td></tr>
+        <tr><td><code>subject</code></td><td>string</td><td>はい</td><td>subject の common name。browser が報告したそのまま。</td></tr>
+        <tr><td><code>issuer</code></td><td>string</td><td>はい</td><td>issuer の common name。</td></tr>
+        <tr><td><code>validFrom</code></td><td>string</td><td>はい</td><td>証明書の有効期間の開始。</td></tr>
+        <tr><td><code>validTo</code></td><td>string</td><td>はい</td><td>その終了。</td></tr>
+        <tr><td><code>chainRef</code></td><td>string</td><td>いいえ</td><td><code>tls.chains</code> への鍵。チェーンを取得できなかったときは存在しない。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      HTTPS で到達したが接続が何も明かさなかった host は、値 <code>null</code> として記録され
+      <em class="rfc2119">なければならない</em>。鍵ごと省くと「この host は素の HTTP だった」と
+      読めてしまいますが、それは別の事実です。
+    </p>
+    <p>
+      <code>chainRef</code> が無いことを「この host は証明書を提示しなかった」と読んでは
+      <em class="rfc2119">ならない</em>。チェーンの取得は host と無関係な理由でも失敗します。
+    </p>
+
+    <h4><code>tls.chains</code></h4>
+    <p>
+      鍵が <code>chainRef</code> の値であり、値が base64 符号化された DER 証明書の配列である
+      オブジェクト。各配列はリーフを先頭として並んで<em class="rfc2119">いなければならない</em>。
+    </p>
+    <p>
+      チェーンを共有する host は 1 つの項目を共有<em class="rfc2119">すべきである</em>。
+      1 ページの host 間で証明書が再利用されることは多く、host ごとに複製を持つとパッケージが
+      何の利得もなく膨らみます。
+    </p>
+    <p class="note">
+      チェーンは参照ではなく保存します。Certificate Transparency が同じバイト列を持っては
+      いますが、第三者のサービスが到達可能であり続けることに依存する証拠は、その分だけ弱く
+      なります —— そして検討する価値のある事例である私設 CA のチェーンは、そもそもそこに
+      記録されたことがありません。
+    </p>
+  </section>
+</section>
+
+<section id="replay-constraints">
+  <h2>Constraints inherited from replay</h2>
+  <p>
+    この節の要求は [[WACZ]] に由来しません。既存の WACZ 読み手が実際に行っていることに由来し、
+    これらを無視したパッケージは、基底の仕様を満たしていても実務上は読めません。
+  </p>
+  <ul>
+    <li>
+      <code>datapackage.json</code> の <code>profile</code> member は
+      <code>"data-package"</code> で<em class="rfc2119">なければならない</em>。読み手はこの値で
+      分岐し、知らない値を拒むため、本プロファイルを識別する用途には使えません。
+      <a href="#conformance-declaration"></a> を参照。
+    </li>
+    <li>
+      <code>datapackage.json</code> の <code>config</code> と <code>metadata</code> を、本仕様が
+      定める値を運ぶために使っては<em class="rfc2119">ならない</em>。読み手がこれらに意味を
+      割り当てています。
+    </li>
+    <li>
+      WARC の <code>response</code> レコードのペイロードは、交信を運んだプロトコルの版に
+      関わらず HTTP/1.1 形で<em class="rfc2119">なければならない</em>。
+    </li>
+    <li>
+      CDXJ 索引の値は、数値に見えるものも含めて string で
+      <em class="rfc2119">なければならない</em>。
+    </li>
+  </ul>
+  <p class="note">
+    ここに記すのは、パッケージの作成者がこれらを満たせるようにするためです。それぞれが
+    なぜ存在するかは実装史の問題であり、本仕様の外で文書化されています。
+  </p>
+</section>
+
+<section class="informative">
+  <h2>Security and privacy considerations</h2>
+  <p>
+    <a>tls</a> は来歴の証明ではありません。証明書は公開情報で、誰でも取得して複製を提示できます。
+    これらのフィールドを持っていることは、誰が要求に応答したかについて何も言いません。保存する
+    価値があるのはもっと狭い 2 つです —— <code>issuer</code> は接続が傍受されたときに変わり、
+    有効期間は取り込みが主張する時刻と突き合わせられます。そしてどちらも、書き留めなければ
+    取り込みの後には残りません。
+  </p>
+  <p>
+    <a>completeness</a> が主張するのは不在であって、正しさではありません。このパッケージが
+    実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
+    とは主張しません。
+  </p>
+  <p>
+    パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を記録します。取り込んだ
+    ページが URL に個人データを載せていた場合、それらの URL はアーカイブとともに旅をします。
+  </p>
+</section>
+</body>
+</html>
