@@ -49,18 +49,34 @@ jobs:
           path: built
       - name: Every link in the built document resolves
         run: |
+          # 外部リンクの検査は一過性の失敗と本物の切れを見分けないと使いものに
+          # ならない。実際に初回で 429 (GitHub のレート制限) と 503 (w3.org の
+          # 一時障害) を踏んだ。どちらも数十秒後には 200 を返した。
+          #
+          # 判定:
+          #   200            通す
+          #   429 / 5xx / 0  間を置いて再試行。最後まで駄目なら落とす
+          #   その他 4xx     即座に落とす (本物の切れ)
+          check() {
+            local url=$1 code
+            for attempt in 1 2 3; do
+              code=$(curl -sL -o /dev/null -w '%{http_code}' \
+                     -A 'Mozilla/5.0 (compatible; browserhive-specs linkcheck)' \
+                     --max-time 30 "$url" || echo 000)
+              case "$code" in
+                200) echo "  200 $url"; return 0 ;;
+                429|5??|000) sleep $((attempt * 10)) ;;
+                *) echo "::error::$url -> $code"; return 1 ;;
+              esac
+            done
+            echo "::error::$url -> $code (3 回試して駄目)"
+            return 1
+          }
+
           FAIL=0
-          # 生成物から外部リンクを拾う。-L で追って最終状態を見るので、
-          # 正当なリダイレクト (github の issues/new など) は通る。
           REFS=$(grep -oE '(href|src)="https?://[^"]*"' built/index.html \
                  | sed -E 's/^(href|src)="//; s/"$//' | sort -u)
           for U in $REFS; do
-            C=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 30 "$U" || echo 000)
-            if [ "$C" = "200" ]; then
-              echo "  200 $U"
-            else
-              echo "::error::$U -> $C"
-              FAIL=1
-            fi
+            check "$U" || FAIL=1
           done
           exit $FAIL
