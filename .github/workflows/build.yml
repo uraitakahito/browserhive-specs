@@ -16,13 +16,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      # 逐次にする。両方が同時に gh-pages へ push すると衝突する。
+      max-parallel: 1
+      matrix:
+        doc:
+          - wacz-profile/1.0.0
+          - wacz-profile/1.0.0/ja
     steps:
       - uses: actions/checkout@v4
       - uses: w3c/spec-prod@v2
         with:
           TOOLCHAIN: respec
-          SOURCE: wacz-profile/1.0.0/index.html
-          DESTINATION: wacz-profile/1.0.0/index.html
+          SOURCE: ${{ matrix.doc }}/index.html
+          DESTINATION: ${{ matrix.doc }}/index.html
           # markup 検査 (W3C nu validator) は既定で true。依存しているので明記する。
           VALIDATE_MARKUP: true
           # spec-prod のリンク検査は使えない。link-checker 1.4.2 が superagent
@@ -36,7 +43,7 @@ jobs:
           # ログイン画面へ飛ぶ ── 何もしなくても必ず踏む。
           # 代わりに下の linkcheck job がリダイレクトを追って最終状態を見る。
           VALIDATE_LINKS: false
-          ARTIFACT_NAME: built-spec
+          ARTIFACT_NAME: built-${{ strategy.job-index }}
           GH_PAGES_BRANCH: gh-pages
 
   linkcheck:
@@ -45,7 +52,9 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: built-spec
+          # merge しない。どちらの artifact も index.html という名前なので、
+          # 混ぜると片方が上書きされて検査されないまま緑になる。
+          pattern: built-*
           path: built
       - name: Every link in the built document resolves
         run: |
@@ -86,7 +95,12 @@ jobs:
           SKIP="^https://(github\.com/${GITHUB_REPOSITORY}|${OWNER}\.github\.io/${GITHUB_REPOSITORY#*/})"
 
           FAIL=0
-          REFS=$(grep -oE '(href|src)="https?://[^"]*"' built/index.html \
+          # 落としたすべての文書を対象にする。ファイルを 1 本も見つけられないまま
+          # 緑になることがないよう、件数を確かめてから回る。
+          DOCS=$(find built -name '*.html' | sort)
+          test -n "$DOCS" || { echo "::error::検査対象の HTML が無い"; exit 1; }
+          echo "対象: $(echo "$DOCS" | wc -l) 文書"
+          REFS=$(grep -hoE '(href|src)="https?://[^"]*"' $DOCS \
                  | sed -E 's/^(href|src)="//; s/"$//' | sort -u)
           for U in $REFS; do
             if echo "$U" | grep -qE "$SKIP"; then
