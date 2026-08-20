@@ -96,23 +96,73 @@
 <section>
   <h2>Package layout</h2>
   <p>
-    In addition to the entries [[WACZ]] requires, a conforming package
-    <em class="rfc2119">MAY</em> contain an entry named
-    <code>fuzzy.json</code> at the root of the ZIP archive, holding rules for
-    normalising cache-busting query parameters during replay.
+    [[WACZ]] already permits additional files at the root of the archive, and
+    states what a package must do to carry one. This specification does not
+    restate those requirements. It defines the shape of one such file.
   </p>
-  <p>
-    A package <em class="rfc2119">MUST NOT</em> place its CDXJ index at a path
-    ending in <code>.gz</code>. The index
-    <em class="rfc2119">MUST</em> be stored uncompressed within the ZIP entry
-    <code>indexes/index.cdxj</code>. See <a href="#replay-constraints"></a> for
-    why.
-  </p>
-  <p>
-    Readers that do not recognise <code>fuzzy.json</code>
-    <em class="rfc2119">MUST</em> ignore it. It carries no information required
-    to read the archive.
-  </p>
+
+  <section>
+    <h3>The <code>fuzzy.json</code> entry</h3>
+    <p>
+      Where a package carries a root entry named <dfn>fuzzy.json</dfn>, that
+      entry <em class="rfc2119">MUST</em> be a JSON object of the shape defined
+      here. The entry records which query parameters the capture treated as
+      cache-busters, so that a reader normalising URLs can apply the same
+      assumption the capture made.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>version</code></td><td>number</td><td>yes</td>
+            <td><em class="rfc2119">MUST</em> be <code>1</code>.</td></tr>
+        <tr><td><code>rules</code></td><td>array</td><td>yes</td>
+            <td>Zero or more rule objects, as below.</td></tr>
+      </tbody>
+    </table>
+    <p>Each element of <code>rules</code> <em class="rfc2119">MUST</em> be an object with:</p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>rule</code></td><td>string</td><td>yes</td>
+            <td><em class="rfc2119">MUST</em> be <code>"strip-query-param"</code>.
+            No other value is defined by this version.</td></tr>
+        <tr><td><code>name</code></td><td>string</td><td>yes</td>
+            <td>The query parameter to drop before comparing two URLs.</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+{
+  "version": 1,
+  "rules": [
+    { "rule": "strip-query-param", "name": "_" },
+    { "rule": "strip-query-param", "name": "ts" }
+  ]
+}</pre>
+    <p>
+      <code>rules</code> <em class="rfc2119">MAY</em> be empty. An empty array
+      and an absent <code>fuzzy.json</code> are not the same: the first asserts
+      that the capture treated no parameter as a cache-buster, the second says
+      the capture made no statement at all.
+    </p>
+    <p>
+      This entry is advisory. A reader that ignores it
+      <em class="rfc2119">MUST</em> still be able to read the archive, and a
+      reader that does not recognise a <code>rule</code> value
+      <em class="rfc2119">MUST</em> ignore that element rather than reject the
+      package.
+    </p>
+    <p class="note">
+      Replay engines in use today carry their own cache-buster heuristics and
+      do not read this file. It is written so that the assumption is recoverable
+      at all &mdash; a reader building its own normalisation, or one arriving
+      after those heuristics have changed, has no other way to learn what the
+      capture assumed.
+    </p>
+  </section>
 </section>
 
 <section>
@@ -403,6 +453,11 @@
     <li>
       Values in the CDXJ index <em class="rfc2119">MUST</em> be strings, including
       those that look numeric.
+    </li>
+    <li>
+      The CDXJ index <em class="rfc2119">MUST</em> be stored uncompressed, at a
+      path that does not end in <code>.gz</code>. Readers locate it by
+      extension and do not decompress it.
     </li>
   </ul>
   <p class="note">
