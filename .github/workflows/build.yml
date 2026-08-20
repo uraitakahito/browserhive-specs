@@ -1,0 +1,33 @@
+name: CI
+
+# ReSpec の原稿をビルド時に静的 HTML へ焼き、リンクと markup を検査してから
+# gh-pages へ配置する。
+#
+# ブラウザで ReSpec を走らせる方式にしないのは、失敗が失敗として現れないため。
+# script が 404 でもページは 200 で返り、崩れた見た目を人が見に行くまで誰も
+# 気づかない (uraitakahito/specs で実際に起きた)。ここでは壊れていれば CI が
+# 止まり、公開されない。
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: w3c/spec-prod@v2
+        with:
+          TOOLCHAIN: respec
+          SOURCE: wacz-profile/1.0.0/index.html
+          DESTINATION: wacz-profile/1.0.0/index.html
+          # 既定は false。明示しないとリンク検査は走らず、緑は「壊れていない」
+          # ではなく「見ていない」を意味することになる。
+          VALIDATE_LINKS: true
+          # 既定で true だが、依存している以上は書いておく。
+          VALIDATE_MARKUP: true
+          # push のときだけ配置する (PR ではビルドと検査のみ)。
+          GH_PAGES_BRANCH: gh-pages
