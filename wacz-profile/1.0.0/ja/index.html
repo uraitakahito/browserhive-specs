@@ -396,6 +396,8 @@
         <tr><td><code>protocol</code></td><td>string</td><td>はい</td><td>ネゴシエートされた TLS の版。</td></tr>
         <tr><td><code>cipher</code></td><td>string</td><td>はい</td><td>ネゴシエートされた cipher。</td></tr>
         <tr><td><code>subject</code></td><td>string</td><td>はい</td><td>subject の common name。browser が報告したそのまま。</td></tr>
+        <tr><td><code>san</code></td><td>array of string</td><td>はい</td>
+            <td>その証明書が有効な host 名の一覧 (subjectAltName)。SAN を持たない証明書では空。</td></tr>
         <tr><td><code>issuer</code></td><td>string</td><td>はい</td><td>issuer の common name。</td></tr>
         <tr><td><code>validFrom</code></td><td>string</td><td>はい</td><td>証明書の有効期間の開始。</td></tr>
         <tr><td><code>validTo</code></td><td>string</td><td>はい</td><td>その終了。</td></tr>
@@ -406,6 +408,12 @@
       HTTPS で到達したが接続が何も明かさなかった host は、値 <code>null</code> として記録され
       <em class="rfc2119">なければならない</em>。鍵ごと省くと「この host は素の HTTP だった」と
       読めてしまいますが、それは別の事実です。
+    </p>
+    <p>
+      host 名の照合に使われるのは <code>subject</code> ではなく <code>san</code> です。
+      <code>subject</code> が記録するのは common name であり、現在の読み手はこれを照合に
+      用いません —— <code>subject</code> の値をもって「その host 名で通用した」と読んでは
+      <em class="rfc2119">ならない</em>。
     </p>
     <p>
       <code>chainRef</code> が無いことを「この host は証明書を提示しなかった」と読んでは
@@ -436,6 +444,7 @@
       "protocol": "TLS 1.3",
       "cipher": "AES_128_GCM",
       "subject": "example.com",
+      "san": ["example.com", "www.example.com"],
       "issuer": "Example Issuing CA",
       "validFrom": "2026-06-30T20:37:58.000Z",
       "validTo": "2026-09-28T21:37:55.000Z",
@@ -445,6 +454,7 @@
       "protocol": "QUIC",
       "cipher": "AES_128_GCM",
       "subject": "*.example.net",
+      "san": ["*.example.net", "example.net"],
       "issuer": "Example Issuing CA",
       "validFrom": "2026-08-05T20:42:14.000Z",
       "validTo": "2026-10-28T20:42:13.000Z",
@@ -454,6 +464,7 @@
       "protocol": "TLS 1.3",
       "cipher": "AES_128_GCM",
       "subject": "*.example.net",
+      "san": ["*.example.net", "example.net"],
       "issuer": "Example Issuing CA",
       "validFrom": "2026-08-05T20:42:14.000Z",
       "validTo": "2026-10-28T20:42:13.000Z",
@@ -463,6 +474,7 @@
       "protocol": "TLS 1.3",
       "cipher": "AES_256_GCM",
       "subject": "api.example.org",
+      "san": ["api.example.org"],
       "issuer": "Example Issuing CA",
       "validFrom": "2026-05-14T09:03:11.000Z",
       "validTo": "2026-08-12T09:03:10.000Z"
