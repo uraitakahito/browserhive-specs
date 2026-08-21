@@ -206,7 +206,8 @@
         <tr><td><code>behaviors</code></td><td>array of string</td><td>はい</td>
             <td>実際に走った behavior。有効化されていたものではありません。</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>はい</td>
-            <td>member <code>maxResponseBytes</code> と <code>maxTaskBytes</code>。ともに整数。</td></tr>
+            <td>この取り込みに効いていた本文の上限。member <code>maxResponseBytes</code> と
+            <code>maxTaskBytes</code>。ともに整数で、単位はバイト。</td></tr>
         <tr><td><code>acceptLanguage</code></td><td>string</td><td>いいえ</td>
             <td>取り込みが設定したときにのみ存在する。オリジンが返すものが変わるため。</td></tr>
       </tbody>
@@ -260,9 +261,28 @@
   }
 }</pre>
     <p>
+      2 つは<strong>測る対象が違います</strong>。<code>maxResponseBytes</code> は
+      レスポンス 1 件の本文に掛かり、<code>maxTaskBytes</code> はこのパッケージへ書いた
+      本文の累計に掛かります。
+    </p>
+    <p>
+      この違いは読み手にとって実際的です。<code>maxResponseBytes</code> は 1 件ずつを量るので、
+      それを下回るレスポンスは何件でも入り、<strong>パッケージ全体の大きさはこの値からは
+      分かりません</strong>。<code>maxTaskBytes</code> は積み上げた総量を見るので、線を越えた
+      後は<strong>大きさに関わらず</strong>本文が落ちます —— 落ちた中に小さなレスポンスが
+      混じっていても、それは矛盾ではありません。
+    </p>
+    <p>
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
-      アーカイブが言える場所は、ここだけです。
+      アーカイブが言える場所は、ここだけです —— 切り詰めの記録は落とした事実と実際の
+      大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
+    </p>
+    <p class="note">
+      <a>completeness</a> の <code>truncatedUrls</code> は、この 2 つのどちらを超えて落ちたのかを
+      <strong>区別しません</strong>。
+      対処が違う (前者は 1 件が大きすぎ、後者はページ全体が重い) にもかかわらずです。
+      区別が要る読み手は、パッケージの外 —— 取り込みが出した報告 —— を見ることになります。
     </p>
   </section>
 

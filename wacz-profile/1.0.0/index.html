@@ -221,7 +221,8 @@
         <tr><td><code>behaviors</code></td><td>array of string</td><td>yes</td>
             <td>Behaviors that actually ran, not those that were enabled.</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>yes</td>
-            <td>Members <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, both integers.</td></tr>
+            <td>The body caps that were in force for this capture. Members
+            <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, both integers, in bytes.</td></tr>
         <tr><td><code>acceptLanguage</code></td><td>string</td><td>no</td>
             <td>Present only when the capture set one, since it changes what origins return.</td></tr>
       </tbody>
@@ -277,9 +278,32 @@
   }
 }</pre>
     <p>
+      The two <strong>measure different things</strong>.
+      <code>maxResponseBytes</code> applies to the body of a single response;
+      <code>maxTaskBytes</code> applies to the running total of the bodies
+      written into this package.
+    </p>
+    <p>
+      The difference matters to a reader. <code>maxResponseBytes</code> weighs
+      one response at a time, so any number of responses under it are kept and
+      <strong>the size of the package cannot be inferred from it</strong>.
+      <code>maxTaskBytes</code> watches the accumulated total, so once the line
+      is crossed bodies are dropped <strong>regardless of size</strong> &mdash;
+      a small response among the dropped ones is not a contradiction.
+    </p>
+    <p>
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
-      <em>which line</em> a truncated body crossed.
+      <em>which line</em> a truncated body crossed &mdash; a record of a
+      truncation carries the fact and the actual size, but whether that size was
+      too much is only legible next to the line.
+    </p>
+    <p class="note">
+      The <code>truncatedUrls</code> member of <a>completeness</a> does
+      <strong>not</strong> distinguish which of the two a body crossed, even
+      though the remedies differ (one response too large
+      versus the whole page too heavy). A reader who needs the distinction has to
+      look outside the package, at what the capture reported.
     </p>
   </section>
 
