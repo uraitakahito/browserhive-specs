@@ -212,11 +212,50 @@
             <td>取り込みが設定したときにのみ存在する。オリジンが返すものが変わるため。</td></tr>
       </tbody>
     </table>
+    <pre class="json">
+"settings": {
+  "signature": "none",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1],
+  "cache": "clear",
+  "archiveMode": "single-pass",
+  "behaviors": ["autoscroll", "autofetch"],
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200
+  }
+}</pre>
+    <p>
+      この例の <code>cache</code> は、取り込みが browser の HTTP キャッシュを空にしてから
+      始めたことを表しています。<code>archiveMode</code> はページを 1 回だけ掃引したこと、
+      <code>behaviors</code> に並ぶ 2 つは実際に走った behavior です —— 有効化されていた
+      ものの一覧ではありません。<code>acceptLanguage</code> は、この取り込みが設定しなかった
+      ので在りません。値そのものは producer が決めるもので、ここに挙げた綴りを
+      このプロファイルが定めているわけではありません。
+    </p>
     <p class="note">
       <code>devicePixelRatios</code> が数値ではなくリストなのは、multi-pass の取り込みが
       ページを 2 回以上掃引するためです。単一の値で記録すると、在る描画が無いと読み手に
       伝えてしまいます。
     </p>
+    <p>
+      2 回掃引する取り込みでは、掃引した数だけ値が並びます。要求が
+      <code>acceptLanguage</code> を指定した場合は、それもここに現れます:
+    </p>
+    <pre class="json">
+"settings": {
+  "signature": "required",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1, 2],
+  "cache": "clear",
+  "archiveMode": "multipass",
+  "behaviors": ["autoscroll"],
+  "acceptLanguage": "ja,en;q=0.9",
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200
+  }
+}</pre>
     <p>
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
