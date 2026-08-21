@@ -227,11 +227,51 @@
             <td>Present only when the capture set one, since it changes what origins return.</td></tr>
       </tbody>
     </table>
+    <pre class="json">
+"settings": {
+  "signature": "none",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1],
+  "cache": "clear",
+  "archiveMode": "single-pass",
+  "behaviors": ["autoscroll", "autofetch"],
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200
+  }
+}</pre>
+    <p>
+      In this example <code>cache</code> records that the capture started from
+      an emptied browser HTTP cache, and <code>archiveMode</code> that it swept
+      the page once. The two entries under <code>behaviors</code> are the
+      behaviors that ran &mdash; not the ones that were enabled.
+      <code>acceptLanguage</code> is absent because this capture set none. The
+      values themselves are the producer's to choose; this profile does not
+      define the spellings shown here.
+    </p>
     <p class="note">
       <code>devicePixelRatios</code> is a list rather than a number because a
       multi-pass capture sweeps the page more than once. Recording a single
       value would tell a reader that one rendering is absent when it is present.
     </p>
+    <p>
+      A capture that sweeps twice carries one value per sweep. A request that
+      set <code>acceptLanguage</code> shows it here as well:
+    </p>
+    <pre class="json">
+"settings": {
+  "signature": "required",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1, 2],
+  "cache": "clear",
+  "archiveMode": "multipass",
+  "behaviors": ["autoscroll"],
+  "acceptLanguage": "ja,en;q=0.9",
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200
+  }
+}</pre>
     <p>
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
