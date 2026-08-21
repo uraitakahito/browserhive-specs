@@ -428,6 +428,78 @@
       なります —— そして検討する価値のある事例である私設 CA のチェーンは、そもそもそこに
       記録されたことがありません。
     </p>
+
+    <pre class="json">
+"tls": {
+  "hosts": {
+    "example.com": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "example.com",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-06-30T20:37:58.000Z",
+      "validTo": "2026-09-28T21:37:55.000Z",
+      "chainRef": "9a57318f8c89976c"
+    },
+    "cdn.example.net": {
+      "protocol": "QUIC",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "img.example.net": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "api.example.org": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_256_GCM",
+      "subject": "api.example.org",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-05-14T09:03:11.000Z",
+      "validTo": "2026-08-12T09:03:10.000Z"
+    },
+    "beacon.example.org": null
+  },
+  "chains": {
+    "9a57318f8c89976c": [
+      "MIIDbzCCAxSgAwIBAgIRALaMq73qMP3mE30B…",
+      "MIICjDCCAhKgAwIBAgIQf5wJDMcM1Y2ZBpFB…"
+    ],
+    "c52653c92800f6fd": [
+      "MIIIUDCCBzigAwIBAgIQHnJSlrCYIdkSw8c/…",
+      "MIIFCzCCAvOgAwIBAgIQVJ5xIVMKmZ0sNHxs…"
+    ]
+  }
+}</pre>
+    <p>
+      この例は 5 つの host を記録しています。上の規定がそれぞれどう現れるかを見てください。
+    </p>
+    <ul>
+      <li><code>cdn.example.net</code> と <code>img.example.net</code> は<strong>同じ
+          <code>chainRef</code></strong> を指しています —— 同じ証明書を提示したので、チェーンは
+          <code>chains</code> に 1 度だけ保存されています。</li>
+      <li><code>api.example.org</code> には <code>chainRef</code> が<strong>ありません</strong>。
+          証明書は提示されており (<code>subject</code> 以下がその証拠です)、取れなかったのは
+          チェーンだけです。</li>
+      <li><code>beacon.example.org</code> は <code>null</code> です。HTTPS で到達しましたが、
+          接続は何も明かしませんでした。鍵ごと省いていないのは、省くと「この host は素の HTTP
+          だった」と読めてしまうためです。</li>
+      <li><code>cdn.example.net</code> の <code>protocol</code> は <code>"QUIC"</code> です。
+          この member は browser が報告した文字列であり、<strong>TLS の版とは限りません</strong>。</li>
+    </ul>
+    <p class="note">
+      <code>chains</code> の値は base64 符号化された DER です。例では読みやすさのため途中で
+      切ってありますが、実際には 1 通あたり 1–2 KB 程度の文字列になります。
+    </p>
   </section>
 </section>
 
