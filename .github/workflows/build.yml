@@ -1,11 +1,18 @@
 name: CI
 
-# ReSpec の原稿をビルド時に静的 HTML へ焼き、検査してから gh-pages へ配置する。
+# 公開は GitHub Pages が main を直接配る。この workflow は公開経路に居ないので、
+# ここが転んでも公開は止まらない。する仕事は検査だけ。
 #
-# ブラウザで ReSpec を走らせる方式にしないのは、失敗が失敗として現れないため。
-# script が 404 でもページは 200 で返り、崩れた見た目を人が見に行くまで誰も
-# 気づかない (uraitakahito/specs で実際に起きた)。ここでは壊れていれば CI が
-# 止まり、公開されない。
+# ReSpec は閲覧者のブラウザで走る。以前この方式を避けていたのは、失敗が失敗として
+# 現れないため —— script が 404 でもページは 200 で返り、崩れた見た目を人が見に
+# 行くまで誰も気づかない (uraitakahito/specs で実際に起きた)。
+#
+# 当時と違うのは、ReSpec を w3.org から読まず repo に同梱していること。同一
+# オリジンのファイルが 404 になるのは「無い」か「パスが違う」ときだけで、それは
+# assets job がブラウザ無しで見ている。
+#
+# 公開が CI を通らなくなった以上、壊れた原稿の merge を止められるのは下の検査
+# だけになった。だから build は blocking のままにしてある。
 on:
   push:
     branches: [main]
@@ -14,18 +21,43 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    # 書き込み権限は要らない。公開は Pages が main を直接配るので、この job は
+    # どこへも push しない。
     strategy:
-      # 逐次にする。両方が同時に gh-pages へ push すると衝突する。
-      max-parallel: 1
       matrix:
         doc:
           - wacz-profile/1.0.0
           - wacz-profile/1.0.0/ja
     steps:
       - uses: actions/checkout@v4
+
+      # 2 回試す。ReSpec のビルドは 20 秒の総予算で走っており、その予算を
+      # ブラウザの起動が食い尽くすと navigation に数百 ms しか残らずに落ちる
+      # (実測: 起動 19.648 秒 → 残り 352 ms)。runner の混み具合で決まるので、
+      # 原稿が正しくても落ちる。
+      #
+      # 予算は spec-prod が `-t 20` とハードコードしていて、入力からは触れない。
+      # 後ろに `-t 60` を足す道も塞がっている: sade は同じ flag の繰り返しを
+      # 配列にまとめるので `[20,60] * 1000` が NaN になり、長い形は無視される。
+      #
+      # 2 回で見分けがつく。flake は 2 回目でたいてい通り、壊れた原稿は何回でも
+      # 同じ場所で落ちる。だから赤は本物のエラーだけになる。
       - uses: w3c/spec-prod@v2
+        id: try1
+        continue-on-error: true
+        with:
+          TOOLCHAIN: respec
+          SOURCE: ${{ matrix.doc }}/index.html
+          DESTINATION: ${{ matrix.doc }}/index.html
+          VALIDATE_MARKUP: true
+          VALIDATE_LINKS: false
+          ARTIFACT_NAME: built-${{ strategy.job-index }}
+
+      # continue-on-error を付けるのは 1 回目だけ。job 全体は blocking のまま
+      # にする —— 公開が Pages 直配になった今、壊れた原稿の merge を止められる
+      # のはこの検査だけなので、ここは赤くならねばならない。
+      - uses: w3c/spec-prod@v2
+        if: steps.try1.outcome == 'failure'
         with:
           TOOLCHAIN: respec
           SOURCE: ${{ matrix.doc }}/index.html
@@ -44,7 +76,36 @@ jobs:
           # 代わりに下の linkcheck job がリダイレクトを追って最終状態を見る。
           VALIDATE_LINKS: false
           ARTIFACT_NAME: built-${{ strategy.job-index }}
-          GH_PAGES_BRANCH: gh-pages
+
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 各原稿から同梱 ReSpec が解決すること
+        run: |
+          # 閲覧者のブラウザで描画する以上、script が引けなければページは崩れる。
+          # 崩れても HTTP は 200 なので、公開後に気づく手立てが無い —— specs で
+          # 実際に起きたのがこれ。
+          #
+          # ただし同一オリジンに置いてあるので、壊れ方は 2 つしかない: ファイルが
+          # 無いか、パスが違うか。どちらもブラウザを起動せずに確かめられる。
+          FAIL=0
+          for doc in wacz-profile/1.0.0/index.html wacz-profile/1.0.0/ja/index.html; do
+            src=$(grep -o 'src="[^"]*respec[^"]*"' "$doc" | sed 's/src="//; s/"$//')
+            if [ -z "$src" ]; then
+              echo "::error::$doc が ReSpec を読み込んでいない"
+              FAIL=1
+              continue
+            fi
+            target="$(dirname "$doc")/$src"
+            if [ -f "$target" ]; then
+              echo "  ok   $doc -> $src"
+            else
+              echo "::error::$doc -> $src が解決しない"
+              FAIL=1
+            fi
+          done
+          exit $FAIL
 
   linkcheck:
     needs: build
