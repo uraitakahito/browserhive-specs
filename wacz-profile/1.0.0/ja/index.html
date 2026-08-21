@@ -199,11 +199,9 @@
         <tr><td><code>viewport</code></td><td>object</td><td>はい</td>
             <td>member <code>width</code> と <code>height</code>。ともに整数、単位は CSS ピクセル。</td></tr>
         <tr><td><code>devicePixelRatios</code></td><td>array of number</td><td>はい</td>
-            <td>描画パスごとに 1 要素。</td></tr>
+            <td>掃引した device pixel ratio を、掃引した順に。要素数がそのまま掃引の回数。</td></tr>
         <tr><td><code>cache</code></td><td>string</td><td>はい</td>
             <td>取り込みが browser の HTTP キャッシュをどう扱ったか。</td></tr>
-        <tr><td><code>archiveMode</code></td><td>string</td><td>はい</td>
-            <td>このパッケージへ何回の掃引を行ったか。</td></tr>
         <tr><td><code>behaviors</code></td><td>array of string</td><td>はい</td>
             <td>実際に走った behavior。有効化されていたものではありません。</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>はい</td>
@@ -218,7 +216,6 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1],
   "cache": "clear",
-  "archiveMode": "single-pass",
   "behaviors": ["autoscroll", "autofetch"],
   "limits": {
     "maxResponseBytes": 20971520,
@@ -227,8 +224,9 @@
 }</pre>
     <p>
       この例の <code>cache</code> は、取り込みが browser の HTTP キャッシュを空にしてから
-      始めたことを表しています。<code>archiveMode</code> はページを 1 回だけ掃引したこと、
-      <code>behaviors</code> に並ぶ 2 つは実際に走った behavior です —— 有効化されていた
+      始めたことを表しています。<code>devicePixelRatios</code> の要素が 1 つなのは、ページを
+      1 回だけ掃引したという意味です。<code>behaviors</code> に並ぶ 2 つは実際に走った
+      behavior です —— 有効化されていた
       ものの一覧ではありません。<code>acceptLanguage</code> は、この取り込みが設定しなかった
       ので在りません。値そのものは producer が決めるもので、ここに挙げた綴りを
       このプロファイルが定めているわけではありません。
@@ -237,6 +235,11 @@
       <code>devicePixelRatios</code> が数値ではなくリストなのは、multi-pass の取り込みが
       ページを 2 回以上掃引するためです。単一の値で記録すると、在る描画が無いと読み手に
       伝えてしまいます。
+    </p>
+    <p>
+      値は掃引した<em>順序</em>で並んで<em class="rfc2119">いなければならない</em>。読み手が
+      「どの版がアーカイブに在るか」だけでなく「どの版が最後に描かれたか」を言えるように
+      するためです —— ページの見た目を伴う成果物は、最後の掃引が残した状態に従います。
     </p>
     <p>
       2 回掃引する取り込みでは、掃引した数だけ値が並びます。要求が
@@ -248,7 +251,6 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1, 2],
   "cache": "clear",
-  "archiveMode": "multipass",
   "behaviors": ["autoscroll"],
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
