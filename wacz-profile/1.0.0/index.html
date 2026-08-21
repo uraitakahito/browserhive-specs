@@ -464,6 +464,81 @@
       CA's chain, which is the case worth examining, was never logged there at
       all.
     </p>
+
+    <pre class="json">
+"tls": {
+  "hosts": {
+    "example.com": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "example.com",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-06-30T20:37:58.000Z",
+      "validTo": "2026-09-28T21:37:55.000Z",
+      "chainRef": "9a57318f8c89976c"
+    },
+    "cdn.example.net": {
+      "protocol": "QUIC",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "img.example.net": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "api.example.org": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_256_GCM",
+      "subject": "api.example.org",
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-05-14T09:03:11.000Z",
+      "validTo": "2026-08-12T09:03:10.000Z"
+    },
+    "beacon.example.org": null
+  },
+  "chains": {
+    "9a57318f8c89976c": [
+      "MIIDbzCCAxSgAwIBAgIRALaMq73qMP3mE30B…",
+      "MIICjDCCAhKgAwIBAgIQf5wJDMcM1Y2ZBpFB…"
+    ],
+    "c52653c92800f6fd": [
+      "MIIIUDCCBzigAwIBAgIQHnJSlrCYIdkSw8c/…",
+      "MIIFCzCCAvOgAwIBAgIQVJ5xIVMKmZ0sNHxs…"
+    ]
+  }
+}</pre>
+    <p>
+      The example records five hosts. Each of the rules above shows up in it.
+    </p>
+    <ul>
+      <li><code>cdn.example.net</code> and <code>img.example.net</code> point at
+          <strong>the same <code>chainRef</code></strong> &mdash; they presented
+          the same certificate, so the chain is stored once in
+          <code>chains</code>.</li>
+      <li><code>api.example.org</code> has <strong>no <code>chainRef</code></strong>.
+          A certificate was presented &mdash; <code>subject</code> and the fields
+          below it are the evidence &mdash; only the chain could not be obtained.</li>
+      <li><code>beacon.example.org</code> is <code>null</code>. It was reached over
+          HTTPS but the connection revealed nothing. The key is kept because
+          dropping it would read as "this host was plain HTTP".</li>
+      <li><code>cdn.example.net</code> has <code>protocol</code> <code>"QUIC"</code>.
+          The member is the string the browser reported, and <strong>it is not
+          always a TLS version</strong>.</li>
+    </ul>
+    <p class="note">
+      Values in <code>chains</code> are base64-encoded DER. They are cut short
+      here for readability; a real certificate is a string of roughly
+      1&ndash;2&nbsp;KB.
+    </p>
   </section>
 </section>
 
