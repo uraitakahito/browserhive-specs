@@ -300,6 +300,36 @@
             <td><code>true</code> if and only if both arrays are empty.</td></tr>
       </tbody>
     </table>
+    <pre class="json">
+"completeness": {
+  "bodylessUrls": [],
+  "truncatedUrls": [],
+  "complete": true
+}</pre>
+    <p>
+      A capture that lost nothing takes this shape. <code>complete</code> is
+      derived from the two arrays, so two empty arrays alongside
+      <code>false</code> never occur.
+    </p>
+    <p>
+      A capture missing bodies for both reasons:
+    </p>
+    <pre class="json">
+"completeness": {
+  "bodylessUrls": [
+    "https://example.com/assets/app.css"
+  ],
+  "truncatedUrls": [
+    "https://example.com/media/hero.mp4",
+    "https://example.com/media/poster.png"
+  ],
+  "complete": false
+}</pre>
+    <p>
+      Here the stylesheet appeared only as a <code>304</code>: its body never
+      crossed the wire, so the archive cannot hold it. The video and its poster
+      were dropped at a limit. A URL dropped twice still appears once.
+    </p>
     <p>
       Both arrays <em class="rfc2119">MUST</em> be sorted, so that two captures
       of the same page produce comparable output.
