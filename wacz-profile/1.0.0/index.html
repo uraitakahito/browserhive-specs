@@ -178,14 +178,16 @@
   <section>
     <h3><code>browser</code></h3>
     <p>
-      <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
       member <dfn>browser</dfn> describing the browser that performed the
-      capture. If present, it <em class="rfc2119">MUST</em> contain a member
+      capture. It <em class="rfc2119">MUST</em> contain a member
       <code>product</code> whose value is a string.
     </p>
     <p>
-      The member is absent when the browser could not be asked. It
-      <em class="rfc2119">MUST NOT</em> be written with a placeholder value.
+      The value <em class="rfc2119">MUST NOT</em> be a placeholder. A producer
+      that cannot obtain it <em class="rfc2119">MUST NOT</em> produce a
+      conforming package: an archive whose recording browser is unknown is
+      outside this profile, and omitting the member is not a way to say so.
     </p>
   </section>
 
@@ -428,6 +430,14 @@
     A package records URLs in <a>completeness</a> and host names in
     <a>tls</a>. Where the captured page carried personal data in URLs, those
     URLs travel with the archive.
+  </p>
+  <p>
+    <a>browser</a> names the build that did the recording, and it is required.
+    A producer that presents a different identity to the origin &mdash; a
+    substituted <code>User-Agent</code>, for example &mdash; does not thereby
+    change this member: what is sent to the server and what the package reports
+    are separate. Operators who treat their build version as sensitive should
+    know that a conforming package discloses it.
   </p>
 </section>
 
