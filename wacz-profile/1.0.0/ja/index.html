@@ -167,12 +167,14 @@
     <h3><code>browser</code></h3>
     <p>
       <code>browserhive:capture</code> は、取り込みを行った browser を記述する <dfn>browser</dfn>
-      member を持っても<em class="rfc2119">よい</em>。存在する場合、値が string である
+      member を持た<em class="rfc2119">なければならない</em>。値が string である
       <code>product</code> member を持た<em class="rfc2119">なければならない</em>。
     </p>
     <p>
-      browser に尋ねられなかった場合、この member は存在しません。代用の値を入れて書いては
-      <em class="rfc2119">ならない</em>。
+      値は代用のものであっては<em class="rfc2119">ならない</em>。これを取得できない producer は、
+      適合するパッケージを作っては<em class="rfc2119">ならない</em>。記録した browser が不明な
+      アーカイブはこのプロファイルの外にあり、member を省くことはそれを表明する手段では
+      ありません。
     </p>
   </section>
 
@@ -393,6 +395,13 @@
   <p>
     パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を記録します。取り込んだ
     ページが URL に個人データを載せていた場合、それらの URL はアーカイブとともに旅をします。
+  </p>
+  <p>
+    <a>browser</a> は記録を行った build を名指しし、これは必須です。origin へ別の身元を
+    提示する producer &mdash; たとえば <code>User-Agent</code> を差し替えた場合 &mdash; でも、
+    この member は変わりません。サーバへ送るものと、パッケージが報告するものは別です。
+    build の版を秘匿したい運用者は、適合するパッケージがそれを開示することを知っておく
+    必要があります。
   </p>
 </section>
 </body>
