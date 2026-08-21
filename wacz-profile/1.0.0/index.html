@@ -214,11 +214,10 @@
         <tr><td><code>viewport</code></td><td>object</td><td>yes</td>
             <td>Members <code>width</code> and <code>height</code>, both integers, in CSS pixels.</td></tr>
         <tr><td><code>devicePixelRatios</code></td><td>array of number</td><td>yes</td>
-            <td>One entry per rendering pass.</td></tr>
+            <td>The device pixel ratios swept, in the order they were swept. The number of
+            entries is the number of passes.</td></tr>
         <tr><td><code>cache</code></td><td>string</td><td>yes</td>
             <td>How the capture treated the browser HTTP cache.</td></tr>
-        <tr><td><code>archiveMode</code></td><td>string</td><td>yes</td>
-            <td>How many passes were made into this package.</td></tr>
         <tr><td><code>behaviors</code></td><td>array of string</td><td>yes</td>
             <td>Behaviors that actually ran, not those that were enabled.</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>yes</td>
@@ -233,7 +232,6 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1],
   "cache": "clear",
-  "archiveMode": "single-pass",
   "behaviors": ["autoscroll", "autofetch"],
   "limits": {
     "maxResponseBytes": 20971520,
@@ -242,8 +240,9 @@
 }</pre>
     <p>
       In this example <code>cache</code> records that the capture started from
-      an emptied browser HTTP cache, and <code>archiveMode</code> that it swept
-      the page once. The two entries under <code>behaviors</code> are the
+      an emptied browser HTTP cache, and the single entry in
+      <code>devicePixelRatios</code> that it swept the page once. The two
+      entries under <code>behaviors</code> are the
       behaviors that ran &mdash; not the ones that were enabled.
       <code>acceptLanguage</code> is absent because this capture set none. The
       values themselves are the producer's to choose; this profile does not
@@ -255,6 +254,12 @@
       value would tell a reader that one rendering is absent when it is present.
     </p>
     <p>
+      The values <em class="rfc2119">MUST</em> appear in the order they were
+      swept, so that a reader can say not only which renderings the archive
+      holds but which one was drawn last &mdash; artefacts that carry the page's
+      appearance follow the state left by the final pass.
+    </p>
+    <p>
       A capture that sweeps twice carries one value per sweep. A request that
       set <code>acceptLanguage</code> shows it here as well:
     </p>
@@ -264,7 +269,6 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1, 2],
   "cache": "clear",
-  "archiveMode": "multipass",
   "behaviors": ["autoscroll"],
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
