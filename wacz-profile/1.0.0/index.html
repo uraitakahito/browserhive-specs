@@ -556,6 +556,152 @@
   </section>
 </section>
 
+<section id="accessibility">
+  <h2>The accessibility directory</h2>
+  <p>
+    [[WACZ]] permits additional files and directories, provided they stay out of
+    <code>archive</code>, <code>indexes</code> and <code>pages</code>, and are
+    listed in the <code>resources</code> section of <code>datapackage.json</code>.
+    A conforming package uses that allowance for one entry.
+  </p>
+  <p>
+    A conforming package <em class="rfc2119">MAY</em> contain an entry at
+    <code>accessibility/axtree.jsonl</code>. When present, it
+    <em class="rfc2119">MUST</em> be declared in <code>resources</code> like any
+    other file, and it <em class="rfc2119">MUST</em> be
+    <a href="https://jsonlines.org/">JSON Lines</a>: one JSON object per line,
+    each object recording one snapshot of the accessibility tree the browser
+    computed for the captured page.
+  </p>
+  <p class="note">
+    The tree is recorded because it cannot be reconstructed later. It is derived
+    from the DOM <strong>and the layout tree</strong>, it contains nodes with no
+    corresponding DOM node (CSS generated content, list markers), and
+    <code>aria-owns</code> reparents nodes so its shape differs from the document
+    tree. Replaying the archive against a future browser produces a different
+    tree. This is the same reason <code>tls</code> is recorded rather than
+    referenced.
+  </p>
+
+  <section id="accessibility-snapshot">
+    <h3>Snapshot members</h3>
+    <p>
+      Each line <em class="rfc2119">MUST</em> contain the members
+      <code>profile</code>, <code>url</code>, <code>takenAt</code>,
+      <code>stage</code> and <code>tree</code>.
+    </p>
+    <ul>
+      <li><code>profile</code> &mdash; the pruning rules the line follows. For
+          this version of this specification the value
+          <em class="rfc2119">MUST</em> be
+          <code>"browserhive:axtree/1"</code>. A producer that changes the
+          pruning rules <em class="rfc2119">MUST</em> change this value, so a
+          reader can tell what was discarded.</li>
+      <li><code>url</code> &mdash; the page the snapshot describes.</li>
+      <li><code>takenAt</code> &mdash; when the snapshot was taken, as an
+          [[RFC3339]] timestamp.</li>
+      <li><code>stage</code> &mdash; the point in the capture at which the
+          snapshot was taken. For this version the value
+          <em class="rfc2119">MUST</em> be <code>"after-behaviors"</code>.
+          <strong>The stage is normative because the tree changes.</strong>
+          Autoscroll triggers lazy loading, so a tree taken before behaviours
+          ran and one taken after describe different pages.</li>
+      <li><code>tree</code> &mdash; an array of nodes, described below.</li>
+    </ul>
+    <p>
+      A line <em class="rfc2119">SHOULD</em> also carry
+      <code>devicePixelRatio</code>, <code>viewport</code> and
+      <code>nodes</code> &mdash; respectively the pass the snapshot came from,
+      the viewport in effect, and the number of nodes <strong>before</strong>
+      pruning. The last of these lets a reader see how much was discarded.
+    </p>
+    <pre class="json">
+{
+  "profile": "browserhive:axtree/1",
+  "url": "https://www.iana.org/",
+  "takenAt": "2026-08-22T02:55:56.759Z",
+  "stage": "after-behaviors",
+  "devicePixelRatio": 1,
+  "viewport": { "width": 1280, "height": 800 },
+  "nodes": 255,
+  "tree": [
+    {
+      "role": "RootWebArea",
+      "name": "Internet Assigned Numbers Authority",
+      "children": [
+        { "role": "heading", "name": "Domain Names", "level": 2 },
+        { "role": "image", "name": "logo",
+          "url": "https://www.iana.org/_img/iana-logo-header.svg" }
+      ]
+    }
+  ]
+}
+    </pre>
+    <p class="note">
+      Shown across several lines for readability. In the file each snapshot
+      occupies exactly one line.
+    </p>
+  </section>
+
+  <section id="accessibility-nodes">
+    <h3>Node shape</h3>
+    <p>
+      Every node <em class="rfc2119">MUST</em> carry <code>role</code>. A node
+      <em class="rfc2119">MUST NOT</em> carry any member other than
+      <code>role</code>, <code>name</code>, <code>level</code>, <code>url</code>,
+      <code>checked</code>, <code>expanded</code>, <code>disabled</code>,
+      <code>required</code>, <code>value</code> and <code>children</code>.
+    </p>
+    <p>
+      Two of those carry more weight than the rest:
+    </p>
+    <ul>
+      <li><code>level</code> &mdash; the heading depth. Without it a
+          <code>heading</code> node cannot be told from another, and the document
+          structure the tree exists to record is lost.</li>
+      <li><code>url</code> &mdash; the reference an image or link points at. It
+          is what connects a node to the response recorded in
+          <code>archive/</code>, so a reader can go from &ldquo;there was a chart
+          here&rdquo; to the bytes of that chart.</li>
+    </ul>
+    <p>
+      A member whose value is absent, empty or <code>false</code>
+      <em class="rfc2119">MUST NOT</em> be written. Writing defaults on every
+      node costs more than the content it surrounds.
+    </p>
+  </section>
+
+  <section id="accessibility-pruning">
+    <h3>Pruning</h3>
+    <p>
+      Nodes the browser marks as ignored <em class="rfc2119">MUST NOT</em> appear
+      in <code>tree</code>. Their children <em class="rfc2119">MUST</em> be kept
+      and attached to the nearest retained ancestor.
+    </p>
+    <p class="note">
+      This is what keeps hidden text out of the record: subtrees removed by
+      <code>aria-hidden</code> or <code>display: none</code> are ignored nodes,
+      so they never reach the file. A reader can therefore treat the tree as a
+      description of what was <strong>visible</strong>, which is a stronger claim
+      than anything the WARC payload alone supports.
+    </p>
+    <p>
+      Nodes whose role is <code>generic</code>, <code>none</code> or
+      <code>InlineTextBox</code> <em class="rfc2119">MUST NOT</em> appear in
+      <code>tree</code> either, and their children
+      <em class="rfc2119">MUST</em> be kept in the same way. These roles carry no
+      meaning of their own; keeping them doubles the depth of the tree without
+      adding anything a reader can use.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MUST NOT</em> drop nodes for being outside
+      the viewport. Doing so is reasonable for an agent, which can only act on
+      what it can see, but an archive that discards the part of the page nobody
+      scrolled to is not a record of that page.
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -617,6 +763,15 @@
     A package records URLs in <a>completeness</a> and host names in
     <a>tls</a>. Where the captured page carried personal data in URLs, those
     URLs travel with the archive.
+  </p>
+  <p>
+    The accessibility tree carries the names the browser computed for elements,
+    which are drawn from the visible text of the page. That text is
+    <strong>already present</strong> in the WARC payload, so recording the tree
+    exposes nothing the package did not already hold. The pruning rules make its
+    exposure narrower than the payload's: ignored nodes are excluded, so text
+    hidden by <code>aria-hidden</code> or <code>display: none</code> does not
+    appear in the tree even though it appears in the response body.
   </p>
   <p>
     <a>browser</a> names the build that did the recording, and it is required.

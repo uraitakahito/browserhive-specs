@@ -515,6 +515,146 @@
   </section>
 </section>
 
+<section id="accessibility">
+  <h2>The accessibility directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    エントリ 1 つに使います。
+  </p>
+  <p>
+    適合するパッケージは <code>accessibility/axtree.jsonl</code> というエントリを
+    持ってもよい（<em class="rfc2119">MAY</em>）。存在する場合、他のファイルと同様に
+    <code>resources</code> で宣言しなければならず（<em class="rfc2119">MUST</em>）、
+    <a href="https://jsonlines.org/">JSON Lines</a> でなければなりません
+    （<em class="rfc2119">MUST</em>）—— 1 行 1 つの JSON オブジェクトで、各
+    オブジェクトは、取り込んだページに対して browser が計算したアクセシビリティ
+    ツリーのスナップショット 1 枚を記録します。
+  </p>
+  <p class="note">
+    この木を記録するのは、後から作り直せないからです。DOM <strong>とレイアウト
+    ツリーの両方</strong>から作られ、対応する DOM ノードを持たないノード（CSS の
+    生成内容、リストの記号）を含み、<code>aria-owns</code> がノードの親を付け替える
+    ため、その形は文書の木とは異なります。将来の browser で archive を再生しても、
+    別の木ができます。<code>tls</code> を参照ではなく記録している理由と同じです。
+  </p>
+
+  <section id="accessibility-snapshot">
+    <h3>Snapshot members</h3>
+    <p>
+      各行は <code>profile</code>・<code>url</code>・<code>takenAt</code>・
+      <code>stage</code>・<code>tree</code> を含まなければなりません
+      （<em class="rfc2119">MUST</em>）。
+    </p>
+    <ul>
+      <li><code>profile</code> —— その行が従う刈り込み規則。本仕様のこの版では、値は
+          <code>"browserhive:axtree/1"</code> でなければなりません
+          （<em class="rfc2119">MUST</em>）。刈り込み規則を変える producer は、この値も
+          変えなければなりません（<em class="rfc2119">MUST</em>）—— 読み手が、何が
+          捨てられたのかを言えるようにするためです。</li>
+      <li><code>url</code> —— そのスナップショットが記述するページ。</li>
+      <li><code>takenAt</code> —— 撮った時刻。[[RFC3339]] のタイムスタンプ。</li>
+      <li><code>stage</code> —— 取り込みのどの時点で撮ったか。この版では値は
+          <code>"after-behaviors"</code> でなければなりません
+          （<em class="rfc2119">MUST</em>）。<strong>時点が規範的なのは、木が変わる
+          からです。</strong> autoscroll は lazy load を発火させるので、behavior の
+          前に撮った木と後に撮った木は、別のページを記述しています。</li>
+      <li><code>tree</code> —— ノードの配列。次節を参照。</li>
+    </ul>
+    <p>
+      各行はさらに <code>devicePixelRatio</code>・<code>viewport</code>・
+      <code>nodes</code> を持つべきです（<em class="rfc2119">SHOULD</em>）——
+      順に、そのスナップショットがどのパスのものか、効いていた viewport、そして
+      刈り込む<strong>前</strong>のノード数。最後の 1 つによって、読み手はどれだけ
+      捨てられたのかを見ることができます。
+    </p>
+    <pre class="json">
+{
+  "profile": "browserhive:axtree/1",
+  "url": "https://www.iana.org/",
+  "takenAt": "2026-08-22T02:55:56.759Z",
+  "stage": "after-behaviors",
+  "devicePixelRatio": 1,
+  "viewport": { "width": 1280, "height": 800 },
+  "nodes": 255,
+  "tree": [
+    {
+      "role": "RootWebArea",
+      "name": "Internet Assigned Numbers Authority",
+      "children": [
+        { "role": "heading", "name": "Domain Names", "level": 2 },
+        { "role": "image", "name": "logo",
+          "url": "https://www.iana.org/_img/iana-logo-header.svg" }
+      ]
+    }
+  ]
+}
+    </pre>
+    <p class="note">
+      読みやすさのため複数行で示しています。ファイル中では、各スナップショットは
+      ちょうど 1 行を占めます。
+    </p>
+  </section>
+
+  <section id="accessibility-nodes">
+    <h3>Node shape</h3>
+    <p>
+      すべてのノードは <code>role</code> を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。ノードは <code>role</code>・
+      <code>name</code>・<code>level</code>・<code>url</code>・<code>checked</code>・
+      <code>expanded</code>・<code>disabled</code>・<code>required</code>・
+      <code>value</code>・<code>children</code> 以外の member を持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）。
+    </p>
+    <p>
+      このうち 2 つは、他より重い意味を持ちます:
+    </p>
+    <ul>
+      <li><code>level</code> —— 見出しの深さ。これが無いと <code>heading</code> の
+          ノードを互いに区別できず、この木が記録するために在る文書構造そのものが
+          失われます。</li>
+      <li><code>url</code> —— 画像やリンクが指す先。ノードと <code>archive/</code> に
+          記録されたレスポンスを結ぶのはこれで、「ここに図があった」から「その図の
+          バイト列」へ辿れるようになります。</li>
+    </ul>
+    <p>
+      値が無い・空・<code>false</code> の member は書いてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。全ノードに既定値を書くと、それが囲んでいる
+      中身より嵩が大きくなります。
+    </p>
+  </section>
+
+  <section id="accessibility-pruning">
+    <h3>Pruning</h3>
+    <p>
+      browser が ignored と印を付けたノードは <code>tree</code> に現れてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。その子は残し、最も近い残されたノードの
+      下に付けなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p class="note">
+      これが、隠されたテキストを記録に持ち込まないための仕掛けです。
+      <code>aria-hidden</code> や <code>display: none</code> で外された部分木は
+      ignored なノードなので、そもそもこのファイルに届きません。したがって読み手は、
+      この木を「<strong>見えていたもの</strong>」の記述として扱えます —— WARC の
+      本文だけからは支えられない、より強い主張です。
+    </p>
+    <p>
+      role が <code>generic</code>・<code>none</code>・<code>InlineTextBox</code> の
+      ノードも <code>tree</code> に現れてはならず（<em class="rfc2119">MUST NOT</em>）、
+      その子は同じように残さなければなりません（<em class="rfc2119">MUST</em>）。
+      これらの role はそれ自体では意味を持たず、残すと木の深さが倍になるだけで、
+      読み手が使えるものは何も増えません。
+    </p>
+    <p>
+      viewport の外にあることを理由にノードを落としてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。エージェントにとっては妥当な判断です ——
+      見えないものは操作できないので。しかし、誰もスクロールしなかった部分を捨てた
+      アーカイブは、そのページの記録ではありません。
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -570,6 +710,15 @@
   <p>
     パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を記録します。取り込んだ
     ページが URL に個人データを載せていた場合、それらの URL はアーカイブとともに旅をします。
+  </p>
+  <p>
+    アクセシビリティツリーは、browser が要素に対して計算した名前を運びます。それは
+    ページの可視テキストから作られるもので、そのテキストは WARC の本文に
+    <strong>既に入っています</strong> —— つまりこの木を記録しても、パッケージが
+    それまで持っていなかったものが増えるわけではありません。むしろ刈り込み規則に
+    よって、露出は本文より狭くなります: ignored なノードを除くので、
+    <code>aria-hidden</code> や <code>display: none</code> で隠されたテキストは、
+    レスポンス本文には在っても、この木には現れません。
   </p>
   <p>
     <a>browser</a> は記録を行った build を名指しし、これは必須です。origin へ別の身元を
