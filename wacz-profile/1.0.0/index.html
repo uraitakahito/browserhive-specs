@@ -19,6 +19,16 @@
   var respecConfig = {
     specStatus: "unofficial",
     shortName: "browserhive-wacz-profile",
+    // Without this, ReSpec assigns the empty string — `specStatus: "unofficial"`
+    // has no /TR/ space to derive a URL from — and the header template prints
+    // the literal "none" for a key that is present but falsy. Omitting it does
+    // not drop the row; only a real URL fills it.
+    //
+    // It points at the moving `latest/`, which redirects here. That is what
+    // makes it still true once 1.1.0 exists: this document would then no longer
+    // be the latest, and saying so is the row's whole job.
+    latestVersion:
+      "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
     editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
     github: "uraitakahito/browserhive-specs",
     // No localBiblio: [[WACZ]] and [[WARC]] both resolve through SpecRef.

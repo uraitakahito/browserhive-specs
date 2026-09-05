@@ -14,6 +14,15 @@
   var respecConfig = {
     specStatus: "unofficial",
     shortName: "browserhive-wacz-profile-ja",
+    // 未指定だと ReSpec が空文字を代入し (specStatus: "unofficial" には URL を
+    // 導く /TR/ が無い)、ヘッダは「キーは在るが偽」として文字列 "none" を出す。
+    // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
+    //
+    // 指す先は動く `latest/ja/` で、そこから当ページへ転送される。1.1.0 が出た
+    // ときにこの文書が最新でなくなる —— それを言うのがこの行の役目なので、
+    // 自分自身ではなく latest を指す。
+    latestVersion:
+      "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
     editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
     github: "uraitakahito/browserhive-specs",
     lint: false,
