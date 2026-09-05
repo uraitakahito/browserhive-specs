@@ -6,6 +6,12 @@
 |---|---|---|
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
 
+版を固定せず参照するなら
+[`wacz-profile/latest/`](https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/)
+（[日本語](https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/)）。
+最新版へ転送するだけの入口で、各版の文書がヘッダの「最新バージョン」としてここを指す。
+新しい版を出すときは、転送先をそちらへ差し替える。
+
 正典は英語版。訳は非公式で、食い違った場合は英語版が優先する。
 
 ## 作り方

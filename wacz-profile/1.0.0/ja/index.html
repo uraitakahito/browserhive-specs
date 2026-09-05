@@ -14,8 +14,50 @@
   var respecConfig = {
     specStatus: "unofficial",
     shortName: "browserhive-wacz-profile-ja",
+    // 未指定だと ReSpec が空文字を代入し (specStatus: "unofficial" には URL を
+    // 導く /TR/ が無い)、ヘッダは「キーは在るが偽」として文字列 "none" を出す。
+    // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
+    //
+    // 指す先は動く `latest/ja/` で、そこから当ページへ転送される。1.1.0 が出た
+    // ときにこの文書が最新でなくなる —— それを言うのがこの行の役目なので、
+    // 自分自身ではなく latest を指す。
+    latestVersion:
+      "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
     editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
     github: "uraitakahito/browserhive-specs",
+    // 参照はここで完結させる。SpecRef (api.specref.org) を引かない。
+    //
+    // spec-prod は ReSpec をビルド時に走らせるので、そのとき SpecRef が落ちていると
+    // **本文と無関係に CI が赤くなる**。実際 2026-08 以降 409 (Cloudflare 1001) を
+    // 返し続けており、PR #23 はそれだけの理由で止まっていた。
+    //
+    // 引く参照は 4 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
+    // しておく理由が無い。
+    localBiblio: {
+      WACZ: {
+        title: "Web Archive Collection Zipped (WACZ)",
+        href: "https://specs.webrecorder.net/wacz/1.1.1/",
+        publisher: "Webrecorder",
+        // 版を固定する。この profile が制約しているのは 1.1.1 であって、
+        // 将来の版ではない。
+        version: "1.1.1",
+      },
+      RFC2119: {
+        title:
+          "Key words for use in RFCs to Indicate Requirement Levels",
+        href: "https://www.rfc-editor.org/rfc/rfc2119",
+        authors: ["S. Bradner"],
+        date: "March 1997",
+        publisher: "IETF",
+      },
+      RFC3339: {
+        title: "Date and Time on the Internet: Timestamps",
+        href: "https://www.rfc-editor.org/rfc/rfc3339",
+        authors: ["G. Klyne", "C. Newman"],
+        date: "July 2002",
+        publisher: "IETF",
+      },
+    },
     lint: false,
   };
 </script>
