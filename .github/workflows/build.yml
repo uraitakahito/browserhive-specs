@@ -26,6 +26,9 @@ jobs:
     strategy:
       matrix:
         doc:
+          # 版を足したらここにも足す。焼かれない版は、壊れていても気づけない。
+          - wacz-profile/1.1.0
+          - wacz-profile/1.1.0/ja
           - wacz-profile/1.0.0
           - wacz-profile/1.0.0/ja
     steps:
@@ -90,7 +93,8 @@ jobs:
           # ただし同一オリジンに置いてあるので、壊れ方は 2 つしかない: ファイルが
           # 無いか、パスが違うか。どちらもブラウザを起動せずに確かめられる。
           FAIL=0
-          for doc in wacz-profile/1.0.0/index.html wacz-profile/1.0.0/ja/index.html; do
+          for doc in wacz-profile/1.1.0/index.html wacz-profile/1.1.0/ja/index.html \
+                     wacz-profile/1.0.0/index.html wacz-profile/1.0.0/ja/index.html; do
             src=$(grep -o 'src="[^"]*respec[^"]*"' "$doc" | sed 's/src="//; s/"$//')
             if [ -z "$src" ]; then
               echo "::error::$doc が ReSpec を読み込んでいない"
