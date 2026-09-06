@@ -4,13 +4,20 @@
 
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | **1.1.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | **1.2.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 1.1.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
 
-1.1.0 は 1.0.0 と**後方互換ではない** —— `storage` を必須 member として足したため、
-1.0.0 に適合するパッケージは 1.1.0 には適合しない。BrowserHive はもう 1.0.0 を
-出力しないが、1.0.0 の文書はそれ自身の URL に残す。既存アーカイブの
-`conformsTo` がそこを指しており、消すと「何に適合していたか」を辿れなくなるため。
+各版は**後方互換ではない**。1.1.0 は `storage` を必須 member として足し、
+1.2.0 は `settings` に `blockUrlPatterns` を足したうえ `cache` を `session` に
+置き換えた。BrowserHive は最新版しか出力しないが、古い版の文書はそれぞれの URL に
+残す。既存アーカイブの `conformsTo` がそこを指しており、消すと
+「何に適合していたか」を辿れなくなるため。
+
+1.2.0 の `cache` → `session` は**訂正**でもある。1.1.0 が必須と書いた `cache` を
+書いた producer は無く、その member が述べていた設定は実装側で
+より広い設定に畳まれていた。どの実装も書かない必須 member は、適合を
+何についての主張でもなくしてしまう。
 
 版を固定せず参照するなら
 [`wacz-profile/latest/`](https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/)
@@ -29,5 +36,5 @@
 **読者のブラウザでは何も実行されない。** ビルド時に完成させているので、
 崩れたページが 200 で配信され続けることがない。
 
-ローカルで見るには `wacz-profile/1.1.0/index.html` をブラウザで開く
+ローカルで見るには `wacz-profile/1.2.0/index.html` をブラウザで開く
 (そのときだけ ReSpec が実行時に走る)。
