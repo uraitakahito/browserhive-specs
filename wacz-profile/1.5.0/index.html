@@ -1271,20 +1271,29 @@ resourceType: XHR</pre>
         <code>"browserhive:behaviors/1"</code>.
       </li>
       <li>
-        <code>id</code> &mdash; the name the behavior ran under. It
-        <em class="rfc2119">MUST</em> equal the <code>id</code> of an entry in
-        <code>settings.behaviors</code> whose <code>origin</code> is
-        <code>"custom"</code>, and every such entry
-        <em class="rfc2119">MUST</em> have a line here.
+        <code>id</code> &mdash; the name the behavior was registered under.
+        Every entry in <code>settings.behaviors</code> whose <code>origin</code>
+        is <code>"custom"</code> <em class="rfc2119">MUST</em> have a line here.
+        The converse does not hold: a line <em class="rfc2119">MAY</em> have no
+        matching entry, because a behavior can be placed in the page and then
+        decline to act.
       </li>
       <li>
         <code>source</code> &mdash; the code as it arrived, byte for byte.
       </li>
     </ul>
     <p>
-      The entry <em class="rfc2119">MUST NOT</em> be present when no
-      request-supplied behavior ran. Its absence therefore states that the
-      package holds no code that came from the request.
+      The entry <em class="rfc2119">MUST</em> be present when the producer
+      placed any request-supplied behavior in the page, and
+      <em class="rfc2119">MUST NOT</em> be present otherwise. Its absence
+      therefore states that the package holds no code that came from the
+      request.
+    </p>
+    <p class="note" title="Placed, not run">
+      The condition is placement, not execution &mdash; the same condition as
+      <a href="#behaviors-runtime">the runtime</a>. Code that was put into the
+      page ran there, whatever it then decided to do, and an archive that
+      recorded only the code that acted would omit code that executed.
     </p>
     <p class="note" title="Why the names are not file names">
       A behavior name is chosen by whoever supplied the behavior, and nothing
