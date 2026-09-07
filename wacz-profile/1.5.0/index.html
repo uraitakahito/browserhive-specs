@@ -506,6 +506,21 @@
             <td>Approximate depth reached: steps multiplied by viewport height.</td></tr>
       </tbody>
     </table>
+    <pre class="json">
+"coverage": {
+  "scrollExhausted": true,
+  "scrollSteps": 40,
+  "scrolledPx": 32000
+}</pre>
+    <p class="note">
+      The three values are read together. <code>scrolledPx</code> is
+      <code>scrollSteps</code> multiplied by the viewport height recorded in
+      <a>settings</a> &mdash; 40 &times; 800 here &mdash; so a reader can check
+      one against the other. And because <code>scrollExhausted</code> is
+      <code>true</code>, the 32,000 pixels are where the capture
+      <em>stopped</em>, not where the page ended: whatever lay below was never
+      requested, and therefore leaves no trace anywhere else in the package.
+    </p>
     <p>
       <code>coverage</code> <em class="rfc2119">MUST</em> be absent when no
       scrolling behavior reported. It <em class="rfc2119">MUST NOT</em> be
