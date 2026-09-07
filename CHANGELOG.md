@@ -8,12 +8,38 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.4.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | 2026-09-08 | 記録の前にページから取り除いたものを規定する |
 | [1.3.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | 2026-09-06 | URL への扱いを順序付きの policy にする |
 | [1.2.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 2026-09-06 | 落としたリクエストを規定する |
 | [1.1.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 2026-09-06 | web storage を規定する |
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.4.0
+
+`dismissal` を足した。取り込みが記録の前にページから何を取り除いたか、そして
+**何を探したか**。
+
+同意バナーを取り除いた取り込みは、そのあと保存する文書そのものを変えている。
+それまでのパッケージはそれを一言も述べていなかった —— 取り除かれた要素は WARC にも
+索引にも描画後のスナップショットにも痕跡を残さないので、**もともとバナーの無いページと
+区別が付かなかった**。
+
+**結果だけを書いても検証できない。** 取り除きが空であることは、20 本の選択子を
+探した場合でも 1 本も探さなかった場合でも「何にも当たらなかった」と読める。
+だから `selectors` と `heuristic` —— 効いていた入力 —— を必須にした。
+1 件も濾さなかった取り込みにも `urlPolicies` を必須にしているのと同じ理屈で、
+両方が在って初めて取り除きは「読み手が保存された HTML に対して確かめられる部分集合」
+になる。
+
+`unusableSelectors` は別枠にした。選択子として成立していなかったものを
+「当たらなかった」に数えると、パッケージは探しもしなかったものについて
+「無かった」と述べることになる。`unreadable: true` も同じ性質で、
+遂行できなかった除去は何も観測していないので、結果を並べてはならない。
+
+スクロールは `coverage` が既に記録しているのでここには置かない。同じ行為の
+2 つ目の申告は写しであり、いずれ片方が古くなる。
 
 ## 1.3.0
 

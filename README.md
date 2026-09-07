@@ -4,7 +4,8 @@
 
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | **1.3.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | **1.4.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | 1.3.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 1.2.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 1.1.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
