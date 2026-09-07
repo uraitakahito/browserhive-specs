@@ -233,6 +233,15 @@
       member を持た<em class="rfc2119">なければならない</em>。値が string である
       <code>product</code> member を持た<em class="rfc2119">なければならない</em>。
     </p>
+    <pre class="json">
+"browser": {
+  "product": "Chrome/151.0.7922.137"
+}</pre>
+    <p class="note">
+      綴りは定めません。値は browser 自身が名乗るものなので、別のエンジンが作った
+      パッケージは別の形を運びます。読み手は 2 つの値が等しいかどうかを比べられますが、
+      書式を仮定することはできません。
+    </p>
     <p>
       値は代用のものであっては<em class="rfc2119">ならない</em>。これを取得できない producer は、
       適合するパッケージを作っては<em class="rfc2119">ならない</em>。記録した browser が不明な

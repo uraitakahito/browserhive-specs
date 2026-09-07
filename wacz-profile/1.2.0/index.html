@@ -243,6 +243,16 @@
       capture. It <em class="rfc2119">MUST</em> contain a member
       <code>product</code> whose value is a string.
     </p>
+    <pre class="json">
+"browser": {
+  "product": "Chrome/151.0.7922.137"
+}</pre>
+    <p class="note">
+      The spelling is not defined here. The value is whatever the browser names
+      itself as, so a package produced by a different engine carries a different
+      shape. A reader can compare two values for equality; it cannot assume a
+      grammar.
+    </p>
     <p>
       The value <em class="rfc2119">MUST NOT</em> be a placeholder. A producer
       that cannot obtain it <em class="rfc2119">MUST NOT</em> produce a
