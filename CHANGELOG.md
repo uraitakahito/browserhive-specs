@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.5.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | 2026-09-08 | 走らせたコードそのものを規定する |
 | [1.4.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | 2026-09-08 | 記録の前にページから取り除いたものを規定する |
 | [1.3.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | 2026-09-06 | URL への扱いを順序付きの policy にする |
 | [1.2.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 2026-09-06 | 落としたリクエストを規定する |
@@ -15,6 +16,39 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.5.0
+
+`behaviors` ディレクトリを足し、`settings.behaviors` を名前の配列から
+オブジェクトの配列へ広げた。
+
+1.4.0 までのパッケージは「保存の前にページ上でコードが走った」とは言えても、
+**どのコードかは言えなかった**。`settings.behaviors` の名前は behavior を提供した側が
+決めるものなので、同じ名前で中身の違うコードが走った 2 回を区別できない。
+
+**その影響は一様ではない。** producer が同梱するコードは少なくとも `build` が
+固定しているが、リクエストが運んできたコードはリクエストと共に来て、応答を捨てた
+時点で**どこからも取り出せなくなる**。`completeness` が解いたのと同じ形の喪失。
+
+`behaviors/runtime.js` は評価したソースをバイト単位でそのまま持つ。**要求しているのは
+「そのまま」であって読みやすさではない** —— minify する producer は minify された形を
+記録する。それがページの受け取ったものだから。
+
+`behaviors/custom.jsonl` はリクエスト由来のものを 1 行 1 件で持つ。**名前を
+ファイル名にしない**のは、behavior の名前を決めるのが提供した側で、現に使われている
+名前が `:` も `/` も含むため —— パスに使えば名前がパッケージの中の置き場所を決めてしまう。
+
+`settings.behaviors` の `origin` は、この仕様が綴りを定める唯一の behavior 関連の値。
+`id` の綴りは producer のものだが、`origin` が答えるのは behavior についての問いではなく
+**パッケージについての問い**（そのコードは producer から来たのか、リクエストから来たのか）
+だから。
+
+読み手がこのディレクトリの中身を**実行してはならない**ことも明記した。適合する
+パッケージの中で中身が実行可能なエントリはこれだけで、しかも replay する読み手は
+既に実行の context を開いている。
+
+`storage` と `accessibility` の節が追加ディレクトリを「2 つ目」「1 つ」と数えていたのも
+直した。3 つ目を足す以上、数えるのをやめるほうが正しい。
 
 ## 1.4.0
 
