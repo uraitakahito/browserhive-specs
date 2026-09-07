@@ -457,6 +457,21 @@
             <td>到達した深さの概算。段数 × viewport の高さ。</td></tr>
       </tbody>
     </table>
+    <pre class="json">
+"coverage": {
+  "scrollExhausted": true,
+  "scrollSteps": 40,
+  "scrolledPx": 32000
+}</pre>
+    <p class="note">
+      3 つの値は互いを読み合うためのものです。<code>scrolledPx</code> は
+      <code>scrollSteps</code> に <a>settings</a> が記録した viewport の高さを
+      掛けたもの —— ここでは 40 × 800 —— なので、読み手は一方を他方で検算できます。
+      そして <code>scrollExhausted</code> が <code>true</code> である以上、
+      この 32,000 ピクセルは取り込みが<em>止まった</em>地点であって、ページが
+      終わった地点ではありません。その下にあったものは一度も要求されておらず、
+      したがってパッケージの他のどこにも痕跡を残していません。
+    </p>
     <p>
       スクロールの behavior が何も報告しなかった場合、<code>coverage</code> は存在しては
       <em class="rfc2119">ならない</em>。既定値を入れて書いては<em class="rfc2119">ならない</em> ——
