@@ -1223,20 +1223,29 @@ resourceType: XHR</pre>
         なけれ<em class="rfc2119">ばなりません</em>（MUST）。
       </li>
       <li>
-        <code>id</code> &mdash; その behavior が走った名前。
+        <code>id</code> &mdash; その behavior が登録された名前。
         <code>settings.behaviors</code> のうち <code>origin</code> が
-        <code>"custom"</code> である項目の <code>id</code> と一致し
-        <em class="rfc2119">なければならず</em>（MUST）、
-        そのような項目はすべてここに行を持た<em class="rfc2119">なければなりません</em>（MUST）。
+        <code>"custom"</code> である項目は、すべてここに行を
+        持た<em class="rfc2119">なければなりません</em>（MUST）。
+        <strong>逆は成り立ちません</strong> —— 対応する項目を持たない行が
+        在っ<em class="rfc2119">てもよい</em>（MAY）。behavior はページに置かれた
+        うえで、何もしないことを選べるためです。
       </li>
       <li>
         <code>source</code> &mdash; 届いたままのコード。バイト単位でそのまま。
       </li>
     </ul>
     <p>
-      リクエスト由来の behavior が 1 つも走らなかったとき、このエントリは
+      producer がリクエスト由来の behavior をページに置いたときは
+      在ら<em class="rfc2119">なければならず</em>（MUST）、そうでなければ
       在っては<em class="rfc2119">なりません</em>（MUST NOT）。したがってその不在は
       「このパッケージはリクエストから来たコードを持たない」ことを述べます。
+    </p>
+    <p class="note" title="Placed, not run">
+      条件は「置いたか」であって「走ったか」ではありません ——
+      <a href="#behaviors-runtime">runtime</a> と同じ条件です。ページに置かれた
+      コードは、そのあと何を決めたにせよ、そこで走っています。<strong>作用したコードだけ</strong>を
+      記録するアーカイブは、実行されたコードを取りこぼします。
     </p>
     <p class="note" title="Why the names are not file names">
       behavior の名前は、それを提供した側が決めるもので、何の制約もありません ——
