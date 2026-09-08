@@ -934,9 +934,10 @@ resourceType: XHR</pre>
       "origins": [
         {
           "origin": "https://www.example.co.jp",
-          "local": { "keys": 7, "bytes": 184213, "digest": "sha256:4f1c9ab2" },
-          "session": { "keys": 1, "bytes": 3, "digest": "sha256:9d0e11c7" }
-        }
+          "local": { "keys": 2, "bytes": 32, "digest": "sha256:b58f31fdc511fb94c356ae7f6d64ac71e5bf056584653c3f3ec61a1f08bfaa0f" },
+          "session": { "keys": 1, "bytes": 13, "digest": "sha256:8ce272dea9fc6d7902b23f10411da49a7fb2e3c954ba9f1580cc087292eaafc2" }
+        },
+        { "origin": "https://ads.example.net", "unreadable": true }
       ]
     }
   }
@@ -1003,6 +1004,16 @@ resourceType: XHR</pre>
       empty, which is written as areas with <code>"keys": 0</code>. Recording
       them the same way would put back the ambiguity this member exists to
       remove.
+    </p>
+    <p class="note" title="An entry and a line describe the same origin">
+      An entry here and a line in <code>storage/origins.jsonl</code> are two
+      halves of one record. The entry says what an origin's storage
+      <em>looked like</em> &mdash; how many keys, how many bytes, which digest
+      &mdash; and is always present. The line says what it
+      <em>contained</em>, and is present only when the values were asked for;
+      <code>valuesRecorded</code> states which of the two a package holds. An origin
+      recorded as <code>unreadable</code> has no line, because there is nothing
+      to put in one.
     </p>
     <p>
       <code>local</code> and <code>session</code> each MUST contain:
