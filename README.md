@@ -4,7 +4,8 @@
 
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | **1.5.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/) | **1.6.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | 1.5.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | 1.4.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | 1.3.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 1.2.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/) |
@@ -33,5 +34,5 @@
 **読者のブラウザでは何も実行されない。** ビルド時に完成させているので、
 崩れたページが 200 で配信され続けることがない。
 
-ローカルで見るには `wacz-profile/1.5.0/index.html` をブラウザで開く
+ローカルで見るには `wacz-profile/1.6.0/index.html` をブラウザで開く
 (そのときだけ ReSpec が実行時に走る)。
