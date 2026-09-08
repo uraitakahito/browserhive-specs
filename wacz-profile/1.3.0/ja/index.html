@@ -840,6 +840,18 @@ resourceType: XHR</pre>
       値は [[WACZ]] の enclosing document と同じ直列化形式、すなわち scheme・host、
       および既定でない場合の port です。
     </p>
+    <p class="note" title="Why the list is keyed by origin">
+      web storage は origin ごとに区切られており、ページは日常的に自分以外の origin の
+      文書を埋め込みます —— 広告、計測のフレーム、埋め込みのプレイヤー。それらは
+      それぞれ自分の storage を持ち、<strong>ページ自身の origin からは見えません</strong>。
+      したがってこれは「そのページの storage」の記録ではありません ——
+      <strong>取り込みが観測できた origin ごとに 1 項目</strong>であり、
+      第三者の origin の項目が在ることは異常ではなく想定どおりです。
+      <br><br>
+      そもそも storage を持てない origin —— <code>about:blank</code> の文書や
+      <code>data:</code> URL のような opaque origin —— は記録するものが無いので
+      現れません。
+    </p>
     <p>
       各項目は、<code>local</code> と <code>session</code> の両方を持つか、あるいは
       <code>unreadable</code> という単一の member を値 <code>true</code> で持つかの

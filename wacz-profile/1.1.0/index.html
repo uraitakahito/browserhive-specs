@@ -703,6 +703,19 @@
       form of [[WACZ]]'s enclosing document &mdash; scheme, host and, when not
       the default, port.
     </p>
+    <p class="note" title="Why the list is keyed by origin">
+      Web storage is partitioned by origin, and a page routinely embeds
+      documents from origins other than its own &mdash; an advertisement, an
+      analytics frame, an embedded player. Each of those has its own storage,
+      which the page's own origin cannot see. So this is not a record of
+      &ldquo;the page's storage&rdquo;: it is one entry per origin the capture
+      was able to observe, and an entry for a third party is the expected case
+      rather than an anomaly.
+      <br><br>
+      An origin that cannot hold storage at all &mdash; an opaque origin, such
+      as a document at <code>about:blank</code> or a <code>data:</code> URL
+      &mdash; has nothing to record and does not appear.
+    </p>
     <p>
       An entry MUST contain either both <code>local</code> and
       <code>session</code>, or the single member <code>unreadable</code> with the
