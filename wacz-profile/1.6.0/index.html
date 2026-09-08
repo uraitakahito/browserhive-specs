@@ -939,6 +939,15 @@ resourceType: XHR</pre>
     recording what web storage the captured origins held. The member records the
     presence and shape of that storage; it MUST NOT contain stored values.
   </p>
+  <p class="note" title="This does not mean the values go unrecorded">
+    The prohibition is on this member, not on the package. The values themselves
+    live in a separate entry, <code>storage/origins.jsonl</code>, which a package
+    carries when they were asked for; see <a href="#storage-directory"></a>.
+    They are kept apart because web storage routinely holds bearer tokens and
+    session identifiers, which appear in no WARC payload: a package that recorded
+    them by default would carry them everywhere it went.
+    <code>valuesRecorded</code> states which of the two a package is holding.
+  </p>
   <p>
     Web storage is recorded because it cannot be reconstructed later. It never
     crosses the network, so no WARC record holds it: a page that renders from

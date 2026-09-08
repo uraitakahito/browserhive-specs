@@ -888,6 +888,15 @@ resourceType: XHR</pre>
     <strong>存在と形</strong>です。保存されていた値を
     含ん<em class="rfc2119">ではならない</em>（MUST NOT）。
   </p>
+  <p class="note" title="これは「値を記録しない」という意味ではありません">
+    禁じているのはこの member であって、パッケージではありません。値そのものは
+    別のエントリ <code>storage/origins.jsonl</code> に入り、値を求められた取り込みの
+    パッケージがそれを運びます。<a href="#storage-directory"></a> を参照。
+    分けているのは、web storage が bearer token や session 識別子を日常的に持ち、
+    それらが WARC の payload のどこにも現れないからです ——
+    既定で記録すれば、パッケージはそれを行く先々へ運ぶことになります。
+    どちらをパッケージが持っているかは <code>valuesRecorded</code> が述べます。
+  </p>
   <p>
     web storage を記録するのは、後から復元できないからです。ネットワークを一度も
     渡らないため、どの WARC レコードもこれを保持していません ——
