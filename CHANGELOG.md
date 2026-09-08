@@ -8,12 +8,38 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.6.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/) | 2026-09-08 | storage の値に上限を置く |
 | [1.5.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | 2026-09-08 | 走らせたコードそのものを規定する |
 | [1.4.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | 2026-09-08 | 記録の前にページから取り除いたものを規定する |
 | [1.3.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/) | 2026-09-06 | URL への扱いを順序付きの policy にする |
 | [1.2.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 2026-09-06 | 落としたリクエストを規定する |
 | [1.1.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 2026-09-06 | web storage を規定する |
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
+
+---
+
+## 1.6.0
+
+`storage` ディレクトリが運ぶ値の大きさに上限を設け、その上限で値を落とされた
+origin を示す `valuesOversize` を足した。`storage` の `profile` は
+`browserhive:storage/2` になる。
+
+**パッケージが運ぶ他のものは、いずれも何かに縛られている。** 応答の body は
+`settings` が宣言する上限に縛られ、しかもその上限自体が記録されるので、読み手は
+天井がどこにあったかを見られる。`storage/origins.jsonl` の値だけが何にも
+縛られていなかった —— オリジンから受け取ったものではなく**ページから読み出した**
+ものなので、宣言されたどちらの上限にも数えられず、しかも署名の内側にある。
+`localStorage` に大きなキャッシュを持つページが 1 枚あれば、開くのが遅い、
+あるいはまったく開けないパッケージができる。
+
+`valuesOversize` を持つ項目は、それでも `local` と `session` を持つ。ここが
+`unreadable` との違いで、意図的なもの —— 取り込みはその origin を**読めている**ので、
+鍵の数と大きさを知っている。読み手は「値が欠けていること」と「どれだけ欠けているか」
+の両方を知り、上限を上げて撮り直すかどうかを判断できる。
+
+`valuesRecorded` の意味も動く。今までは「値を運んでいる」だったが、以後は
+「値を求められた」であって「すべての origin の値が在る」ではない。据え置くと
+それを信じる読み手が間違うので、`profile` を上げた。
 
 ---
 

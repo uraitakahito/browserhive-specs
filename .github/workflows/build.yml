@@ -27,6 +27,8 @@ jobs:
       matrix:
         doc:
           # 版を足したらここにも足す。焼かれない版は、壊れていても気づけない。
+          - wacz-profile/1.6.0
+          - wacz-profile/1.6.0/ja
           - wacz-profile/1.5.0
           - wacz-profile/1.5.0/ja
           - wacz-profile/1.4.0
@@ -101,7 +103,8 @@ jobs:
           # ただし同一オリジンに置いてあるので、壊れ方は 2 つしかない: ファイルが
           # 無いか、パスが違うか。どちらもブラウザを起動せずに確かめられる。
           FAIL=0
-          for doc in wacz-profile/1.5.0/index.html wacz-profile/1.5.0/ja/index.html \
+          for doc in wacz-profile/1.6.0/index.html wacz-profile/1.6.0/ja/index.html \
+                     wacz-profile/1.5.0/index.html wacz-profile/1.5.0/ja/index.html \
                      wacz-profile/1.4.0/index.html wacz-profile/1.4.0/ja/index.html \
                      wacz-profile/1.3.0/index.html wacz-profile/1.3.0/ja/index.html \
                      wacz-profile/1.2.0/index.html wacz-profile/1.2.0/ja/index.html \
