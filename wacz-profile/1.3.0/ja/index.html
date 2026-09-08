@@ -792,9 +792,10 @@ resourceType: XHR</pre>
       "origins": [
         {
           "origin": "https://www.example.co.jp",
-          "local": { "keys": 7, "bytes": 184213, "digest": "sha256:4f1c9ab2" },
-          "session": { "keys": 1, "bytes": 3, "digest": "sha256:9d0e11c7" }
-        }
+          "local": { "keys": 2, "bytes": 32, "digest": "sha256:b58f31fdc511fb94c356ae7f6d64ac71e5bf056584653c3f3ec61a1f08bfaa0f" },
+          "session": { "keys": 1, "bytes": 13, "digest": "sha256:8ce272dea9fc6d7902b23f10411da49a7fb2e3c954ba9f1580cc087292eaafc2" }
+        },
+        { "origin": "https://ads.example.net", "unreadable": true }
       ]
     }
   }
@@ -859,6 +860,15 @@ resourceType: XHR</pre>
       取り込みが読めなかった」という意味です。これは storage が空だった origin
       —— <code>"keys": 0</code> の area として書かれる —— とは<strong>別</strong>です。
       同じ形で記録すると、この member が取り除こうとしている曖昧さが戻ってきます。
+    </p>
+    <p class="note" title="An entry and a line describe the same origin">
+      ここの項目と <code>storage/origins.jsonl</code> の行は、1 つの記録の
+      <strong>2 つの半分</strong>です。項目はその origin の storage が
+      <em>どう見えたか</em>を述べ —— 鍵がいくつ、何バイト、digest は何 ——
+      常に在ります。行は<em>何が入っていたか</em>を述べ、値を求められたときにだけ
+      在ります。どちらをパッケージが持っているかは <code>valuesRecorded</code> が
+      述べます。<code>unreadable</code> として記録された origin に行が無いのは、
+      行に入れるものが無いからです。
     </p>
     <p>
       <code>local</code> と <code>session</code> はそれぞれ以下を
