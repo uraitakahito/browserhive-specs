@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.7.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/) | 2026-09-13 | 読み込み後の待ちの終わり方を必須にする |
 | [1.6.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/) | 2026-09-08 | storage の値に上限を置く |
 | [1.5.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | 2026-09-08 | 走らせたコードそのものを規定する |
 | [1.4.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/) | 2026-09-08 | 記録の前にページから取り除いたものを規定する |
@@ -15,6 +16,39 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.2.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 2026-09-06 | 落としたリクエストを規定する |
 | [1.1.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 2026-09-06 | web storage を規定する |
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
+
+---
+
+## 1.7.0
+
+`browserhive:capture` に `settle` を足し、必須にした。読み込み後の待ちがどう終わったか ——
+ページが静まって終わったのか、まだ動いているうちに期限で終わったのか —— の、パッケージ
+自身の申告。`storage` の `profile` は `browserhive:storage/2` のまま。
+
+**取り込みは、ページをいつ撮ってよいかを決めなければならず、どの決め方も賭けになる。**
+固定の間は揃っていたページから時間を奪い、揃っていないページには足りない。合図で終える
+待ちは、合図より先に期限に当たることがある。今までのパッケージは、そのどれが起きたかを
+言えなかった。「ページはこう見えていた」と「まだ読み込み中に、こう見えていた」の違いは、
+パッケージの他のどこからも取り戻せない —— 記録が言うのは届いたものであって、取り込みが
+先へ進んだときにまだ向かっていたものではない。
+
+この版が定める `strategy` は `"fully-loaded"` の 1 つ。Lighthouse の waitForFullyLoaded と
+同じ順序で、`load` を見てから `limits.minMs` の間を置き、`network`・`cpu`・`dom` の静止を
+並べて待つ。合図ごとに満ちた時刻を書き、満ちなかった合図は **`null` を書く** —— 省くと
+「見ていなかった」と読まれ、別の事実になる。`null` が 1 つでもあれば `endedBy` は
+`"deadline"`、1 つも無ければ `"quiet"`。
+
+**`deadline` は失敗ではない。** パッケージはその時点までにページがなったものを持っている。
+記録しているのは「静まっていなかった」という観測で、証拠として読む人が知る必要のあること。
+
+静止の合図が問うのは「窓 (`limits.quietMs`) のあいだ動かなかったか」であって、「この先も
+動かないか」ではない。窓より長く黙ってから変わるページは、変わる前に静まったと読まれる。
+この限界は本文にも書いた。
+
+1.6.0 でも `browserhive:capture` の未定義の member として運べた（読み手は無視しなければ
+ならない）ので、BrowserHive v10.1.0 と v10.2.0 のパッケージは `settle` を持ちつつ 1.6.0 を
+名乗っている。v10.1.0 の `strategy` は `network-idle`（網だけ）で、この版の形とは違う。
+1.7.0 が定めるのは v10.2.0 の形で、それを必須にした。
 
 ---
 
