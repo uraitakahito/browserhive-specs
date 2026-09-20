@@ -27,6 +27,8 @@ jobs:
       matrix:
         doc:
           # 版を足したらここにも足す。焼かれない版は、壊れていても気づけない。
+          - wacz-profile/1.8.0
+          - wacz-profile/1.8.0/ja
           - wacz-profile/1.7.0
           - wacz-profile/1.7.0/ja
           - wacz-profile/1.6.0

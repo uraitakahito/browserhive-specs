@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.8.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/) | 2026-09-20 | 遷移の前に走らせたコードを規定する |
 | [1.7.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/) | 2026-09-13 | 読み込み後の待ちの終わり方を必須にする |
 | [1.6.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/) | 2026-09-08 | storage の値に上限を置く |
 | [1.5.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/) | 2026-09-08 | 走らせたコードそのものを規定する |
@@ -16,6 +17,32 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.2.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/) | 2026-09-06 | 落としたリクエストを規定する |
 | [1.1.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 2026-09-06 | web storage を規定する |
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
+
+---
+
+## 1.8.0
+
+`preload` ディレクトリを定め、`browserhive:capture.settings` に `preload` を足して
+必須にした。リクエストが持ち込み、**遷移の前に、すべてのフレームで**走らせたスクリプトの
+記録。`behaviors` の語彙はそのままで、あちらは読み込み後・主フレーム・1 回のコードを指す。
+
+**なぜ behaviors に足さず、2 つ目のディレクトリにしたのか。** 読み手が「このコードは何を
+見えたか、何回走ったか」と問うたとき、答えが両者で違うからである。behaviors のコードは
+ページが読み込まれた後に主フレームで 1 度だけ走り、何を判断したかを報告できる。preload の
+コードはページ自身の script より前に、サブフレームを含むすべてのフレームで、遷移のたびに
+走り、**報告する手段を持たない**。1 つの一覧に混ぜたパッケージは、どちらの問いにも
+答えられなくなる。
+
+**報告できないからこそ、`settings.preload` が必須になる。** behaviors は走れば報告を残すが、
+preload は走っても何も残さない —— パッケージが「何が持ち込まれたか」を述べなければ、
+持ち込まれなかったのと区別が付かない。空の配列が「1 本も持ち込まれなかった」を述べる。
+
+`preload/scripts.jsonl` が無いことと `settings.preload` が空であることは、合わせて 1 つの
+主張として扱う。片方だけを持つパッケージは適合しない —— 2 つが食い違ったとき、どちらが
+正しいのか誰も言えないため。
+
+`id` が項目の名前を決めてはならない規則は、リクエストが持ち込む behavior と同じ。名前は
+送った側が決めたもので、制約が無い。
 
 ---
 
