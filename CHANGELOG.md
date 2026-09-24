@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.9.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/) | 2026-09-25 | 方針で省いた本文を、上限で落としたものとして載せない |
 | [1.8.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/) | 2026-09-20 | 遷移の前に走らせたコードを規定する |
 | [1.7.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/) | 2026-09-13 | 読み込み後の待ちの終わり方を必須にする |
 | [1.6.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/) | 2026-09-08 | storage の値に上限を置く |
@@ -19,6 +20,23 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.9.0
+
+`completeness` に載せてはならないものを広げた。`urlPolicies` の `no-body` で省いた本文を、
+content-type フィルタで省いた本文と並べて挙げ、**方針で省いた本文は大きさに関係なく**
+`truncatedUrls` に載せない、と明記した。`no-body` の注記も同じ内容に直した（「他の欠けて
+いる本文と同じ形で報告される」は、上限で落とした本文と同じ扱いに読めた）。
+
+**なぜ大きさに関係なくなのか。** 方針で省いた本文は、取り込みがそもそも取りに行かなかった
+もので、上限で落とされたはずがない。上限で落としたと報告すれば、要求者が保存しないよう
+頼んだ本文を、上限を上げれば取り戻せると読み手に伝えることになる。BrowserHive は
+2026-09-25 まで、上限を超える大きさの本文でこれを取り違えていた —— 方針で省いた本文を
+`truncated: too-large` と記録し、`truncatedUrls` に載せていた。
+
+URL の方針で省いた本文を `truncatedUrls` に載せたパッケージは、1.8.0 には適合しえても
+1.9.0 には適合しない。content-type の方針で省いた本文を載せたパッケージは、1.8.0 にも
+適合していなかった。
 
 ## 1.8.0
 
