@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.10.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/) | 2026-09-25 | ページから読んだ記録を、どの文書から読んだかで伏せる |
 | [1.9.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/) | 2026-09-25 | 方針で省いた本文を、上限で落としたものとして載せない |
 | [1.8.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/) | 2026-09-20 | 遷移の前に走らせたコードを規定する |
 | [1.7.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/) | 2026-09-13 | 読み込み後の待ちの終わり方を必須にする |
@@ -20,6 +21,26 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.10.0
+
+`document` を足した。パッケージの文字（`pages/pages.jsonl` の `text`）・題（同じ行の
+`title` と `datapackage.json` の `title`）・アクセシビリティツリーを、**どの文書から読んだか**
+を名乗る必須の member で、値は `url` と、伏せたときだけの `withheld`（`url-policy`・
+`content-type`・`no-archive`・`unattributed`）。その文書の本文を方針が archive に入れな
+かったときは、これらの記録を持ってはならない（MUST NOT）。ツリーの `url` は `document.url`
+と等しくなければならない。privacy の節の「ツリーの文字は既に WARC の本文にあるので、新たに
+晒すものは無い」を直し、決まりが文書の単位でしか働かない限界（副資源の中身は描画に入る）を
+書いた。
+
+**なぜ文書なのか。** これらの記録はネットワークではなく描画されたページから読むので、WARC
+の本文は縛らない。方針で本文を省いても、同じ本文から作った文字・題・ツリーは残りえた。
+しかも「主文書」は要求した URL の文書とは限らない —— サーバのリダイレクトやページ自身の
+遷移が文書を置き換える。BrowserHive は 2026-09-25 まで、主文書を要求の URL の文字列で
+探していて、末尾の `/`・リダイレクト・遷移・`no-archive` のとき、保存しないよう頼まれた
+ページの文字を書いていた。題とツリーは、方針を見ずに常に書いていた。
+
+新しい member は必須なので、1.9.0 に対して書かれたパッケージは 1.10.0 に適合しない。
 
 ## 1.9.0
 
