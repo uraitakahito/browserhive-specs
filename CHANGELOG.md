@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.11.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/) | 2026-09-26 | deny を、取り込みが起こすすべてのリクエストに届かせる |
 | [1.10.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/) | 2026-09-25 | ページから読んだ記録を、どの文書から読んだかで伏せる |
 | [1.9.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/) | 2026-09-25 | 方針で省いた本文を、上限で落としたものとして載せない |
 | [1.8.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/) | 2026-09-20 | 遷移の前に走らせたコードを規定する |
@@ -21,6 +22,29 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.11.0
+
+`deny` の項目は、取り込みが起こす**すべての**リクエストに働くと定めた。主フレームの遷移
+（サーバのリダイレクトの先と、script が始めた遷移を含む）、フレーム（別サイトのものを含む）、
+dedicated worker と service worker、ページが開くウィンドウ。文書そのもののリクエストを
+断ったときは、`document` が `withheld: "deny"` を名乗り、`url` は断った URL になる。
+最初の遷移を断った取り込みと、`deny` に当たる WebSocket を開いた取り込みは、パッケージを
+作ってはならない（MUST NOT）。前者は読み込み後の待ち（`settle`）が走らず、後者は
+handshake を止める手段が無い。
+
+あわせて、`urlPolicies` の `pattern` の当て方を仕様に書いた。URL 全体に当て、特別な字は
+`*` だけで、大文字と小文字を区別する。withheld request のレコードには任意の欄 `target`
+（`page`・`iframe`・`worker`・`service_worker`）を足し、`deny` のレコードは、ページの
+どの部分がリクエストを出したかに関わらず書くと定めた。
+
+**なぜ届く範囲なのか。** BrowserHive は v17.0.0 まで、`deny` を Chrome の
+`Network.setBlockedURLs` に任せていた。この仕組みは、描画の process がページの部分資源を
+取りに行く前にしか照らさない。そのため遷移（直接・リダイレクトの先・script の遷移）、
+popup、別サイトのフレームの中、dedicated worker のリクエストは相手に届き、archive は
+それでも `action: deny` と名乗っていた。
+
+文書に `deny` の項目が当たる 1.10.0 のパッケージは、1.11.0 に適合しない。
 
 ## 1.10.0
 
