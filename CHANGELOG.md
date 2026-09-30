@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.12.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/) | 2026-10-01 | 取り込みにウィンドウを開かせず、求めたことだけを記録する |
 | [1.11.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/) | 2026-09-26 | deny を、取り込みが起こすすべてのリクエストに届かせる |
 | [1.10.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/) | 2026-09-25 | ページから読んだ記録を、どの文書から読んだかで伏せる |
 | [1.9.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/) | 2026-09-25 | 方針で省いた本文を、上限で落としたものとして載せない |
@@ -22,6 +23,32 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.12.0
+
+取り込みは、ページに新しいウィンドウやタブを開かせてはならない（MUST NOT）と定めた。
+求めたのがページ自身の script でも、その中のフレームでも、取り込みのリクエストが運んだ
+script でも同じで、ページへの答えは browser が popup を止めたときと同じになる
+（`window.open` は `null`、link や form は何も開かない）。
+
+ページが求めた 1 回ごとに、WARC の `metadata` レコード（window not opened のレコード）を
+書く。`WARC-Target-URI` はウィンドウが読み込むはずだった URL、本文は `window: not-opened`
+（必須）、`windowName`（任意。名指ししない遷移では置かない）、`target`（任意。`page` か
+`iframe`）。このレコードは `urlPolicies` に当たるかどうかに関わらず書き、`action` を持たない。
+withheld request のレコードとして数えてはならない。それでもウィンドウが開いた取り込みは、
+パッケージを作ってはならない（MUST NOT）。
+
+あわせて、`deny` の届く範囲から「ページが開くウィンドウ」を外した。ウィンドウは開かないので、
+項目が届くべきウィンドウが無い。
+
+**なぜ開かせないのか。** BrowserHive は v18.0.1 まで、ページで script を評価するたびに
+ユーザー操作の印（user activation）をページに渡していた。印を持つページは popup blocker を
+通せるので、取り込みのスクリプトや、評価の後のページの timer がウィンドウを開いていた。
+開いたウィンドウのリクエストは相手に届き、パッケージのどこにも現れず、`session: "shared"`
+では取り込みのたびに 1 枚ずつ残った。印を渡さなければ browser が断るので、開かせずに
+求めたことだけを残す。
+
+ウィンドウが開いた取り込みが 1.11.0 に対して書いたパッケージは、1.12.0 に適合しない。
 
 ## 1.11.0
 
