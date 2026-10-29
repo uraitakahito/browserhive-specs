@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.12.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.13.0 (日本語訳)</title>
 <!--
   英語版と同じ理由で ReSpec を絶対 URL から読む。詳しくは ../index.html を参照。
 
@@ -82,16 +82,18 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.12.0 は 1.11.0 と後方互換ではありません">
-    この版は、取り込みにウィンドウを開かせません。新しいウィンドウやタブを求めたページ ——
-    <code>window.open</code> によるもの、それを target にした link や form によるもの、
-    タブを開くことになる click によるもの —— には何も与えられず、求めたことをパッケージが
-    記録します（<a href="#windows"></a> を参照）。以前の版はウィンドウを開かせ、そのことを
-    何も述べませんでした。ウィンドウのリクエストは相手のオリジンに届き、パッケージのどこにも
-    現れませんでした。ウィンドウが開いた取り込みが 1.11.0 に対して書いたパッケージは、
-    1.12.0 に適合しません。これは意図されたもので、<a>conformsTo</a> が版を名指ししているのは
-    そのためです —— 古いパッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+  <p class="note" title="1.13.0 は 1.12.0 と後方互換ではありません">
+    この版は、レコードの payload を、wire を渡ったバイト列にすることを求めます。サーバが送った
+    本文から content-coding だけを外したもの、ブラウザが送った本文そのものです
+    （<a href="#payloads"></a> を参照）。以前の版はこれについて何も述べず、BrowserHive は
+    ブラウザが文字に読み替えた本文を、すべて UTF-8 で書き戻していました。Shift_JIS で送られた
+    本文や、charset の無い文字の本文を script が読んだものは、サーバが送ったことのないバイト列
+    としてアーカイブされ、その payload digest がそのバイト列を保証していました。バイト列として
+    得られない本文は、いまは本文なしで記録し、<a>completeness</a> に載せます。そうして書き換えた
+    本文を持つ、1.12.0 に対して書いたパッケージは、1.13.0 に適合しません。これは意図された
+    もので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古いパッケージを持つ
+    読み手も、それが何に対して書かれたかを辿れます。
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -177,7 +179,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -387,8 +389,8 @@
     <p>
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
-      アーカイブが言える場所は、ここだけです —— 切り詰めの記録は落とした事実と実際の
-      大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
+      アーカイブが言える場所は、ここだけです —— <a>body not kept</a> のレコードは落とした事実と
+      実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
     </p>
     <p class="note">
       <a>completeness</a> の <code>truncatedUrls</code> は、この 2 つのどちらを超えて落ちたのかを
@@ -414,22 +416,26 @@
             アーカイブは保持し得ません。</td></tr>
         <tr><td><code>truncatedUrls</code></td><td>array of string</td><td>はい</td>
             <td>サイズ上限に達して取り込みが本文を落とした URL。</td></tr>
+        <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
+            <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
+            アーカイブが本文を持たない URL（<a href="#payloads"></a> を参照）。</td></tr>
         <tr><td><code>complete</code></td><td>boolean</td><td>はい</td>
-            <td>両方の配列が空のとき、かつそのときに限り <code>true</code>。</td></tr>
+            <td>3 つの配列がすべて空のとき、かつそのときに限り <code>true</code>。</td></tr>
       </tbody>
     </table>
     <pre class="json">
 "completeness": {
   "bodylessUrls": [],
   "truncatedUrls": [],
+  "uninterceptedUrls": [],
   "complete": true
 }</pre>
     <p>
-      何も欠けなかった取り込みはこの形になります。<code>complete</code> は両方の配列から
-      導かれるので、空の配列 2 つと <code>false</code> という組み合わせは現れません。
+      何も欠けなかった取り込みはこの形になります。<code>complete</code> は 3 つの配列から
+      導かれるので、空の配列 3 つと <code>false</code> という組み合わせは現れません。
     </p>
     <p>
-      次は、両方の理由で本文を欠いた取り込みです:
+      次は、3 つの理由すべてで本文を欠いた取り込みです:
     </p>
     <pre class="json">
 "completeness": {
@@ -440,21 +446,25 @@
     "https://example.com/media/hero.mp4",
     "https://example.com/media/poster.png"
   ],
+  "uninterceptedUrls": [
+    "https://example.com/api/feed"
+  ],
   "complete": false
 }</pre>
     <p>
       この取り込みでは、CSS が <code>304</code> としてしか現れませんでした —— 本文が wire を
       渡っていないので、アーカイブは持ちようがありません。動画とポスター画像は上限に当たって
-      落ちたものです。同じ URL が 2 回落ちても、配列には 1 度だけ現れます。
+      落ちたものです。feed の本文は届きましたが、producer がバイト列として読めませんでした。
+      同じ URL が 2 回落ちても、配列には 1 度だけ現れます。
     </p>
     <p>
-      同じページの 2 つの取り込みを比較できるよう、両方の配列は整列されて
+      同じページの 2 つの取り込みを比較できるよう、3 つの配列はすべて整列されて
       <em class="rfc2119">いなければならない</em>。
     </p>
     <p>
-      2 つが別の member なのは、求められる対応が違うからです。<code>304</code> はオリジン側の
-      事情でここからは回復できませんが、上限で落とした本文はこちら側の事情で、上限を上げれば
-      戻ります。
+      3 つが別の member なのは、求められる対応が違うからです。<code>304</code> はオリジン側の
+      事情でここからは回復できません。上限で落とした本文はこちら側の事情で、上限を上げれば
+      戻ります。取り込めなかった本文は producer の失敗で、リクエストの設定をどう変えても戻りません。
     </p>
     <p>
       正当に本文を持たないレスポンスを列挙しては<em class="rfc2119">ならない</em> ——
@@ -924,6 +934,112 @@
     <p class="note">
       <code>chains</code> の値は base64 符号化された DER です。例では読みやすさのため途中で
       切ってありますが、実際には 1 通あたり 1–2 KB 程度の文字列になります。
+    </p>
+  </section>
+</section>
+
+<section id="payloads">
+  <h2>Payloads</h2>
+  <p>
+    ブラウザは文字の本文を、ほかの誰かが見る前に文字へ読み替え、道具には文字として渡します。
+    それをバイト列に書き戻すと、書き手が選んだ符号の本文になります —— 両者がたまたま一致
+    しない限り、オリジンが送った符号ではありません。この節の要件は、各レコードの payload を
+    wire を渡ったバイト列に留め、payload digest がオリジンとブラウザの送ったものを保証する
+    ようにします。
+  </p>
+
+  <section>
+    <h3>Response payloads</h3>
+    <p>
+      本文を持つ WARC の <code>response</code> レコードの payload は、サーバが送ったバイト列
+      から <code>Content-Encoding</code> が名指す content-coding を外し、ほかは何も変えないもので
+      なければなりません（<em class="rfc2119">MUST</em>）。とくに producer は、文字の本文を
+      ある文字符号から別の文字符号に変換してはなりません（<em class="rfc2119">MUST NOT</em>）。
+      Shift_JIS で送られた本文はその Shift_JIS のバイト列のまま、media type が charset を
+      宣言しない本文は、ブラウザがどの charset で読んだかに関わらず、送られたとおりに保存します。
+    </p>
+    <p>
+      <code>data:</code> URL はどのサーバも送りません。その payload は URL が運ぶデータを、URL の
+      定めるとおり（base64、または percent-encoding をバイトとして）復号したもので、やはり変換
+      しません。
+    </p>
+    <p>
+      本文をバイト列として得られない producer は、文字から組み直した本文を保存しては
+      なりません（<em class="rfc2119">MUST NOT</em>）。そのレスポンスは空の payload と、
+      <code>truncated</code> が <code>not-intercepted</code> の <a>body not kept</a> の
+      レコードで記録し、URL を <a>completeness</a> の <code>uninterceptedUrls</code> に載せます。
+    </p>
+  </section>
+
+  <section>
+    <h3>Request payloads</h3>
+    <p>
+      本文を持つ WARC の <code>request</code> レコードの payload は、ブラウザがリクエストの
+      本文として送ったバイト列でなければなりません（<em class="rfc2119">MUST</em>）。それを
+      バイト列として得られない producer は、文字から組み直した本文を保存してはなりません
+      （<em class="rfc2119">MUST NOT</em>）。そのリクエストは本文なしで記録します。
+    </p>
+  </section>
+
+  <section>
+    <h3>Records of bodies not kept</h3>
+    <p>
+      サーバが送った本文を持たずに記録したレスポンスのそれぞれについて —— 送る本文を持たない
+      レスポンス（<code>HEAD</code> リクエストへのもの、ステータス <code>1xx</code>・<code>204</code>・
+      <code>3xx</code>・<code>304</code>）を除いて —— パッケージは WARC の <code>metadata</code>
+      レコード —— 以下 <dfn>body not kept</dfn> のレコード —— を <em class="rfc2119">MUST</em>
+      含みます。その <code>WARC-Target-URI</code> はレスポンスの URL で
+      <em class="rfc2119">MUST</em>、<code>WARC-Refers-To</code> は <code>response</code> レコードの
+      <code>WARC-Record-ID</code> で <em class="rfc2119">MUST</em>、
+      <code>application/warc-fields</code> の本文は次を <em class="rfc2119">MUST</em> 含みます:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Field</th><th>必須</th><th>説明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>truncated</code></td><td>はい</td>
+            <td>レコードが本文を持たない理由。下の値のどれか。</td></tr>
+        <tr><td><code>encodedDataLength</code></td><td>いいえ</td>
+            <td>レスポンス全体が wire を渡ったときの大きさ（バイト）。producer が知っている
+            場合に。</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li><code>too-large</code> —— 本文が <code>maxResponseBytes</code> より大きかった。</li>
+      <li><code>task-cap</code> —— 本文を書くと、パッケージに書いた本文が
+          <code>maxTaskBytes</code> を超えるところだった。</li>
+      <li><code>url-policy</code> —— URL に最初に一致した <a>urlPolicies</a> の項目の action が
+          <code>no-body</code>。</li>
+      <li><code>content-type</code> —— <a>contentTypePolicies</a> の項目が media type に一致した。</li>
+      <li><code>not-intercepted</code> —— 本文は wire を渡ったが、producer がバイト列として
+          得られなかった（<a href="#response-payloads"></a> を参照）。</li>
+    </ul>
+    <pre class="text">
+WARC/1.1
+WARC-Type: metadata
+WARC-Target-URI: https://example.com/api/feed
+WARC-Date: 2026-10-30T02:14:31.882Z
+WARC-Refers-To: &lt;urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a&gt;
+Content-Type: application/warc-fields
+Content-Length: 53
+
+truncated: not-intercepted
+encodedDataLength: 4821</pre>
+    <p>
+      サイズ上限で落とした本文の <code>response</code> レコードは
+      <code>WARC-Truncated: length</code> を持ち（<em class="rfc2119">MUST</em>）、取り込めなかった
+      本文のものは <code>WARC-Truncated: unspecified</code> を持ちます（<em class="rfc2119">MUST</em>）。
+      WARC だけを読む読み手が、空の payload を本文と取り違えないようにするためです。
+    </p>
+    <p>
+      サイズ上限で落とした本文の URL は <a>completeness</a> の <code>truncatedUrls</code> に、
+      取り込めなかった本文の URL は <code>uninterceptedUrls</code> に載ります。方針で省いた本文は、
+      どちらにも載りません。
+    </p>
+    <p class="note">
+      <a>body not kept</a> のレコードは、パッケージの CDXJ 索引に現れる必要はありません。
+      それを探す読み手は WARC を読みます。
     </p>
   </section>
 </section>
@@ -1797,6 +1913,12 @@ target: page</pre>
     <a>completeness</a> が主張するのは不在であって、正しさではありません。このパッケージが
     実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
     とは主張しません。
+  </p>
+  <p>
+    適合するパッケージが、保持している本文について主張するのは <a href="#payloads"></a> の
+    内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
+    digest であり、producer が符号を変えた写しのものではありません。どちらも、オリジンが URL の
+    名指す相手だったことは言いません。<a>tls</a> を参照してください。
   </p>
   <p>
     パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を記録します。取り込んだ

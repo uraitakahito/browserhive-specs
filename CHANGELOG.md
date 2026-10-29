@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.13.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/) | 2026-10-30 | 本文を、wire を渡ったバイト列のまま残す |
 | [1.12.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/) | 2026-10-01 | 取り込みにウィンドウを開かせず、求めたことだけを記録する |
 | [1.11.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/) | 2026-09-26 | deny を、取り込みが起こすすべてのリクエストに届かせる |
 | [1.10.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/) | 2026-09-25 | ページから読んだ記録を、どの文書から読んだかで伏せる |
@@ -23,6 +24,34 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.13.0
+
+節 `payloads`（Payloads）を足した。`response` レコードの payload は、サーバが送ったバイト列から
+content-coding だけを外したもの、`request` レコードの payload は、ブラウザが送ったバイト列で
+なければならない（MUST）。文字の本文を、ある文字符号から別の文字符号に変換してはならない
+（MUST NOT）。`data:` URL の payload は、URL が運ぶデータを復号したもの。
+
+本文をバイト列として得られないときは、文字から組み直した本文を保存してはならず（MUST NOT）、
+本文なしで記録する。これまで仕様が形を定めていなかった、本文を持たずに記録したレスポンスの
+`metadata` レコード（body not kept のレコード）を定めた。`WARC-Refers-To` で `response`
+レコードを指し、`truncated`（必須）と `encodedDataLength`（任意）を持つ。`truncated` の値は
+`too-large`・`task-cap`・`url-policy`・`content-type` と、新しい `not-intercepted`
+（本文は wire を渡ったが、バイト列として得られなかった）。サイズ上限で落とした本文の
+`response` レコードは `WARC-Truncated: length`、取り込めなかった本文のものは
+`WARC-Truncated: unspecified` を持つ。
+
+`completeness` に `uninterceptedUrls`（必須・整列）を足し、`complete` は 3 つの配列が
+すべて空のときだけ `true` とする。
+
+**なぜ。** ブラウザは文字の本文を文字に読み替えてから道具に渡す。BrowserHive は v19 まで、
+それをすべて UTF-8 で書き戻していたので、Shift_JIS で送られた本文（文書・CSS・script が読んだ
+text）と、charset の無い文字の本文を script が読んだもの（ブラウザは windows-1252 として読む）は、
+サーバが送ったことのないバイト列でアーカイブされ、payload digest もそのバイト列のものだった。
+e-Gov 法令検索の取り込みでは、同じ CSS が `@import` では正しく、`fetch()` では化けた写しで
+残っていた。
+
+そうして書き換えた本文を持つ、1.12.0 に対して書いたパッケージは、1.13.0 に適合しない。
 
 ## 1.12.0
 

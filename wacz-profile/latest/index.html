@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.12.0</title>
+<title>BrowserHive WACZ Profile 1.13.0</title>
 <!--
   ReSpec is loaded from an absolute URL on purpose.
 
@@ -86,19 +86,22 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.12.0 is not backward compatible with 1.11.0">
-    This version has a capture open no window. A page that asks for a new window
-    or tab &mdash; through <code>window.open</code>, a link or form that targets
-    one, or a click that would open a tab &mdash; is given none, and the package
-    records that it asked (see <a href="#windows"></a>). Earlier versions let the
-    window open and said nothing of it: its requests reached their origins and
-    appeared nowhere in the package. A package written against 1.11.0 by a
-    capture in which a window opened does not conform to 1.12.0. This is
-    intended, and it is why <a>conformsTo</a> names a version: a reader holding an
-    older package can still tell what it was written against.
+  <p class="note" title="1.13.0 is not backward compatible with 1.12.0">
+    This version requires a record's payload to be the bytes that crossed the
+    wire: the body the server sent, with only its content-coding removed, and
+    the body the browser sent (see <a href="#payloads"></a>). Earlier versions
+    said nothing about it, and BrowserHive wrote every text body back out as
+    UTF-8 after the browser had decoded it, so a body sent in Shift_JIS, or as
+    text with no charset and read by a script, was archived as bytes the server
+    never sent &mdash; and its payload digest vouched for them. A body the
+    producer cannot obtain as bytes is now recorded without one, and listed in
+    <a>completeness</a>. A package written against 1.12.0 that holds such a
+    re-encoded body does not conform to 1.13.0. This is intended, and it is why
+    <a>conformsTo</a> names a version: a reader holding an older package can
+    still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -192,7 +195,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -416,8 +419,8 @@
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
       <em>which line</em> a truncated body crossed &mdash; a record of a
-      truncation carries the fact and the actual size, but whether that size was
-      too much is only legible next to the line.
+      <a>body not kept</a> carries the fact and the actual size, but whether that
+      size was too much is only legible next to the line.
     </p>
     <p class="note">
       The <code>truncatedUrls</code> member of <a>completeness</a> does
@@ -445,23 +448,28 @@
             the wire, so the archive cannot hold it.</td></tr>
         <tr><td><code>truncatedUrls</code></td><td>array of string</td><td>yes</td>
             <td>URLs whose body the capture dropped on reaching a size limit.</td></tr>
+        <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>yes</td>
+            <td>URLs whose body crossed the wire but the producer could not
+            obtain as bytes, so the archive holds none (see
+            <a href="#payloads"></a>).</td></tr>
         <tr><td><code>complete</code></td><td>boolean</td><td>yes</td>
-            <td><code>true</code> if and only if both arrays are empty.</td></tr>
+            <td><code>true</code> if and only if all three arrays are empty.</td></tr>
       </tbody>
     </table>
     <pre class="json">
 "completeness": {
   "bodylessUrls": [],
   "truncatedUrls": [],
+  "uninterceptedUrls": [],
   "complete": true
 }</pre>
     <p>
       A capture that lost nothing takes this shape. <code>complete</code> is
-      derived from the two arrays, so two empty arrays alongside
+      derived from the three arrays, so three empty arrays alongside
       <code>false</code> never occur.
     </p>
     <p>
-      A capture missing bodies for both reasons:
+      A capture missing bodies for all three reasons:
     </p>
     <pre class="json">
 "completeness": {
@@ -472,22 +480,27 @@
     "https://example.com/media/hero.mp4",
     "https://example.com/media/poster.png"
   ],
+  "uninterceptedUrls": [
+    "https://example.com/api/feed"
+  ],
   "complete": false
 }</pre>
     <p>
       Here the stylesheet appeared only as a <code>304</code>: its body never
       crossed the wire, so the archive cannot hold it. The video and its poster
-      were dropped at a limit. A URL dropped twice still appears once.
+      were dropped at a limit. The feed's body arrived, but the producer could not
+      read it as bytes. A URL dropped twice still appears once.
     </p>
     <p>
-      Both arrays <em class="rfc2119">MUST</em> be sorted, so that two captures
-      of the same page produce comparable output.
+      All three arrays <em class="rfc2119">MUST</em> be sorted, so that two
+      captures of the same page produce comparable output.
     </p>
     <p>
-      The two are separate members because they call for different responses.
+      The three are separate members because they call for different responses.
       A <code>304</code> is the origin's doing and cannot be recovered from
       here; a body dropped at a limit is this side's doing and returns if the
-      limit is raised.
+      limit is raised; a body that was not intercepted is the producer's failure,
+      and no setting of the request brings it back.
     </p>
     <p>
       Responses that legitimately carry no body
@@ -1001,6 +1014,127 @@
       Values in <code>chains</code> are base64-encoded DER. They are cut short
       here for readability; a real certificate is a string of roughly
       1&ndash;2&nbsp;KB.
+    </p>
+  </section>
+</section>
+
+<section id="payloads">
+  <h2>Payloads</h2>
+  <p>
+    A browser turns a text body into characters before anything else sees it,
+    and hands it to tools as characters. Written back out as bytes, the result
+    is the body in whatever encoding the writer chose &mdash; not the one the
+    origin sent, unless the two happen to agree. The requirements in this
+    section keep the payload of each record to the bytes that crossed the wire,
+    so that a payload digest vouches for what the origin and the browser sent.
+  </p>
+
+  <section>
+    <h3>Response payloads</h3>
+    <p>
+      The payload of a WARC <code>response</code> record that holds a body
+      <em class="rfc2119">MUST</em> be the bytes the server sent, with the
+      content-coding named in its <code>Content-Encoding</code> removed and
+      nothing else changed. In particular, a producer
+      <em class="rfc2119">MUST NOT</em> convert a text body from one character
+      encoding to another: a body sent in Shift_JIS is stored as those Shift_JIS
+      bytes, and a body whose media type declares no charset is stored as it was
+      sent, whatever charset a browser would have read it with.
+    </p>
+    <p>
+      A <code>data:</code> URL is sent by no server. Its payload is the data the
+      URL carries, decoded as the URL defines (base64, or percent-encoding as
+      bytes), and likewise not converted.
+    </p>
+    <p>
+      A producer that cannot obtain a body as bytes
+      <em class="rfc2119">MUST NOT</em> store one rebuilt from decoded text. It
+      records the response with an empty payload and a record of a
+      <a>body not kept</a> whose <code>truncated</code> is
+      <code>not-intercepted</code>, and lists the URL in
+      <code>uninterceptedUrls</code> of <a>completeness</a>.
+    </p>
+  </section>
+
+  <section>
+    <h3>Request payloads</h3>
+    <p>
+      The payload of a WARC <code>request</code> record that holds a body
+      <em class="rfc2119">MUST</em> be the bytes the browser sent as the request
+      body. A producer that cannot obtain them as bytes
+      <em class="rfc2119">MUST NOT</em> store a body rebuilt from decoded text; it
+      records the request without one.
+    </p>
+  </section>
+
+  <section>
+    <h3>Records of bodies not kept</h3>
+    <p>
+      For each response recorded without the body the server sent, other than a
+      response that has no body to send (one to a <code>HEAD</code> request, and
+      status <code>1xx</code>, <code>204</code>, <code>3xx</code> and
+      <code>304</code>), the package <em class="rfc2119">MUST</em> contain a WARC
+      <code>metadata</code> record, hereafter a record of a
+      <dfn>body not kept</dfn>. Its <code>WARC-Target-URI</code>
+      <em class="rfc2119">MUST</em> be the URL of the response, its
+      <code>WARC-Refers-To</code> <em class="rfc2119">MUST</em> be the
+      <code>WARC-Record-ID</code> of the <code>response</code> record, and its
+      <code>application/warc-fields</code> body
+      <em class="rfc2119">MUST</em> contain:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Field</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>truncated</code></td><td>yes</td>
+            <td>Why the record holds no body. One of the values below.</td></tr>
+        <tr><td><code>encodedDataLength</code></td><td>no</td>
+            <td>The size of the whole response as it crossed the wire, in bytes,
+            when the producer knows it.</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li><code>too-large</code> &mdash; the body was larger than
+          <code>maxResponseBytes</code>.</li>
+      <li><code>task-cap</code> &mdash; the body would have taken the bodies
+          written into the package past <code>maxTaskBytes</code>.</li>
+      <li><code>url-policy</code> &mdash; the first entry of <a>urlPolicies</a>
+          to match the URL has the action <code>no-body</code>.</li>
+      <li><code>content-type</code> &mdash; an entry of
+          <a>contentTypePolicies</a> matches the media type.</li>
+      <li><code>not-intercepted</code> &mdash; the body crossed the wire, but the
+          producer could not obtain it as bytes (see
+          <a href="#response-payloads"></a>).</li>
+    </ul>
+    <pre class="text">
+WARC/1.1
+WARC-Type: metadata
+WARC-Target-URI: https://example.com/api/feed
+WARC-Date: 2026-10-30T02:14:31.882Z
+WARC-Refers-To: &lt;urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a&gt;
+Content-Type: application/warc-fields
+Content-Length: 53
+
+truncated: not-intercepted
+encodedDataLength: 4821</pre>
+    <p>
+      The <code>response</code> record of a body dropped at a size limit
+      <em class="rfc2119">MUST</em> carry <code>WARC-Truncated: length</code>,
+      and that of a body that was not intercepted
+      <em class="rfc2119">MUST</em> carry
+      <code>WARC-Truncated: unspecified</code>, so that a reader of the WARC alone
+      does not take the empty payload for the body.
+    </p>
+    <p>
+      The URLs of bodies dropped at a size limit are listed in
+      <code>truncatedUrls</code> of <a>completeness</a>, and those of bodies that
+      were not intercepted in <code>uninterceptedUrls</code>. Bodies a policy
+      omitted are listed in neither.
+    </p>
+    <p class="note">
+      Records of bodies not kept are not required to appear in the package's
+      CDXJ index. A reader looking for them reads the WARC.
     </p>
   </section>
 </section>
@@ -1887,6 +2021,13 @@ target: page</pre>
     <a>completeness</a> asserts absence, not correctness. It reports bodies this
     package empirically does not hold. It does not assert that the bodies it
     does hold are what the origin served.
+  </p>
+  <p>
+    What a conforming package does assert about the bodies it holds is the
+    subject of <a href="#payloads"></a>: they are the bytes that crossed the wire,
+    so a payload digest is a digest of what the origin sent, not of a copy the
+    producer re-encoded. Neither says that the origin was the party the URL
+    names; see <a>tls</a>.
   </p>
   <p>
     A package records URLs in <a>completeness</a> and host names in
