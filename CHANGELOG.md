@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.14.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/) | 2026-10-31 | WARC を大きさで切り替え、`archive/` に連番で置く |
 | [1.13.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/) | 2026-10-30 | 本文を、wire を渡ったバイト列のまま残す |
 | [1.12.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/) | 2026-10-01 | 取り込みにウィンドウを開かせず、求めたことだけを記録する |
 | [1.11.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/) | 2026-09-26 | deny を、取り込みが起こすすべてのリクエストに届かせる |
@@ -24,6 +25,27 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.14.0
+
+節 `archive-files`（Archive files）を足した。`archive/` ディレクトリは `data-NNN.warc.gz`
+（10 進 3 桁・`000` から飛びなく）という名前のファイルだけを持たなければならない（MUST）。
+各ファイルは、`WARC-Filename` が自分の名前である `warcinfo` レコードで始まらなければならない
+（MUST）。レコードはファイルをまたいではならず（MUST NOT）、1 つの交信の `response`・
+`request`・`metadata` は同じファイルに在らなければならない（MUST）。producer は、いまの
+ファイルが `settings.limits.maxWarcBytes` 以上なら、次の交信を書く前に新しいファイルを
+始めなければならない（MUST）。したがって最後以外のファイルは `maxWarcBytes` 以上で、超えるのは
+交信 1 つ分まで。CDXJ の `filename` は `archive/` からの相対（MUST）。
+
+`settings.limits` に `maxWarcBytes`（必須・整数・バイト）を足した。本文の上限ではなく、
+ファイルを切り替える大きさ。
+
+**なぜ。** リンクを辿る取り込みではクロールの間ずっと記録が続き、1 本の WARC が際限なく育つ。
+育った 1 本は一部だけ読むことも検証することも、途中で落ちたとき一部だけ残すこともできない。
+WARC の世界の慣習（Heritrix・Browsertrix Crawler の既定はどちらも 1 GB）どおり、大きさで
+切り替えて索引の `filename` で繋ぐ。
+
+`archive/data.warc.gz` を持つ、1.13.0 に対して書いたパッケージは、1.14.0 に適合しない。
 
 ## 1.13.0
 
