@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.13.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.14.0 (日本語訳)</title>
 <!--
   英語版と同じ理由で ReSpec を絶対 URL から読む。詳しくは ../index.html を参照。
 
@@ -19,7 +19,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.13.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.14.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -82,18 +82,17 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.13.0 は 1.12.0 と後方互換ではありません">
-    この版は、レコードの payload を、wire を渡ったバイト列にすることを求めます。サーバが送った
-    本文から content-coding だけを外したもの、ブラウザが送った本文そのものです
-    （<a href="#payloads"></a> を参照）。以前の版はこれについて何も述べず、BrowserHive は
-    ブラウザが文字に読み替えた本文を、すべて UTF-8 で書き戻していました。Shift_JIS で送られた
-    本文や、charset の無い文字の本文を script が読んだものは、サーバが送ったことのないバイト列
-    としてアーカイブされ、その payload digest がそのバイト列を保証していました。バイト列として
-    得られない本文は、いまは本文なしで記録し、<a>completeness</a> に載せます。そうして書き換えた
-    本文を持つ、1.12.0 に対して書いたパッケージは、1.13.0 に適合しません。これは意図された
-    もので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古いパッケージを持つ
-    読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+  <p class="note" title="1.14.0 は 1.13.0 と後方互換ではありません">
+    この版は、<code>archive/</code> に置く WARC ファイルの名前と数を定めます。パッケージは
+    <code>data-000.warc.gz</code>・<code>data-001.warc.gz</code>…を持ち、各ファイルは自分を名指す
+    <code>warcinfo</code> レコードで始まり、producer はいまのファイルが <code>maxWarcBytes</code>
+    に達すると新しいファイルを始めます（<a href="#archive-files"></a> を参照）。以前の版は
+    このディレクトリについて何も述べず、BrowserHive は大きさに上限の無い 1 本の
+    <code>data.warc.gz</code> を書いていました。1.13.0 に対して書いたパッケージはそのファイルを
+    持ち、1.14.0 に適合しません。これは意図されたもので、<a>conformsTo</a> が版を名指し
+    しているのはそのためです —— 古いパッケージを持つ読み手も、それが何に対して書かれたかを
+    辿れます。
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -179,7 +178,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -295,8 +294,9 @@
             「1 本も持ち込まれなかった」と述べます。
             <a href="#preload-directory">preload ディレクトリ</a>を参照。</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>はい</td>
-            <td>この取り込みに効いていた本文の上限。member <code>maxResponseBytes</code> と
-            <code>maxTaskBytes</code>。ともに整数で、単位はバイト。</td></tr>
+            <td>この取り込みに効いていた上限。member <code>maxResponseBytes</code> と
+            <code>maxTaskBytes</code>（本文の上限）、<code>maxWarcBytes</code>（新しい WARC ファイルを
+            始める大きさ。<a href="#archive-files"></a> を参照）。3 つとも整数で、単位はバイト。</td></tr>
         <tr><td><code>urlPolicies</code></td><td>array of object</td><td>はい</td>
             <td>効いていた URL パターンのそれぞれに対して取り込みが何をしたかを、
             <strong>評価した順に</strong>。<a>urlPolicies</a> を参照。</td></tr>
@@ -319,7 +319,8 @@
   ],
   "limits": {
     "maxResponseBytes": 20971520,
-    "maxTaskBytes": 209715200
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
   },
   "urlPolicies": [
     { "pattern": "*://*.example-analytics.com/*", "action": "deny" }
@@ -369,7 +370,8 @@
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
     "maxResponseBytes": 20971520,
-    "maxTaskBytes": 209715200
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
   },
   "urlPolicies": [],
   "contentTypePolicies": [{ "prefix": "video/", "action": "no-body" }]
@@ -385,6 +387,12 @@
       分かりません</strong>。<code>maxTaskBytes</code> は積み上げた総量を見るので、線を越えた
       後は<strong>大きさに関わらず</strong>本文が落ちます —— 落ちた中に小さなレスポンスが
       混じっていても、それは矛盾ではありません。
+    </p>
+    <p>
+      <code>maxWarcBytes</code> は本文の上限ではありません。これで落ちる本文は無く、producer が
+      いまの WARC ファイルを閉じて次を始める大きさです（<a href="#archive-files"></a> を参照）。
+      ここに記録するのは、読み手が <code>archive/</code> のファイルを、それを生んだ線と並べて
+      確かめられるようにするためです。
     </p>
     <p>
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
@@ -1042,6 +1050,55 @@ encodedDataLength: 4821</pre>
       それを探す読み手は WARC を読みます。
     </p>
   </section>
+</section>
+
+<section id="archive-files">
+  <h2>Archive files</h2>
+  <p>
+    [[WACZ]] は <code>archive/</code> ディレクトリに 1 本以上の WARC ファイルを置くことを求め、
+    その名前と数については何も述べません。この節はその両方を定めます。読み手が、producer の
+    書いたファイルをパッケージが全部持っているかを判定でき、producer が 1 本のファイルの
+    大きさを抑えられるようにするためです。
+  </p>
+  <p>
+    <code>archive/</code> ディレクトリは、<code>data-NNN.warc.gz</code> という名前のファイルだけを
+    含ま<em class="rfc2119">なければならない</em>。<code>NNN</code> は 10 進 3 桁で、<code>000</code>
+    から飛びなく番号を振ります。レコードが 1 本に収まる取り込みは、ちょうど
+    <code>data-000.warc.gz</code> を持ちます。
+  </p>
+  <p>
+    各ファイルは、<code>WARC-Filename</code> がそのファイル自身の名前（<code>archive/</code> を
+    付けない）である <code>warcinfo</code> レコードで始まら<em class="rfc2119">なければならない</em>。
+  </p>
+  <p>
+    1 つのレコードが 2 つのファイルにまたがっては<em class="rfc2119">ならない</em>。1 つの交信の
+    <code>response</code> レコード・<code>request</code> レコード・<code>metadata</code> レコードは、
+    同じファイルに在ら<em class="rfc2119">なければならない</em>。
+  </p>
+  <p>
+    producer は、いまのファイルが <code>maxWarcBytes</code> バイト以上のとき、次の交信を書く前に
+    新しいファイルを始め<em class="rfc2119">なければならない</em>（<a>settings</a> を参照）。
+    したがって最後のファイルを除くすべてのファイルは <code>maxWarcBytes</code> バイト以上で
+    <em class="rfc2119">なければならず</em>、ファイルがそれを超えるのは交信 1 つ分までで
+    <em class="rfc2119">あってよい</em>。
+  </p>
+  <p>
+    CDXJ の各行の <code>filename</code> field は、<code>archive/</code> からの相対でファイルを
+    名指さ<em class="rfc2119">なければならない</em>（<code>data-001.warc.gz</code> であって
+    <code>archive/data-001.warc.gz</code> ではない）。読み手はディレクトリを自分で前置します。
+  </p>
+    <pre class="text">
+archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
+archive/data-001.warc.gz    warcinfo (WARC-Filename: data-001.warc.gz), exchanges &hellip;
+indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"153","length":"2048",&hellip;}</pre>
+  <p class="note" title="なぜファイルの大きさは抑え、数は抑えないのか">
+    リンクを辿る取り込みは、クロールが続く限り記録し、それとともに育つ 1 本のファイルは、
+    一部だけを読むことも、一部だけを検証することも、プロセスが死んだとき一部だけを無事に
+    残すこともできません。ファイルを抑えれば、閉じたファイルはどれも完全なまま残り、読み手は
+    手前を読まずに索引からパッケージの中へ seek できます。上限が本プロファイルの定数ではなく
+    producer の設定なのは、ちょうどよい大きさが、パッケージを置き読む場所に依るからです。
+    他所の慣習は 1 ギガバイトです。
+  </p>
 </section>
 
 <section id="policies">
@@ -1892,6 +1949,12 @@ target: page</pre>
       CDXJ 索引は非圧縮で、<code>.gz</code> で終わらないパスに格納され
       <em class="rfc2119">なければならない</em>。読み手は拡張子で位置を特定し、
       展開を行いません。
+    </li>
+    <li>
+      CDXJ の行の <code>filename</code> field は <code>archive/</code> からの相対で
+      <em class="rfc2119">なければならない</em>。読み手はディレクトリを自分で前置するので、
+      それを含む行は <code>archive/archive/…</code> に解決され、何も見つかりません。
+      <a href="#archive-files"></a> を参照。
     </li>
   </ul>
   <p class="note">

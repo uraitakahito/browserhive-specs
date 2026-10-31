@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.13.0</title>
+<title>BrowserHive WACZ Profile 1.14.0</title>
 <!--
   ReSpec is loaded from an absolute URL on purpose.
 
@@ -26,7 +26,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.13.0 exists: this document would
+    // is what makes the row still true once 1.14.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -86,22 +86,21 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.13.0 is not backward compatible with 1.12.0">
-    This version requires a record's payload to be the bytes that crossed the
-    wire: the body the server sent, with only its content-coding removed, and
-    the body the browser sent (see <a href="#payloads"></a>). Earlier versions
-    said nothing about it, and BrowserHive wrote every text body back out as
-    UTF-8 after the browser had decoded it, so a body sent in Shift_JIS, or as
-    text with no charset and read by a script, was archived as bytes the server
-    never sent &mdash; and its payload digest vouched for them. A body the
-    producer cannot obtain as bytes is now recorded without one, and listed in
-    <a>completeness</a>. A package written against 1.12.0 that holds such a
-    re-encoded body does not conform to 1.13.0. This is intended, and it is why
+  <p class="note" title="1.14.0 is not backward compatible with 1.13.0">
+    This version fixes the names and the number of the WARC files in
+    <code>archive/</code>: a package holds <code>data-000.warc.gz</code>,
+    <code>data-001.warc.gz</code> and so on, each beginning with a
+    <code>warcinfo</code> record that names it, and the producer starts a new
+    file once the current one reaches <code>maxWarcBytes</code> (see
+    <a href="#archive-files"></a>). Earlier versions said nothing about the
+    directory, and BrowserHive wrote a single <code>data.warc.gz</code> with no
+    bound on its size. A package written against 1.13.0 holds that file and
+    does not conform to 1.14.0. This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -195,7 +194,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -319,8 +318,10 @@
             empty array states that none were supplied.
             See <a href="#preload-directory">the preload directory</a>.</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>yes</td>
-            <td>The body caps that were in force for this capture. Members
-            <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, both integers, in bytes.</td></tr>
+            <td>The caps that were in force for this capture. Members
+            <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, the body caps, and
+            <code>maxWarcBytes</code>, the size at which a new WARC file is started
+            (see <a href="#archive-files"></a>). All three integers, in bytes.</td></tr>
         <tr><td><code>urlPolicies</code></td><td>array of object</td><td>yes</td>
             <td>What the capture did about each URL pattern that was in force,
             <strong>in the order the patterns were evaluated</strong>. See
@@ -344,7 +345,8 @@
   ],
   "limits": {
     "maxResponseBytes": 20971520,
-    "maxTaskBytes": 209715200
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
   },
   "urlPolicies": [
     { "pattern": "*://*.example-analytics.com/*", "action": "deny" }
@@ -396,7 +398,8 @@
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
     "maxResponseBytes": 20971520,
-    "maxTaskBytes": 209715200
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
   },
   "urlPolicies": [],
   "contentTypePolicies": [{ "prefix": "video/", "action": "no-body" }]
@@ -414,6 +417,13 @@
       <code>maxTaskBytes</code> watches the accumulated total, so once the line
       is crossed bodies are dropped <strong>regardless of size</strong> &mdash;
       a small response among the dropped ones is not a contradiction.
+    </p>
+    <p>
+      <code>maxWarcBytes</code> is not a body cap. No body is dropped at it: it
+      is the size at which the producer closes the current WARC file and starts
+      the next (see <a href="#archive-files"></a>). It is recorded here so that
+      a reader can check the files in <code>archive/</code> against the line
+      that produced them.
     </p>
     <p>
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
@@ -1137,6 +1147,62 @@ encodedDataLength: 4821</pre>
       CDXJ index. A reader looking for them reads the WARC.
     </p>
   </section>
+</section>
+
+<section id="archive-files">
+  <h2>Archive files</h2>
+  <p>
+    [[WACZ]] requires the <code>archive/</code> directory to hold one or more
+    WARC files and says nothing about their names or their number. This
+    section fixes both, so that a reader can tell whether a package holds every
+    file the producer wrote, and a producer can bound the size of a single
+    file.
+  </p>
+  <p>
+    The <code>archive/</code> directory <em class="rfc2119">MUST</em> contain
+    only files named <code>data-NNN.warc.gz</code>, where <code>NNN</code> is
+    three decimal digits, numbered contiguously from <code>000</code>. A
+    capture whose records fit in one file has exactly
+    <code>data-000.warc.gz</code>.
+  </p>
+  <p>
+    Each file <em class="rfc2119">MUST</em> begin with a <code>warcinfo</code>
+    record whose <code>WARC-Filename</code> is the file's own name, without the
+    <code>archive/</code> prefix.
+  </p>
+  <p>
+    A record <em class="rfc2119">MUST NOT</em> span two files. The
+    <code>response</code> record, the <code>request</code> record and any
+    <code>metadata</code> record of one exchange <em class="rfc2119">MUST</em>
+    be in the same file.
+  </p>
+  <p>
+    The producer <em class="rfc2119">MUST</em> start a new file before writing
+    an exchange when the current file is at or above
+    <code>maxWarcBytes</code> bytes (see <a>settings</a>). Consequently every
+    file except the last <em class="rfc2119">MUST</em> be at least
+    <code>maxWarcBytes</code> bytes long, and a file <em class="rfc2119">MAY</em>
+    exceed it by at most one exchange.
+  </p>
+  <p>
+    The <code>filename</code> field of each CDXJ line <em class="rfc2119">MUST</em>
+    name the file relative to <code>archive/</code>
+    (<code>data-001.warc.gz</code>, not <code>archive/data-001.warc.gz</code>);
+    readers prepend the directory themselves.
+  </p>
+    <pre class="text">
+archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
+archive/data-001.warc.gz    warcinfo (WARC-Filename: data-001.warc.gz), exchanges &hellip;
+indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"153","length":"2048",&hellip;}</pre>
+  <p class="note" title="Why the size of a file is bounded and its number is not">
+    A capture that follows links records for as long as the crawl runs, and a
+    single file that grows with it cannot be read in part, verified in part, or
+    kept safe in part once the process dies. Bounding the file keeps every
+    closed file whole and lets a reader seek into the package by index without
+    reading what precedes. The bound is the producer's setting rather than a
+    constant of this profile because the right size depends on where the
+    package will be stored and read; the convention elsewhere is one gigabyte.
+  </p>
 </section>
 
 <section id="policies">
@@ -1998,6 +2064,13 @@ target: page</pre>
       The CDXJ index <em class="rfc2119">MUST</em> be stored uncompressed, at a
       path that does not end in <code>.gz</code>. Readers locate it by
       extension and do not decompress it.
+    </li>
+    <li>
+      The <code>filename</code> field of a CDXJ line <em class="rfc2119">MUST</em>
+      be relative to <code>archive/</code>. Readers prepend the directory
+      themselves, so a line that carries it resolves to
+      <code>archive/archive/&hellip;</code> and nothing is found. See
+      <a href="#archive-files"></a>.
     </li>
   </ul>
   <p class="note">
