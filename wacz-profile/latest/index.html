@@ -115,7 +115,7 @@
   </p>
 </section>
 
-<section class="informative">
+<section id="introduction" class="informative">
   <h2>Introduction</h2>
   <p>
     A [[WACZ]] package says what was captured. It does not say what was
@@ -165,7 +165,7 @@
   </p>
 </section>
 
-<section>
+<section id="the-browserhive-capture-member">
   <h2>The <code>browserhive:capture</code> member</h2>
 
   <p>
@@ -185,7 +185,7 @@
     <em class="rfc2119">MUST</em> ignore members they do not recognise.
   </p>
 
-  <section>
+  <section id="conformance-declaration">
     <h3>Conformance declaration</h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -208,7 +208,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="build">
     <h3><code>build</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -247,7 +247,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="browser">
     <h3><code>browser</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -273,7 +273,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="settings">
     <h3><code>settings</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -441,7 +441,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="completeness">
     <h3><code>completeness</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -531,7 +531,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="coverage">
     <h3><code>coverage</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
@@ -575,7 +575,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="settle">
     <h3><code>settle</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -685,7 +685,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="dismissal">
     <h3><code>dismissal</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
@@ -783,7 +783,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="document">
     <h3><code>document</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
@@ -878,7 +878,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="tls">
     <h3><code>tls</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
@@ -887,6 +887,7 @@
       <code>hosts</code> and <code>chains</code>.
     </p>
 
+    <section id="tls-hosts">
     <h4><code>tls.hosts</code></h4>
     <p>
       An object keyed by host. Each value is either an object with the members
@@ -928,6 +929,8 @@
       fail for reasons unrelated to the host.
     </p>
 
+    </section>
+    <section id="tls-chains">
     <h4><code>tls.chains</code></h4>
     <p>
       An object whose keys are the values used by <code>chainRef</code> and
@@ -1025,6 +1028,7 @@
       here for readability; a real certificate is a string of roughly
       1&ndash;2&nbsp;KB.
     </p>
+    </section>
   </section>
 </section>
 
@@ -1039,7 +1043,7 @@
     so that a payload digest vouches for what the origin and the browser sent.
   </p>
 
-  <section>
+  <section id="response-payloads">
     <h3>Response payloads</h3>
     <p>
       The payload of a WARC <code>response</code> record that holds a body
@@ -1066,7 +1070,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="request-payloads">
     <h3>Request payloads</h3>
     <p>
       The payload of a WARC <code>request</code> record that holds a body
@@ -1077,7 +1081,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="records-of-bodies-not-kept">
     <h3>Records of bodies not kept</h3>
     <p>
       For each response recorded without the body the server sent, other than a
@@ -1220,7 +1224,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     &mdash; is set out under <a>document</a>.
   </p>
 
-  <section>
+  <section id="urlpolicies">
     <h3><code>urlPolicies</code></h3>
     <p>
       <dfn>urlPolicies</dfn> is an ordered array. Each entry is an object with
@@ -1311,7 +1315,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </p>
   </section>
 
-  <section>
+  <section id="contenttypepolicies">
     <h3><code>contentTypePolicies</code></h3>
     <p>
       <dfn>contentTypePolicies</dfn> is an array whose entries carry a
@@ -1330,7 +1334,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
 ]</pre>
   </section>
 
-  <section>
+  <section id="records-of-withheld-requests">
     <h3>Records of withheld requests</h3>
     <p>
       For each request to which a <code>deny</code> or <code>no-archive</code>
@@ -2080,7 +2084,7 @@ target: page</pre>
   </p>
 </section>
 
-<section class="informative">
+<section id="security-and-privacy-considerations" class="informative">
   <h2>Security and privacy considerations</h2>
   <p>
     <a>tls</a> is not proof of provenance. Certificates are public: anyone can

@@ -106,7 +106,7 @@
   </p>
 </section>
 
-<section class="informative">
+<section id="introduction" class="informative">
   <h2>Introduction</h2>
   <p>
     [[WACZ]] のパッケージは、何が取り込まれたかを述べます。しかし何が<em>抜けたか</em>は述べず、
@@ -151,7 +151,7 @@
   </p>
 </section>
 
-<section>
+<section id="the-browserhive-capture-member">
   <h2>The <code>browserhive:capture</code> member</h2>
 
   <p>
@@ -170,7 +170,7 @@
     <em class="rfc2119">なければならない</em>。
   </p>
 
-  <section>
+  <section id="conformance-declaration">
     <h3>Conformance declaration</h3>
     <p>
       <code>browserhive:capture</code> は、そのパッケージが満たすと主張する本仕様の版の URL を
@@ -191,7 +191,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="build">
     <h3><code>build</code></h3>
     <p>
       <code>browserhive:capture</code> は、パッケージを作ったソフトウェアを機械可読な形で
@@ -228,7 +228,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="browser">
     <h3><code>browser</code></h3>
     <p>
       <code>browserhive:capture</code> は、取り込みを行った browser を記述する <dfn>browser</dfn>
@@ -252,7 +252,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="settings">
     <h3><code>settings</code></h3>
     <p>
       <code>browserhive:capture</code> は、この取り込みに<em>効いていた</em>設定を記録する
@@ -408,7 +408,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="completeness">
     <h3><code>completeness</code></h3>
     <p>
       <code>browserhive:capture</code> は、そのパッケージが保持していない本文についての
@@ -490,7 +490,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="coverage">
     <h3><code>coverage</code></h3>
     <p>
       <code>browserhive:capture</code> は、取り込みがページのどこまで下れたかを記述する
@@ -532,7 +532,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="settle">
     <h3><code>settle</code></h3>
     <p>
       <code>browserhive:capture</code> は、読み込み後の待ちがどう終わったか ——
@@ -632,7 +632,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="dismissal">
     <h3><code>dismissal</code></h3>
     <p>
       <code>browserhive:capture</code> は、取り込みが記録の前にページから何を取り除いたか、
@@ -723,7 +723,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="document">
     <h3><code>document</code></h3>
     <p>
       <code>browserhive:capture</code> は、ページ由来の記録をどの文書から読んだかを名乗り、
@@ -809,7 +809,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="tls">
     <h3><code>tls</code></h3>
     <p>
       <code>browserhive:capture</code> は、各 HTTPS 接続について browser が見たものを記録する
@@ -817,6 +817,7 @@
       <code>hosts</code> と <code>chains</code> を持た<em class="rfc2119">なければならない</em>。
     </p>
 
+    <section id="tls-hosts">
     <h4><code>tls.hosts</code></h4>
     <p>host を鍵とするオブジェクト。各値は以下の member を持つオブジェクトか、<code>null</code>。</p>
     <table class="simple">
@@ -851,6 +852,8 @@
       <em class="rfc2119">ならない</em>。チェーンの取得は host と無関係な理由でも失敗します。
     </p>
 
+    </section>
+    <section id="tls-chains">
     <h4><code>tls.chains</code></h4>
     <p>
       鍵が <code>chainRef</code> の値であり、値が base64 符号化された DER 証明書の配列である
@@ -943,6 +946,7 @@
       <code>chains</code> の値は base64 符号化された DER です。例では読みやすさのため途中で
       切ってありますが、実際には 1 通あたり 1–2 KB 程度の文字列になります。
     </p>
+    </section>
   </section>
 </section>
 
@@ -956,7 +960,7 @@
     ようにします。
   </p>
 
-  <section>
+  <section id="response-payloads">
     <h3>Response payloads</h3>
     <p>
       本文を持つ WARC の <code>response</code> レコードの payload は、サーバが送ったバイト列
@@ -979,7 +983,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="request-payloads">
     <h3>Request payloads</h3>
     <p>
       本文を持つ WARC の <code>request</code> レコードの payload は、ブラウザがリクエストの
@@ -989,7 +993,7 @@
     </p>
   </section>
 
-  <section>
+  <section id="records-of-bodies-not-kept">
     <h3>Records of bodies not kept</h3>
     <p>
       サーバが送った本文を持たずに記録したレスポンスのそれぞれについて —— 送る本文を持たない
@@ -1115,7 +1119,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     題・アクセシビリティツリー —— に方針が何をするかは、<a>document</a> で定めます。
   </p>
 
-  <section>
+  <section id="urlpolicies">
     <h3><code>urlPolicies</code></h3>
     <p>
       <dfn>urlPolicies</dfn> は順序付きの配列です。各項目は 2 つの member を持つ
@@ -1201,7 +1205,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </p>
   </section>
 
-  <section>
+  <section id="contenttypepolicies">
     <h3><code>contentTypePolicies</code></h3>
     <p>
       <dfn>contentTypePolicies</dfn> は、<code>prefix</code>
@@ -1220,7 +1224,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
 ]</pre>
   </section>
 
-  <section>
+  <section id="records-of-withheld-requests">
     <h3>Records of withheld requests</h3>
     <p>
       <code>deny</code> または <code>no-archive</code> の policy が適用された
@@ -1963,7 +1967,7 @@ target: page</pre>
   </p>
 </section>
 
-<section class="informative">
+<section id="security-and-privacy-considerations" class="informative">
   <h2>Security and privacy considerations</h2>
   <p>
     <a>tls</a> は来歴の証明ではありません。証明書は公開情報で、誰でも取得して複製を提示できます。
