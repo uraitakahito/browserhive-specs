@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.15.0</title>
+<title>BrowserHive WACZ Profile 1.16.0</title>
 <!--
-  ReSpec is loaded from an absolute URL on purpose.
+  ReSpec is the copy bundled in this repository, loaded by a relative path:
+  ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
+  repository root, which GitHub Pages serves as /browserhive-specs/.
 
-  This document is served from a project GitHub Pages site, so its base is
-  /browserhive-specs/ rather than the domain root. A relative path copied from
-  a spec that lives at a domain root (../../assets/…) resolves past the site
-  root here and 404s, and ReSpec fails silently when it does — the page still
-  returns 200, just unstyled and unprocessed. An absolute URL cannot drift that
-  way. spec-prod also bakes the output at build time, so readers never depend
-  on this script resolving at all.
+  Pages serves main as it is. Nothing is built before publishing, so ReSpec
+  runs in the reader's browser each time the page loads. The bundled copy is
+  same-origin, so it can fail to load in only two ways — the file is missing
+  or the path is wrong — and the assets job of .github/workflows/build.yml
+  checks both without a browser. CI also renders this document with
+  spec-prod, but only to check it; nothing it renders is published.
 -->
 <script src="../../assets/js/respec-w3c.js" class="remove" defer></script>
 <script class="remove">
@@ -64,6 +65,14 @@
         date: "July 2002",
         publisher: "IETF",
       },
+      // WARC のレコードの決まりは 1.16.0 からこちらに在る。archive/ の WARC が名乗る版に
+      // 固定する —— 名乗る版が変われば、この profile の版も上がる。
+      "BROWSERHIVE-WARC-PROFILE": {
+        title: "BrowserHive WARC Profile",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/",
+        publisher: "BrowserHive",
+        version: "1.0.0",
+      },
     },
     lint: false,
   };
@@ -86,18 +95,22 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.15.0 is not backward compatible with 1.14.0">
-    This version adds two members to <a>settings</a>: <code>variables</code>,
-    the values a request supplied for the behaviors to read, and
-    <code>secrets</code>, the names &mdash; names only &mdash; of the values it
-    supplied in confidence (see <a href="#behaviors-runtime"></a>). Both are
-    required, so a package written against 1.14.0 does not conform to 1.15.0.
+  <p class="note" title="1.16.0 is not backward compatible with 1.15.0">
+    The requirements on the WARC records themselves &mdash; their payloads, the
+    records of bodies not kept, of withheld requests and of windows not opened,
+    the <code>warcinfo</code> record that begins each file, and which records
+    share a file &mdash; have moved to [[BROWSERHIVE-WARC-PROFILE]] 1.0.0, so
+    that a WARC file can name the rules it follows by itself. This version
+    requires every WARC file in <code>archive/</code> to conform to that
+    specification and to say so (see <a href="#archive-files"></a>), so a
+    package written against 1.15.0, whose WARC files name no such
+    specification, does not conform to 1.16.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -191,7 +204,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -442,9 +455,10 @@
     <p>
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
-      <em>which line</em> a truncated body crossed &mdash; a record of a
-      <a>body not kept</a> carries the fact and the actual size, but whether that
-      size was too much is only legible next to the line.
+      <em>which line</em> a truncated body crossed &mdash; a
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      carries the fact and the actual size, but whether that size was too much
+      is only legible next to the line.
     </p>
     <p class="note">
       The <code>truncatedUrls</code> member of <a>completeness</a> does
@@ -505,7 +519,8 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>yes</td>
             <td>URLs whose body crossed the wire but the producer could not
             obtain as bytes, so the archive holds none (see
-            <a href="#payloads"></a>).</td></tr>
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#response-payloads">Response payloads</a> in
+            [[BROWSERHIVE-WARC-PROFILE]]).</td></tr>
         <tr><td><code>complete</code></td><td>boolean</td><td>yes</td>
             <td><code>true</code> if and only if all three arrays are empty.</td></tr>
       </tbody>
@@ -573,6 +588,43 @@
       <code>maxTaskBytes</code>. Listing it there would tell the reader that
       raising a limit recovers a body the requester asked not to keep.
     </p>
+    <p>
+      The WARC describes the same bodies one record at a time: each response
+      recorded without the body the server sent carries a
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      ([[BROWSERHIVE-WARC-PROFILE]]), whose <code>truncated</code> says why. The
+      URLs of bodies dropped at a size limit &mdash; <code>too-large</code> and
+      <code>task-cap</code> &mdash; are listed in <code>truncatedUrls</code>,
+      and those of bodies that were not intercepted &mdash;
+      <code>not-intercepted</code> &mdash; in <code>uninterceptedUrls</code>.
+      Bodies a policy omitted &mdash; <code>url-policy</code> and
+      <code>content-type</code> &mdash; are listed in neither.
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] defines those values by the producer's
+      limits and policies without naming them. In a package, they are the ones
+      recorded in <a>settings</a>:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th><code>truncated</code></th><th>The limit or policy, in <a>settings</a></th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>too-large</code></td>
+            <td>The body was larger than <code>limits.maxResponseBytes</code>.</td></tr>
+        <tr><td><code>task-cap</code></td>
+            <td>The body would have taken the bodies written into the package
+            past <code>limits.maxTaskBytes</code>.</td></tr>
+        <tr><td><code>url-policy</code></td>
+            <td>The first entry of <a>urlPolicies</a> to match the URL has the
+            action <code>no-body</code>.</td></tr>
+        <tr><td><code>content-type</code></td>
+            <td>An entry of <a>contentTypePolicies</a> matches the media type.</td></tr>
+        <tr><td><code>not-intercepted</code></td>
+            <td>No setting. The body crossed the wire, but the producer could
+            not obtain it as bytes.</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section id="coverage">
@@ -1076,135 +1128,27 @@
   </section>
 </section>
 
-<section id="payloads">
-  <h2>Payloads</h2>
-  <p>
-    A browser turns a text body into characters before anything else sees it,
-    and hands it to tools as characters. Written back out as bytes, the result
-    is the body in whatever encoding the writer chose &mdash; not the one the
-    origin sent, unless the two happen to agree. The requirements in this
-    section keep the payload of each record to the bytes that crossed the wire,
-    so that a payload digest vouches for what the origin and the browser sent.
-  </p>
-
-  <section id="response-payloads">
-    <h3>Response payloads</h3>
-    <p>
-      The payload of a WARC <code>response</code> record that holds a body
-      <em class="rfc2119">MUST</em> be the bytes the server sent, with the
-      content-coding named in its <code>Content-Encoding</code> removed and
-      nothing else changed. In particular, a producer
-      <em class="rfc2119">MUST NOT</em> convert a text body from one character
-      encoding to another: a body sent in Shift_JIS is stored as those Shift_JIS
-      bytes, and a body whose media type declares no charset is stored as it was
-      sent, whatever charset a browser would have read it with.
-    </p>
-    <p>
-      A <code>data:</code> URL is sent by no server. Its payload is the data the
-      URL carries, decoded as the URL defines (base64, or percent-encoding as
-      bytes), and likewise not converted.
-    </p>
-    <p>
-      A producer that cannot obtain a body as bytes
-      <em class="rfc2119">MUST NOT</em> store one rebuilt from decoded text. It
-      records the response with an empty payload and a record of a
-      <a>body not kept</a> whose <code>truncated</code> is
-      <code>not-intercepted</code>, and lists the URL in
-      <code>uninterceptedUrls</code> of <a>completeness</a>.
-    </p>
-  </section>
-
-  <section id="request-payloads">
-    <h3>Request payloads</h3>
-    <p>
-      The payload of a WARC <code>request</code> record that holds a body
-      <em class="rfc2119">MUST</em> be the bytes the browser sent as the request
-      body. A producer that cannot obtain them as bytes
-      <em class="rfc2119">MUST NOT</em> store a body rebuilt from decoded text; it
-      records the request without one.
-    </p>
-  </section>
-
-  <section id="records-of-bodies-not-kept">
-    <h3>Records of bodies not kept</h3>
-    <p>
-      For each response recorded without the body the server sent, other than a
-      response that has no body to send (one to a <code>HEAD</code> request, and
-      status <code>1xx</code>, <code>204</code>, <code>3xx</code> and
-      <code>304</code>), the package <em class="rfc2119">MUST</em> contain a WARC
-      <code>metadata</code> record, hereafter a record of a
-      <dfn>body not kept</dfn>. Its <code>WARC-Target-URI</code>
-      <em class="rfc2119">MUST</em> be the URL of the response, its
-      <code>WARC-Refers-To</code> <em class="rfc2119">MUST</em> be the
-      <code>WARC-Record-ID</code> of the <code>response</code> record, and its
-      <code>application/warc-fields</code> body
-      <em class="rfc2119">MUST</em> contain:
-    </p>
-    <table class="simple">
-      <thead>
-        <tr><th>Field</th><th>Required</th><th>Description</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>truncated</code></td><td>yes</td>
-            <td>Why the record holds no body. One of the values below.</td></tr>
-        <tr><td><code>encodedDataLength</code></td><td>no</td>
-            <td>The size of the whole response as it crossed the wire, in bytes,
-            when the producer knows it.</td></tr>
-      </tbody>
-    </table>
-    <ul>
-      <li><code>too-large</code> &mdash; the body was larger than
-          <code>maxResponseBytes</code>.</li>
-      <li><code>task-cap</code> &mdash; the body would have taken the bodies
-          written into the package past <code>maxTaskBytes</code>.</li>
-      <li><code>url-policy</code> &mdash; the first entry of <a>urlPolicies</a>
-          to match the URL has the action <code>no-body</code>.</li>
-      <li><code>content-type</code> &mdash; an entry of
-          <a>contentTypePolicies</a> matches the media type.</li>
-      <li><code>not-intercepted</code> &mdash; the body crossed the wire, but the
-          producer could not obtain it as bytes (see
-          <a href="#response-payloads"></a>).</li>
-    </ul>
-    <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://example.com/api/feed
-WARC-Date: 2026-10-30T02:14:31.882Z
-WARC-Refers-To: &lt;urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a&gt;
-Content-Type: application/warc-fields
-Content-Length: 53
-
-truncated: not-intercepted
-encodedDataLength: 4821</pre>
-    <p>
-      The <code>response</code> record of a body dropped at a size limit
-      <em class="rfc2119">MUST</em> carry <code>WARC-Truncated: length</code>,
-      and that of a body that was not intercepted
-      <em class="rfc2119">MUST</em> carry
-      <code>WARC-Truncated: unspecified</code>, so that a reader of the WARC alone
-      does not take the empty payload for the body.
-    </p>
-    <p>
-      The URLs of bodies dropped at a size limit are listed in
-      <code>truncatedUrls</code> of <a>completeness</a>, and those of bodies that
-      were not intercepted in <code>uninterceptedUrls</code>. Bodies a policy
-      omitted are listed in neither.
-    </p>
-    <p class="note">
-      Records of bodies not kept are not required to appear in the package's
-      CDXJ index. A reader looking for them reads the WARC.
-    </p>
-  </section>
-</section>
-
 <section id="archive-files">
   <h2>Archive files</h2>
   <p>
     [[WACZ]] requires the <code>archive/</code> directory to hold one or more
-    WARC files and says nothing about their names or their number. This
-    section fixes both, so that a reader can tell whether a package holds every
-    file the producer wrote, and a producer can bound the size of a single
-    file.
+    WARC files and says nothing about their names, their number or what each
+    one holds. This section fixes the names and the number, so that a reader
+    can tell whether a package holds every file the producer wrote, and a
+    producer can bound the size of a single file. What each file holds is the
+    subject of [[BROWSERHIVE-WARC-PROFILE]].
+  </p>
+  <p>
+    Every WARC file in <code>archive/</code> <em class="rfc2119">MUST</em>
+    conform to
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/">BrowserHive WARC Profile 1.0.0</a>, and its
+    <code>warcinfo</code> record <em class="rfc2119">MUST</em> name that
+    version in <code>conformsTo</code> (see
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#warcinfo">The warcinfo record</a> there). That
+    specification fixes the records: their payloads, the records of bodies not
+    kept, of withheld requests and of windows not opened, the
+    <code>warcinfo</code> record that begins each file, and that the records of
+    one exchange share a file.
   </p>
   <p>
     The <code>archive/</code> directory <em class="rfc2119">MUST</em> contain
@@ -1214,15 +1158,10 @@ encodedDataLength: 4821</pre>
     <code>data-000.warc.gz</code>.
   </p>
   <p>
-    Each file <em class="rfc2119">MUST</em> begin with a <code>warcinfo</code>
-    record whose <code>WARC-Filename</code> is the file's own name, without the
-    <code>archive/</code> prefix.
-  </p>
-  <p>
-    A record <em class="rfc2119">MUST NOT</em> span two files. The
-    <code>response</code> record, the <code>request</code> record and any
-    <code>metadata</code> record of one exchange <em class="rfc2119">MUST</em>
-    be in the same file.
+    The name a file gives itself in the <code>WARC-Filename</code> of its
+    <code>warcinfo</code> record <em class="rfc2119">MUST</em> be its name in
+    <code>archive/</code>, without the directory: <code>data-000.warc.gz</code>,
+    not <code>archive/data-000.warc.gz</code>.
   </p>
   <p>
     The producer <em class="rfc2119">MUST</em> start a new file before writing
@@ -1237,6 +1176,12 @@ encodedDataLength: 4821</pre>
     name the file relative to <code>archive/</code>
     (<code>data-001.warc.gz</code>, not <code>archive/data-001.warc.gz</code>);
     readers prepend the directory themselves.
+  </p>
+  <p>
+    The <code>metadata</code> records that [[BROWSERHIVE-WARC-PROFILE]] defines
+    &mdash; records of bodies not kept, of withheld requests and of windows not
+    opened &mdash; are not required to appear in the package's CDXJ index. A
+    reader looking for them reads the WARC.
   </p>
     <pre class="text">
 archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
@@ -1310,6 +1255,19 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       </tbody>
     </table>
     <p>
+      The record a <code>deny</code> or <code>no-archive</code> entry leaves is a
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#records-of-withheld-requests">record of a withheld request</a>
+      ([[BROWSERHIVE-WARC-PROFILE]]). Its <code>action</code> is the entry's
+      <code>action</code>, and its <code>pattern</code>
+      <em class="rfc2119">MUST</em> be the entry's <code>pattern</code>, spelled
+      exactly as it appears here, so that a reader can find the entry. A
+      <code>no-body</code> entry leaves no such record: the exchange is recorded
+      as usual, and its absent body is described by a
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      whose <code>truncated</code> is <code>url-policy</code> &mdash; never as a
+      body dropped at a size limit (see <a>completeness</a>).
+    </p>
+    <p>
       A <code>deny</code> entry applies to every request the capture causes,
       whichever part of the page makes it: the main frame's navigations, including
       those that follow a server redirect and those a script starts; frames,
@@ -1377,77 +1335,6 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   { "prefix": "video/", "action": "no-body" }
 ]</pre>
   </section>
-
-  <section id="records-of-withheld-requests">
-    <h3>Records of withheld requests</h3>
-    <p>
-      For each request to which a <code>deny</code> or <code>no-archive</code>
-      policy applied, the package <em class="rfc2119">MUST</em> contain a WARC
-      <code>metadata</code> record, hereafter a record of a
-      <dfn>withheld request</dfn>. Its <code>WARC-Target-URI</code>
-      <em class="rfc2119">MUST</em> be the request URL, and its
-      <code>application/warc-fields</code> body
-      <em class="rfc2119">MUST</em> contain:
-    </p>
-    <table class="simple">
-      <thead>
-        <tr><th>Field</th><th>Required</th><th>Description</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>action</code></td><td>yes</td>
-            <td>The action that applied: <code>deny</code> or
-            <code>no-archive</code>. <strong>This is the field that says whether
-            the request was sent.</strong></td></tr>
-        <tr><td><code>pattern</code></td><td>yes</td>
-            <td>The pattern that matched, spelled exactly as it appears in
-            <a>urlPolicies</a>, so that a reader can find it there.</td></tr>
-        <tr><td><code>method</code></td><td>yes</td>
-            <td>The request method.</td></tr>
-        <tr><td><code>resourceType</code></td><td>no</td>
-            <td>What the page was fetching, when the capture knows it.</td></tr>
-        <tr><td><code>target</code></td><td>no</td>
-            <td>What made the request: <code>page</code>, <code>iframe</code> (a
-            frame the browser runs apart from the page, typically one from another
-            site), <code>worker</code> or <code>service_worker</code>. Absent when
-            the capture does not say.</td></tr>
-      </tbody>
-    </table>
-    <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://www.example-analytics.com/collect?v=2
-WARC-Date: 2026-09-06T02:14:31.882Z
-Content-Type: application/warc-fields
-Content-Length: 112
-
-action: deny
-pattern: *://*.example-analytics.com/*
-method: POST
-resourceType: XHR</pre>
-    <p>
-      A <code>deny</code> reaches every request the capture causes, so its record
-      <em class="rfc2119">MUST</em> be written whichever part of the page made the
-      request, including parts whose traffic the producer does not otherwise
-      record.
-    </p>
-    <p>
-      A record of a withheld request carries no response and no body. It asserts
-      that the page asked for the URL and that this profile's producer decided
-      what to do about it &mdash; not that the request failed, and not that the
-      origin returned nothing. A capture that could not reach an origin
-      <em class="rfc2119">MUST NOT</em> report it this way.
-    </p>
-    <p class="note">
-      A <code>no-body</code> policy produces no record of this kind. The request
-      and response records are written as usual, and the absent body is reported
-      as omitted by the policy &mdash; never as dropped at a size limit (see
-      <a>completeness</a>).
-    </p>
-    <p class="note">
-      Records of withheld requests are not required to appear in the package's
-      CDXJ index. A reader looking for them reads the WARC.
-    </p>
-  </section>
 </section>
 
 <section id="windows">
@@ -1462,49 +1349,12 @@ resourceType: XHR</pre>
     targets a new window opens nothing.
   </p>
   <p>
-    For each time the page asked for one, the package
-    <em class="rfc2119">MUST</em> contain a WARC <code>metadata</code> record,
-    hereafter a record of a <dfn>window not opened</dfn>. Its
-    <code>WARC-Target-URI</code> <em class="rfc2119">MUST</em> be the URL the
-    window would have loaded, as the browser reported it: <code>about:blank</code>
-    when the page named none, and the action URL, without the submitted body,
-    when a form asked. Its <code>application/warc-fields</code> body
-    <em class="rfc2119">MUST</em> contain:
-  </p>
-  <table class="simple">
-    <thead>
-      <tr><th>Field</th><th>Required</th><th>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>window</code></td><td>yes</td>
-          <td><code>not-opened</code>. This version defines no other value.</td></tr>
-      <tr><td><code>windowName</code></td><td>no</td>
-          <td>The name the page gave the window; <code>_blank</code> when it gave
-          none. Absent when the page asked through a navigation that names no
-          window, such as a click carrying a modifier key.</td></tr>
-      <tr><td><code>target</code></td><td>no</td>
-          <td>What asked: <code>page</code>, or <code>iframe</code> (a frame the
-          browser runs apart from the page, typically one from another site).
-          Absent when the capture does not say.</td></tr>
-    </tbody>
-  </table>
-  <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://shop.example/campaign?from=top
-WARC-Date: 2026-10-01T02:14:31.882Z
-Content-Type: application/warc-fields
-Content-Length: 54
-
-window: not-opened
-windowName: _blank
-target: page</pre>
-  <p>
-    No request was sent for the window's document, so nothing left the
-    capturing machine for that URL. The record is written whether or not an
-    entry of <a>urlPolicies</a> matches the URL, and it carries no
-    <code>action</code>: it is not a record of a <a>withheld request</a>, and a
-    reader <em class="rfc2119">MUST NOT</em> count it as one.
+    Each time the page asked for one is recorded in the WARC as a
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#records-of-windows-not-opened">record of a window not opened</a>
+    ([[BROWSERHIVE-WARC-PROFILE]]). No request was sent for the window's
+    document, so the record is written whether or not an entry of
+    <a>urlPolicies</a> matches the URL, and it is not a record of a withheld
+    request.
   </p>
   <p>
     A capture in which a window opened nonetheless <em class="rfc2119">MUST
@@ -1519,10 +1369,6 @@ target: page</pre>
     scripts a request carries, runs without it. That is what refuses the window,
     and it is also why those scripts cannot use an API that needs a gesture, such
     as <code>window.open</code>, the Fullscreen API or writing to the clipboard.
-  </p>
-  <p class="note">
-    Records of windows not opened are not required to appear in the package's
-    CDXJ index. A reader looking for them reads the WARC.
   </p>
 </section>
 
@@ -2114,11 +1960,6 @@ target: page</pre>
       carry values defined by this specification. Readers assign them meaning.
     </li>
     <li>
-      The payload of a WARC <code>response</code> record
-      <em class="rfc2119">MUST</em> be in HTTP/1.1 form, whatever protocol
-      version carried the exchange.
-    </li>
-    <li>
       Values in the CDXJ index <em class="rfc2119">MUST</em> be strings, including
       those that look numeric.
     </li>
@@ -2138,7 +1979,9 @@ target: page</pre>
   <p class="note">
     These are recorded here so a package author can satisfy them. Why each one
     exists is a matter of implementation history and is documented outside this
-    specification.
+    specification. One more constraint of this kind applies to the WARC records
+    rather than to the package &mdash; the form of a response payload &mdash;
+    and is stated in [[BROWSERHIVE-WARC-PROFILE]].
   </p>
 </section>
 
@@ -2159,7 +2002,8 @@ target: page</pre>
   </p>
   <p>
     What a conforming package does assert about the bodies it holds is the
-    subject of <a href="#payloads"></a>: they are the bytes that crossed the wire,
+    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/#payloads">Payloads</a> section of
+    [[BROWSERHIVE-WARC-PROFILE]]: they are the bytes that crossed the wire,
     so a payload digest is a digest of what the origin sent, not of a copy the
     producer re-encoded. Neither says that the origin was the party the URL
     names; see <a>tls</a>.
