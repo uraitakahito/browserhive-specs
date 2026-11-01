@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.15.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | 2026-11-01 | 要求が behavior に渡した値を `settings` に記録する（シークレットは名前だけ） |
 | [1.14.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/) | 2026-10-31 | WARC を大きさで切り替え、`archive/` に連番で置く |
 | [1.13.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/) | 2026-10-30 | 本文を、wire を渡ったバイト列のまま残す |
 | [1.12.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/) | 2026-10-01 | 取り込みにウィンドウを開かせず、求めたことだけを記録する |
@@ -25,6 +26,28 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.15.0
+
+`settings` に `variables`（必須・object）と `secrets`（必須・array of string）を足した。
+`variables` は、behavior が読むために要求が渡した値を名前ごとに持つ（値は文字列）。`secrets` は、
+要求が秘密として渡した値の名前だけを名前順に持つ。シークレットの値はパッケージのどこにも
+現れてはならない（MUST NOT）—— `settings` にも `behaviors/runtime.js` にも、他のどの member や
+エントリにも。要求が何も渡さなかったときも、どちらも在らなければならない（MUST。空の object と
+空の配列）。
+
+`behaviors/runtime.js` の規定に足した: producer は runtime を評価した後、runtime が定めた関数を
+引数つきで呼んでよい（MAY）。その呼び出しと引数はソースではなく、記録しない。Security and privacy
+considerations に、シークレットはページからは隠せず（main world）、behavior がネットワークへ
+送れば WARC に残ることを書いた。
+
+**なぜ。** 検索語のような値をクロールごとに behavior へ渡せるようにすると、同じコードが違う値の
+下で走る。どの値で走ったかはコードからは分からないので、パッケージが値を持たなければならない。
+一方、認証に使う値は記録してはならないが、behavior がパッケージの持たない何かを読んだことは
+読み手に分からなければならない —— だから名前だけを残す。値をソースに埋めると `runtime.js` が
+取り込みごとに変わり、シークレットも一緒に記録されるので、runtime は定数のまま、値は引数で渡す。
+
+`variables` と `secrets` を持たない、1.14.0 に対して書いたパッケージは、1.15.0 に適合しない。
 
 ## 1.14.0
 

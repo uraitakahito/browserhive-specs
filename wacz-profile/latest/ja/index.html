@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.14.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.15.0 (日本語訳)</title>
 <!--
   英語版と同じ理由で ReSpec を絶対 URL から読む。詳しくは ../index.html を参照。
 
@@ -19,7 +19,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.14.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.16.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -66,7 +66,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.9.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.15.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -82,17 +82,14 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.14.0 は 1.13.0 と後方互換ではありません">
-    この版は、<code>archive/</code> に置く WARC ファイルの名前と数を定めます。パッケージは
-    <code>data-000.warc.gz</code>・<code>data-001.warc.gz</code>…を持ち、各ファイルは自分を名指す
-    <code>warcinfo</code> レコードで始まり、producer はいまのファイルが <code>maxWarcBytes</code>
-    に達すると新しいファイルを始めます（<a href="#archive-files"></a> を参照）。以前の版は
-    このディレクトリについて何も述べず、BrowserHive は大きさに上限の無い 1 本の
-    <code>data.warc.gz</code> を書いていました。1.13.0 に対して書いたパッケージはそのファイルを
-    持ち、1.14.0 に適合しません。これは意図されたもので、<a>conformsTo</a> が版を名指し
-    しているのはそのためです —— 古いパッケージを持つ読み手も、それが何に対して書かれたかを
-    辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+  <p class="note" title="1.15.0 は 1.14.0 と後方互換ではありません">
+    この版は <a>settings</a> に 2 つの member を足します。<code>variables</code> は
+    behavior が読むために要求が渡した値、<code>secrets</code> は要求が秘密として渡した値の
+    名前 —— 名前だけ —— です（<a href="#behaviors-runtime"></a> を参照）。どちらも必須なので、
+    1.14.0 に対して書いたパッケージは 1.15.0 に適合しません。これは意図されたもので、
+    <a>conformsTo</a> が版を名指ししているのはそのためです —— 古いパッケージを持つ読み手も、
+    それが何に対して書かれたかを辿れます。
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -178,7 +175,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -293,6 +290,14 @@
             各項目は <code>id</code>（持ち込まれた名前）を持ちます。空の配列は
             「1 本も持ち込まれなかった」と述べます。
             <a href="#preload-directory">preload ディレクトリ</a>を参照。</td></tr>
+        <tr><td><code>variables</code></td><td>object</td><td>はい</td>
+            <td>behavior が読むために要求が渡した値を、名前ごとに。値はどれも文字列。
+            空のオブジェクトは「1 つも渡されなかった」と述べます。
+            <a href="#behaviors-runtime"></a> を参照。</td></tr>
+        <tr><td><code>secrets</code></td><td>array of string</td><td>はい</td>
+            <td>behavior が読むために要求が秘密として渡した値の名前を、名前順に。
+            名前だけ —— 値そのものは記録しません（下を参照）。空の配列は
+            「1 つも渡されなかった」と述べます。</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>はい</td>
             <td>この取り込みに効いていた上限。member <code>maxResponseBytes</code> と
             <code>maxTaskBytes</code>（本文の上限）、<code>maxWarcBytes</code>（新しい WARC ファイルを
@@ -317,6 +322,8 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "autofetch", "origin": "builtin" }
   ],
+  "variables": {},
+  "secrets": [],
   "limits": {
     "maxResponseBytes": 20971520,
     "maxTaskBytes": 209715200,
@@ -333,7 +340,8 @@
       1 回だけ読み込んだという意味です。<code>behaviors</code> に並ぶ 2 つは実際に走った
       behavior です —— 有効化されていた
       ものの一覧ではありません。<code>acceptLanguage</code> は、この取り込みが設定しなかった
-      ので在りません。値そのものは producer が決めるもので、ここに挙げた綴りを
+      ので在りません。<code>variables</code> と <code>secrets</code> が空なのは、要求が behavior に
+      値を 1 つも渡さなかったからです。値そのものは producer が決めるもので、ここに挙げた綴りを
       このプロファイルが定めているわけではありません。
     </p>
     <p class="note" title="One vocabulary here is not the producer's">
@@ -355,7 +363,8 @@
     </p>
     <p>
       2 回読み込む取り込みでは、読み込んだ数だけ値が並びます。要求が
-      <code>acceptLanguage</code> を指定した場合は、それもここに現れます:
+      <code>acceptLanguage</code> を指定した場合は、それもここに現れます。behavior に値を渡した
+      要求では、その値も現れます —— 変数は値ごと、シークレットは名前だけ:
     </p>
     <pre class="json">
 "settings": {
@@ -367,6 +376,8 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "example.com:gallery", "origin": "custom" }
   ],
+  "variables": { "query": "gallery" },
+  "secrets": ["api_token"],
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
     "maxResponseBytes": 20971520,
@@ -405,6 +416,31 @@
       <strong>区別しません</strong>。
       対処が違う (前者は 1 件が大きすぎ、後者はページ全体が重い) にもかかわらずです。
       区別が要る読み手は、パッケージの外 —— 取り込みが出した報告 —— を見ることになります。
+    </p>
+    <p>
+      <code>variables</code> と <code>secrets</code> は、要求が behavior に読ませるために渡したものを
+      記録します（<a href="#behaviors-runtime"></a> を参照）。要求が何も渡さなかったときも、
+      どちらも存在し<em class="rfc2119">なければならない</em>（MUST）。空のオブジェクトと空の配列が、
+      書き漏らしではなく主張になるようにするためです。
+    </p>
+    <p>
+      <code>variables</code> は値を運びます。語を検索する behavior は何らかの語の下で走っており、
+      パッケージを証拠として読む人は、それがどの語だったかを言えなければなりません。
+      コードだけではそれが言えません —— 同じコードが、どの値の下でも走るからです。
+    </p>
+    <p>
+      <code>secrets</code> は名前だけを運びます。シークレットの値は、パッケージのどこにも
+      現れては<em class="rfc2119">ならない</em>（MUST NOT）—— この member にも、
+      <code>behaviors/runtime.js</code> にも、他のどの member やエントリにも。名前を記録するのは、
+      behavior がパッケージの持たない何かを読んだことを、読み手が分かるようにするためです。
+      behavior がその値をどうしたかは、この member の外の話です。
+      <a href="#security-and-privacy-considerations"></a> を参照してください。
+    </p>
+    <p class="note" title="Names are the request's">
+      behavior の <code>id</code> と同じく、<code>variables</code> と <code>secrets</code> の名前は
+      値を渡した側が決めたもので、本仕様はその綴りについて何も述べません。<code>secrets</code> の
+      並びだけはここで定めます —— 名前順です。同じ名前を読んだ 2 つのパッケージが、同じ並びで
+      それを挙げるようにするためです。
     </p>
   </section>
 
@@ -1783,6 +1819,18 @@ target: page</pre>
       したがってその存在は「ページ上でコードが走った」ことを述べます ——
       その後どの behavior が何かをしたかどうかとは無関係に。
     </p>
+    <p>
+      そのソースを評価した後、producer はソースが定めた関数を、引数を付けて
+      呼ん<em class="rfc2119">でもよい</em>（MAY）。その呼び出しと引数はソースの一部ではなく、
+      このエントリには記録されません。引数のうち、変数は <code>settings.variables</code> に、
+      シークレットの名前は <code>settings.secrets</code> に在ります。シークレットの値は
+      どこにも記録されません（<a>settings</a> を参照）。
+    </p>
+    <p class="note" title="Why the values are not in the source">
+      これが、producer の作るどの取り込みでも runtime を同じバイト列に保ちます。値をソースに
+      書き込む producer は、取り込みごとに違う <code>runtime.js</code> を記録することになり ——
+      シークレットも一緒に記録してしまいます。
+    </p>
     <p class="note">
       要求しているのは「バイト単位でそのまま」であって、読みやすさではありません。
       runtime を minify する producer は minify された形を記録します ——
@@ -2022,6 +2070,21 @@ target: page</pre>
     producer は既定でこのディレクトリを出力し<em class="rfc2119">ないべきである</em>（SHOULD）。
     読み手は <code>valuesRecorded</code> によって、アーカイブ本体を開かずに
     どちらであるかを判別できます。
+  </p>
+  <p>
+    <a>settings</a> の <code>secrets</code> が値を締め出すのはパッケージからであって、ページから
+    ではありません。behavior はページの main world に在る runtime から値を読み、そこではページ
+    自身のスクリプトも同じ値を読めます。別の実行 context を使わない限り、producer はそこで値を
+    隠せません。また、このプロファイルは behavior の先まで値を追いません。値をネットワークへ
+    送る behavior —— URL・ヘッダ・本文のどれであれ —— は、他と同じく記録される要求を出し、
+    値はそのとき WARC に入ります。シークレットをアーカイブから完全に締め出したい要求者は、
+    それを送らない behavior を渡す必要があります。
+  </p>
+  <p>
+    対照的に <code>variables</code> は、意図して値のまま記録します。個人データを変数に入れた
+    要求者は、それをアーカイブに入れたことになります。2 つの線を引くのは要求の側です ——
+    このプロファイルは、秘密だと告げられたものと、そうでないものを、告げられたとおりに
+    記録します。
   </p>
   <p>
     <a>browser</a> は記録を行った build を名指しし、これは必須です。origin へ別の身元を
