@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.17.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/) | 2026-11-02 | 時点ごとの文書の写しをページとして並べる（`snapshots`・`pages`） |
 | [1.16.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/) | 2026-11-01 | WARC のレコードの決まりを BrowserHive WARC Profile へ移す |
 | [1.15.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | 2026-11-01 | 要求が behavior に渡した値を `settings` に記録する（シークレットは名前だけ） |
 | [1.14.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/) | 2026-10-31 | WARC を大きさで切り替え、`archive/` に連番で置く |
@@ -44,6 +45,33 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.17.0
+
+取り込みの時点ごとの文書の写しを、ページとして開けるようにした。写しの WARC のレコードの決まりは
+[BrowserHive WARC Profile 1.1.0](https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/)
+の節 `snapshots` に在る（`resource` と `metadata` の組。`WARC-Target-URI` は
+`urn:browserhive:snapshot:<時点>:<文書の URL>`）。
+
+- **`snapshots`（必須）:** `browserhive:capture` に足した配列。`after-load` の項目と、behavior を
+  走らせたときはその後に `after-behaviors` の項目。写したら `stage`・`url`・`date`・`record`
+  （山括弧の無い URI）・`bytes`・`secretsReplaced`、写さなかったら `stage` と `skipped`
+  （`withheld`・`too-large`・`task-budget`・`failed`）。
+- **`pages`（新しい節）:** 写しが在れば、写しごとに 1 行を `snapshots` の順に（`url` と `ts` は
+  写しの `WARC-Target-URI` と `WARC-Date`、`stage` を持ち、`id` は互いに違う）。写しが無ければ、
+  これまでどおり要求の URL の 1 行。写しが在るとき、`mainPageURL` は最初の行の `url`（MUST）。
+- **索引（`archive-files`）:** 写しの `resource` は CDXJ に載せる（MUST）。行の鍵は
+  `WARC-Target-URI` そのまま（MUST）、`status` は書かない（MUST NOT）。
+- **`document`:** ページ由来の記録に写しを足した。記録は時点ごとに読み、`withheld` の決まりは
+  時点ごとの文書に当てる（伏せる時点は写さず、`skipped` は `withheld`）。
+- **WARC Profile の版:** `archive/` の WARC は BrowserHive WARC Profile 1.1.0 に適合し、
+  `conformsTo` で 1.1.0 を名乗る（MUST）。
+
+**なぜ。** behavior が頁の中で検索の結果を描くと、その結果は URL も文書も持たず、replay は
+起点の頁を開き直すだけで結果を出せなかった。写しを時点ごとのページにすれば、replay を変えずに、
+検索前と検索後を一覧の 2 行として開ける。
+
+`snapshots` を持たない、1.16.0 に対して書いたパッケージは、1.17.0 に適合しない。
 
 ## 1.16.0
 
