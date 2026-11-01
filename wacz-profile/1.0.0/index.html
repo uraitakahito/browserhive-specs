@@ -4,15 +4,16 @@
 <meta charset="utf-8">
 <title>BrowserHive WACZ Profile 1.0.0</title>
 <!--
-  ReSpec is loaded from an absolute URL on purpose.
+  ReSpec is the copy bundled in this repository, loaded by a relative path:
+  ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
+  repository root, which GitHub Pages serves as /browserhive-specs/.
 
-  This document is served from a project GitHub Pages site, so its base is
-  /browserhive-specs/ rather than the domain root. A relative path copied from
-  a spec that lives at a domain root (../../assets/…) resolves past the site
-  root here and 404s, and ReSpec fails silently when it does — the page still
-  returns 200, just unstyled and unprocessed. An absolute URL cannot drift that
-  way. spec-prod also bakes the output at build time, so readers never depend
-  on this script resolving at all.
+  Pages serves main as it is. Nothing is built before publishing, so ReSpec
+  runs in the reader's browser each time the page loads. The bundled copy is
+  same-origin, so it can fail to load in only two ways — the file is missing
+  or the path is wrong — and the assets job of .github/workflows/build.yml
+  checks both without a browser. CI also renders this document with
+  spec-prod, but only to check it; nothing it renders is published.
 -->
 <script src="../../assets/js/respec-w3c.js" class="remove" defer></script>
 <script class="remove">
@@ -37,7 +38,7 @@
     // **本文と無関係に CI が赤くなる**。実際 2026-08 以降 409 (Cloudflare 1001) を
     // 返し続けており、PR #23 はそれだけの理由で止まっていた。
     //
-    // 引く参照は 4 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
+    // 引く参照は 3 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
     // しておく理由が無い。
     localBiblio: {
       WACZ: {
