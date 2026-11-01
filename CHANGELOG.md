@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.16.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/) | 2026-11-01 | WARC のレコードの決まりを BrowserHive WARC Profile へ移す |
 | [1.15.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | 2026-11-01 | 要求が behavior に渡した値を `settings` に記録する（シークレットは名前だけ） |
 | [1.14.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/) | 2026-10-31 | WARC を大きさで切り替え、`archive/` に連番で置く |
 | [1.13.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/) | 2026-10-30 | 本文を、wire を渡ったバイト列のまま残す |
@@ -26,6 +27,35 @@ BrowserHive WACZ Profile の版ごとの変更。
 | [1.0.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 2026-08-21 | 最初の版 |
 
 ---
+
+## 1.16.0
+
+WARC のレコードそのものへの決まりを、新しい仕様
+[BrowserHive WARC Profile 1.0.0](https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/)
+（[browserhive-warc-spec](https://github.com/uraitakahito/browserhive-warc-spec)）へ移した。
+節 `payloads`（`response-payloads`・`request-payloads`）・`records-of-bodies-not-kept`・
+`records-of-withheld-requests` は 1.16.0 から消した。`archive-files`・`windows`・
+`replay-constraints` は分け、WARC の 1 本だけで読める決まり —— 各ファイルの先頭の `warcinfo`、
+レコードがファイルをまたがないこと、1 つの交信が同じファイルに入ること、開かなかったウィンドウの
+記録の形、response のペイロードが HTTP/1.1 形であること —— を移した。
+
+`archive-files` に足した: `archive/` のどの WARC ファイルも BrowserHive WARC Profile 1.0.0 に
+適合し、その `warcinfo` の `conformsTo` で 1.0.0 を名乗らなければならない（MUST）。
+`WARC-Filename` が `archive/` を付けない名前であること（MUST）と、WARC Profile が定める
+`metadata` レコードを CDXJ 索引に載せなくてよいことは、ここに残した。
+
+`completeness` に、WARC Profile の `truncated` の値と `settings` の上限・方針の結び付き
+（`too-large` は `maxResponseBytes`、`task-cap` は `maxTaskBytes`、`url-policy` は
+`urlPolicies` の `no-body`、`content-type` は `contentTypePolicies`）と、どの値の URL が
+どの一覧に載るかを書いた。`urlPolicies` に、止めた要求の記録の `pattern` は項目の `pattern` を
+ここに現れるとおりの綴りで書かなければならない（MUST）ことを書いた。
+
+**なぜ。** WARC の決まりが WACZ Profile の中にあると、WACZ から取り出した WARC は、自分が
+どの決まりに従って書かれたかを言えない。WARC 自身が `warcinfo` で仕様の版を名乗れば、WARC の
+1 本だけを手にした読み手も BrowserHive の決まりに辿り着ける。
+
+WARC ファイルが BrowserHive WARC Profile を名乗っていない、1.15.0 に対して書いたパッケージは、
+1.16.0 に適合しない。
 
 ## 1.15.0
 

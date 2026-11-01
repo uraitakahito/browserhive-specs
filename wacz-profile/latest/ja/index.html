@@ -2,9 +2,11 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.15.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.16.0 (日本語訳)</title>
 <!--
-  英語版と同じ理由で ReSpec を絶対 URL から読む。詳しくは ../index.html を参照。
+  ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
+  wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
+  ReSpec は読者のブラウザで走る。詳しくは ../index.html を参照。
 
   見出しは訳していない。ReSpec が見出しから id を生成するので、訳すと英語版と
   id がずれ、節への参照が言語をまたいで通らなくなる。
@@ -57,6 +59,14 @@
         date: "July 2002",
         publisher: "IETF",
       },
+      // WARC のレコードの決まりは 1.16.0 からこちらに在る。archive/ の WARC が名乗る版に
+      // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
+      "BROWSERHIVE-WARC-PROFILE": {
+        title: "BrowserHive WARC Profile",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/",
+        publisher: "BrowserHive",
+        version: "1.0.0",
+      },
     },
     lint: false,
   };
@@ -66,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.15.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.16.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -82,14 +92,17 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.15.0 は 1.14.0 と後方互換ではありません">
-    この版は <a>settings</a> に 2 つの member を足します。<code>variables</code> は
-    behavior が読むために要求が渡した値、<code>secrets</code> は要求が秘密として渡した値の
-    名前 —— 名前だけ —— です（<a href="#behaviors-runtime"></a> を参照）。どちらも必須なので、
-    1.14.0 に対して書いたパッケージは 1.15.0 に適合しません。これは意図されたもので、
-    <a>conformsTo</a> が版を名指ししているのはそのためです —— 古いパッケージを持つ読み手も、
-    それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+  <p class="note" title="1.16.0 は 1.15.0 と後方互換ではありません">
+    WARC のレコードそのものへの要求 —— ペイロード、body not kept・withheld request・
+    window not opened のレコード、各ファイルの先頭の <code>warcinfo</code> レコード、
+    どのレコードが同じファイルに入るか —— は [[BROWSERHIVE-WARC-PROFILE]] 1.0.0 へ
+    移りました。WARC ファイルが、自分の従う決まりを自分で名乗れるようにするためです。
+    この版は、<code>archive/</code> のどの WARC ファイルにも、その仕様に適合し、そう名乗る
+    ことを求めます（<a href="#archive-files"></a> を参照）。そのため、WARC ファイルが
+    その仕様を名乗っていない 1.15.0 向けのパッケージは、1.16.0 に適合しません。これは
+    意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
+    パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -175,7 +188,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -408,7 +421,8 @@
     <p>
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
-      アーカイブが言える場所は、ここだけです —— <a>body not kept</a> のレコードは落とした事実と
+      アーカイブが言える場所は、ここだけです ——
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
       実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
     </p>
     <p class="note">
@@ -462,7 +476,8 @@
             <td>サイズ上限に達して取り込みが本文を落とした URL。</td></tr>
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
             <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
-            アーカイブが本文を持たない URL（<a href="#payloads"></a> を参照）。</td></tr>
+            アーカイブが本文を持たない URL（[[BROWSERHIVE-WARC-PROFILE]] の
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
         <tr><td><code>complete</code></td><td>boolean</td><td>はい</td>
             <td>3 つの配列がすべて空のとき、かつそのときに限り <code>true</code>。</td></tr>
       </tbody>
@@ -524,6 +539,41 @@
       そこに載せれば、要求者が保存しないよう頼んだ本文を、上限を上げれば取り戻せると
       読み手に伝えることになります。
     </p>
+    <p>
+      WARC は、同じ本文をレコード 1 つずつで述べます。サーバが送った本文を持たずに記録した
+      応答には、それぞれ
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
+      （[[BROWSERHIVE-WARC-PROFILE]]）が付き、その <code>truncated</code> が理由を言います。
+      サイズ上限で落とした本文 —— <code>too-large</code> と <code>task-cap</code> —— の URL は
+      <code>truncatedUrls</code> に、バイト列として得られなかった本文 ——
+      <code>not-intercepted</code> —— の URL は <code>uninterceptedUrls</code> に載ります。
+      方針で省いた本文 —— <code>url-policy</code> と <code>content-type</code> —— は、
+      どちらにも載りません。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、これらの値を producer の上限と方針で定め、その名前は
+      言いません。パッケージの中では、それは <a>settings</a> に記録したものです:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th><code>truncated</code></th><th><a>settings</a> の中の上限・方針</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>too-large</code></td>
+            <td>本文が <code>limits.maxResponseBytes</code> より大きかった。</td></tr>
+        <tr><td><code>task-cap</code></td>
+            <td>本文を書けば、パッケージに書いた本文の累計が
+            <code>limits.maxTaskBytes</code> を超えるところだった。</td></tr>
+        <tr><td><code>url-policy</code></td>
+            <td>URL に最初に当たった <a>urlPolicies</a> の項目の action が
+            <code>no-body</code>。</td></tr>
+        <tr><td><code>content-type</code></td>
+            <td><a>contentTypePolicies</a> の項目が media type に当たった。</td></tr>
+        <tr><td><code>not-intercepted</code></td>
+            <td>設定は無い。本文は wire を渡ったが、producer がバイト列として
+            得られなかった。</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section id="coverage">
@@ -986,119 +1036,24 @@
   </section>
 </section>
 
-<section id="payloads">
-  <h2>Payloads</h2>
-  <p>
-    ブラウザは文字の本文を、ほかの誰かが見る前に文字へ読み替え、道具には文字として渡します。
-    それをバイト列に書き戻すと、書き手が選んだ符号の本文になります —— 両者がたまたま一致
-    しない限り、オリジンが送った符号ではありません。この節の要件は、各レコードの payload を
-    wire を渡ったバイト列に留め、payload digest がオリジンとブラウザの送ったものを保証する
-    ようにします。
-  </p>
-
-  <section id="response-payloads">
-    <h3>Response payloads</h3>
-    <p>
-      本文を持つ WARC の <code>response</code> レコードの payload は、サーバが送ったバイト列
-      から <code>Content-Encoding</code> が名指す content-coding を外し、ほかは何も変えないもので
-      なければなりません（<em class="rfc2119">MUST</em>）。とくに producer は、文字の本文を
-      ある文字符号から別の文字符号に変換してはなりません（<em class="rfc2119">MUST NOT</em>）。
-      Shift_JIS で送られた本文はその Shift_JIS のバイト列のまま、media type が charset を
-      宣言しない本文は、ブラウザがどの charset で読んだかに関わらず、送られたとおりに保存します。
-    </p>
-    <p>
-      <code>data:</code> URL はどのサーバも送りません。その payload は URL が運ぶデータを、URL の
-      定めるとおり（base64、または percent-encoding をバイトとして）復号したもので、やはり変換
-      しません。
-    </p>
-    <p>
-      本文をバイト列として得られない producer は、文字から組み直した本文を保存しては
-      なりません（<em class="rfc2119">MUST NOT</em>）。そのレスポンスは空の payload と、
-      <code>truncated</code> が <code>not-intercepted</code> の <a>body not kept</a> の
-      レコードで記録し、URL を <a>completeness</a> の <code>uninterceptedUrls</code> に載せます。
-    </p>
-  </section>
-
-  <section id="request-payloads">
-    <h3>Request payloads</h3>
-    <p>
-      本文を持つ WARC の <code>request</code> レコードの payload は、ブラウザがリクエストの
-      本文として送ったバイト列でなければなりません（<em class="rfc2119">MUST</em>）。それを
-      バイト列として得られない producer は、文字から組み直した本文を保存してはなりません
-      （<em class="rfc2119">MUST NOT</em>）。そのリクエストは本文なしで記録します。
-    </p>
-  </section>
-
-  <section id="records-of-bodies-not-kept">
-    <h3>Records of bodies not kept</h3>
-    <p>
-      サーバが送った本文を持たずに記録したレスポンスのそれぞれについて —— 送る本文を持たない
-      レスポンス（<code>HEAD</code> リクエストへのもの、ステータス <code>1xx</code>・<code>204</code>・
-      <code>3xx</code>・<code>304</code>）を除いて —— パッケージは WARC の <code>metadata</code>
-      レコード —— 以下 <dfn>body not kept</dfn> のレコード —— を <em class="rfc2119">MUST</em>
-      含みます。その <code>WARC-Target-URI</code> はレスポンスの URL で
-      <em class="rfc2119">MUST</em>、<code>WARC-Refers-To</code> は <code>response</code> レコードの
-      <code>WARC-Record-ID</code> で <em class="rfc2119">MUST</em>、
-      <code>application/warc-fields</code> の本文は次を <em class="rfc2119">MUST</em> 含みます:
-    </p>
-    <table class="simple">
-      <thead>
-        <tr><th>Field</th><th>必須</th><th>説明</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>truncated</code></td><td>はい</td>
-            <td>レコードが本文を持たない理由。下の値のどれか。</td></tr>
-        <tr><td><code>encodedDataLength</code></td><td>いいえ</td>
-            <td>レスポンス全体が wire を渡ったときの大きさ（バイト）。producer が知っている
-            場合に。</td></tr>
-      </tbody>
-    </table>
-    <ul>
-      <li><code>too-large</code> —— 本文が <code>maxResponseBytes</code> より大きかった。</li>
-      <li><code>task-cap</code> —— 本文を書くと、パッケージに書いた本文が
-          <code>maxTaskBytes</code> を超えるところだった。</li>
-      <li><code>url-policy</code> —— URL に最初に一致した <a>urlPolicies</a> の項目の action が
-          <code>no-body</code>。</li>
-      <li><code>content-type</code> —— <a>contentTypePolicies</a> の項目が media type に一致した。</li>
-      <li><code>not-intercepted</code> —— 本文は wire を渡ったが、producer がバイト列として
-          得られなかった（<a href="#response-payloads"></a> を参照）。</li>
-    </ul>
-    <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://example.com/api/feed
-WARC-Date: 2026-10-30T02:14:31.882Z
-WARC-Refers-To: &lt;urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a&gt;
-Content-Type: application/warc-fields
-Content-Length: 53
-
-truncated: not-intercepted
-encodedDataLength: 4821</pre>
-    <p>
-      サイズ上限で落とした本文の <code>response</code> レコードは
-      <code>WARC-Truncated: length</code> を持ち（<em class="rfc2119">MUST</em>）、取り込めなかった
-      本文のものは <code>WARC-Truncated: unspecified</code> を持ちます（<em class="rfc2119">MUST</em>）。
-      WARC だけを読む読み手が、空の payload を本文と取り違えないようにするためです。
-    </p>
-    <p>
-      サイズ上限で落とした本文の URL は <a>completeness</a> の <code>truncatedUrls</code> に、
-      取り込めなかった本文の URL は <code>uninterceptedUrls</code> に載ります。方針で省いた本文は、
-      どちらにも載りません。
-    </p>
-    <p class="note">
-      <a>body not kept</a> のレコードは、パッケージの CDXJ 索引に現れる必要はありません。
-      それを探す読み手は WARC を読みます。
-    </p>
-  </section>
-</section>
-
 <section id="archive-files">
   <h2>Archive files</h2>
   <p>
     [[WACZ]] は <code>archive/</code> ディレクトリに 1 本以上の WARC ファイルを置くことを求め、
-    その名前と数については何も述べません。この節はその両方を定めます。読み手が、producer の
-    書いたファイルをパッケージが全部持っているかを判定でき、producer が 1 本のファイルの
-    大きさを抑えられるようにするためです。
+    その名前と数、それぞれが何を持つかについては何も述べません。この節は名前と数を定めます。
+    読み手が、producer の書いたファイルをパッケージが全部持っているかを判定でき、producer が
+    1 本のファイルの大きさを抑えられるようにするためです。それぞれのファイルが何を持つかは
+    [[BROWSERHIVE-WARC-PROFILE]] が定めます。
+  </p>
+  <p>
+    <code>archive/</code> のどの WARC ファイルも
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/">BrowserHive WARC Profile 1.0.0</a> に適合し
+    <em class="rfc2119">なければならず</em>、その <code>warcinfo</code> レコードは
+    <code>conformsTo</code> でその版を名乗ら<em class="rfc2119">なければならない</em>
+    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
+    同仕様が定めます —— ペイロード、body not kept・withheld request・window not opened の
+    レコード、各ファイルの先頭の <code>warcinfo</code> レコード、1 つの交信のレコードが
+    同じファイルに入ること。
   </p>
   <p>
     <code>archive/</code> ディレクトリは、<code>data-NNN.warc.gz</code> という名前のファイルだけを
@@ -1107,13 +1062,10 @@ encodedDataLength: 4821</pre>
     <code>data-000.warc.gz</code> を持ちます。
   </p>
   <p>
-    各ファイルは、<code>WARC-Filename</code> がそのファイル自身の名前（<code>archive/</code> を
-    付けない）である <code>warcinfo</code> レコードで始まら<em class="rfc2119">なければならない</em>。
-  </p>
-  <p>
-    1 つのレコードが 2 つのファイルにまたがっては<em class="rfc2119">ならない</em>。1 つの交信の
-    <code>response</code> レコード・<code>request</code> レコード・<code>metadata</code> レコードは、
-    同じファイルに在ら<em class="rfc2119">なければならない</em>。
+    ファイルが <code>warcinfo</code> レコードの <code>WARC-Filename</code> に書く自分の名前は、
+    ディレクトリを付けない、<code>archive/</code> の中での名前で
+    <em class="rfc2119">なければならない</em>（<code>data-000.warc.gz</code> であって
+    <code>archive/data-000.warc.gz</code> ではない）。
   </p>
   <p>
     producer は、いまのファイルが <code>maxWarcBytes</code> バイト以上のとき、次の交信を書く前に
@@ -1126,6 +1078,11 @@ encodedDataLength: 4821</pre>
     CDXJ の各行の <code>filename</code> field は、<code>archive/</code> からの相対でファイルを
     名指さ<em class="rfc2119">なければならない</em>（<code>data-001.warc.gz</code> であって
     <code>archive/data-001.warc.gz</code> ではない）。読み手はディレクトリを自分で前置します。
+  </p>
+  <p>
+    [[BROWSERHIVE-WARC-PROFILE]] が定める <code>metadata</code> レコード —— body not kept・
+    withheld request・window not opened のレコード —— は、パッケージの CDXJ 索引に現れることを
+    要求されません。これを探す読み手は WARC を読みます。
   </p>
     <pre class="text">
 archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
@@ -1195,6 +1152,17 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       </tbody>
     </table>
     <p>
+      <code>deny</code> と <code>no-archive</code> の項目が残す記録は、
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      （[[BROWSERHIVE-WARC-PROFILE]]）です。その <code>action</code> は項目の
+      <code>action</code> で、<code>pattern</code> は、読み手が項目を見つけられるよう、項目の
+      <code>pattern</code> をここに現れるとおりの綴りで書か<em class="rfc2119">なければならない</em>。
+      <code>no-body</code> の項目はこの記録を残しません。交信はいつもどおり記録され、無い本文は
+      <code>truncated</code> が <code>url-policy</code> の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
+      サイズ上限で落とした本文としては扱いません（<a>completeness</a> を参照）。
+    </p>
+    <p>
       <code>deny</code> の項目は、ページのどの部分が起こしたかに関わらず、取り込みが起こす
       すべてのリクエストに働きます。主フレームの遷移（サーバのリダイレクトの先と、script が
       始めた遷移を含む）、フレーム（別サイトのフレームを含む）、そして dedicated worker と
@@ -1259,78 +1227,6 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   { "prefix": "video/", "action": "no-body" }
 ]</pre>
   </section>
-
-  <section id="records-of-withheld-requests">
-    <h3>Records of withheld requests</h3>
-    <p>
-      <code>deny</code> または <code>no-archive</code> の policy が適用された
-      リクエストのそれぞれについて、パッケージは WARC の <code>metadata</code>
-      レコード —— 以下 <dfn>withheld request</dfn> のレコード —— を
-      <em class="rfc2119">MUST</em> 含みます。その
-      <code>WARC-Target-URI</code> はリクエストの URL で
-      <em class="rfc2119">MUST</em>、<code>application/warc-fields</code> の
-      本文は次を <em class="rfc2119">MUST</em> 含みます:
-    </p>
-    <table class="simple">
-      <thead>
-        <tr><th>Field</th><th>必須</th><th>説明</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>action</code></td><td>はい</td>
-            <td>適用された action: <code>deny</code> または
-            <code>no-archive</code>。<strong>リクエストが送られたかどうかを
-            述べるのはこの欄です。</strong></td></tr>
-        <tr><td><code>pattern</code></td><td>はい</td>
-            <td>一致したパターン。<a>urlPolicies</a> に現れるとおりの綴りで、
-            読み手がそちらで引き当てられるように。</td></tr>
-        <tr><td><code>method</code></td><td>はい</td>
-            <td>リクエストのメソッド。</td></tr>
-        <tr><td><code>resourceType</code></td><td>いいえ</td>
-            <td>ページが何を取りに行っていたか。取り込みが知っている場合に。</td></tr>
-        <tr><td><code>target</code></td><td>いいえ</td>
-            <td>何がリクエストを出したか: <code>page</code>、<code>iframe</code>
-            （browser がページと別に走らせるフレーム。多くは別サイトのもの）、
-            <code>worker</code>、<code>service_worker</code>。取り込みが述べないときは
-            置きません。</td></tr>
-      </tbody>
-    </table>
-    <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://www.example-analytics.com/collect?v=2
-WARC-Date: 2026-09-06T02:14:31.882Z
-Content-Type: application/warc-fields
-Content-Length: 112
-
-action: deny
-pattern: *://*.example-analytics.com/*
-method: POST
-resourceType: XHR</pre>
-    <p>
-      <code>deny</code> は取り込みが起こすすべてのリクエストに届くので、そのレコードは、
-      ページのどの部分がリクエストを出したかに関わらず書かなければなりません
-      （<em class="rfc2119">MUST</em>）。producer がほかには記録しない部分のリクエストも
-      含みます。
-    </p>
-    <p>
-      withheld request のレコードはレスポンスも本文も持ちません。主張しているのは、
-      ページがその URL を要求したこと、そしてこのプロファイルの producer が
-      それについて何をするか決めたこと —— リクエストが失敗したという意味でも、
-      オリジンが何も返さなかったという意味でもありません。オリジンに到達
-      できなかった取り込みは、これをこの形で報告しては
-      <em class="rfc2119">MUST NOT</em>。
-    </p>
-    <p class="note">
-      <code>no-body</code> の policy はこの種のレコードを生みません。
-      request / response のレコードは通常どおり書かれ、欠けている本文は
-      方針で省いたものとして報告されます —— 上限で落としたものとしては報告されません
-      (<a>completeness</a> を参照)。
-    </p>
-    <p class="note">
-      withheld request のレコードは、パッケージの CDXJ 索引に現れることを
-      要求されません。これを探す読み手は WARC を読みます。
-    </p>
-  </section>
 </section>
 
 <section id="windows">
@@ -1344,48 +1240,11 @@ resourceType: XHR</pre>
     新しいウィンドウを target にした link や form は何も開きません。
   </p>
   <p>
-    ページが求めた 1 回ごとに、パッケージは WARC の <code>metadata</code> レコード ——
-    以下 <dfn>window not opened</dfn> のレコード —— を <em class="rfc2119">MUST</em>
-    含みます。その <code>WARC-Target-URI</code> は、そのウィンドウが読み込むはずだった
-    URL を browser が知らせたとおりに <em class="rfc2119">MUST</em>: ページが名指し
-    しなければ <code>about:blank</code>、form が求めたなら送る本文を除いた action の URL
-    です。<code>application/warc-fields</code> の本文は次を <em class="rfc2119">MUST</em>
-    含みます:
-  </p>
-  <table class="simple">
-    <thead>
-      <tr><th>Field</th><th>必須</th><th>説明</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>window</code></td><td>はい</td>
-          <td><code>not-opened</code>。この版は、ほかの値を定めません。</td></tr>
-      <tr><td><code>windowName</code></td><td>いいえ</td>
-          <td>ページがウィンドウに付けた名前。付けなければ <code>_blank</code>。
-          ウィンドウを名指ししない遷移（修飾キーつきの click など）で求めたときは
-          置きません。</td></tr>
-      <tr><td><code>target</code></td><td>いいえ</td>
-          <td>何が求めたか: <code>page</code>、または <code>iframe</code>（browser が
-          ページと別に走らせるフレーム。多くは別サイトのもの）。取り込みが述べないときは
-          置きません。</td></tr>
-    </tbody>
-  </table>
-  <pre class="text">
-WARC/1.1
-WARC-Type: metadata
-WARC-Target-URI: https://shop.example/campaign?from=top
-WARC-Date: 2026-10-01T02:14:31.882Z
-Content-Type: application/warc-fields
-Content-Length: 54
-
-window: not-opened
-windowName: _blank
-target: page</pre>
-  <p>
-    ウィンドウの文書のリクエストは送られていないので、その URL について、取り込みを行う
-    機械から出たものはありません。このレコードは、<a>urlPolicies</a> の項目が URL に
-    当たるかどうかに関わらず書き、<code>action</code> を持ちません。これは
-    <a>withheld request</a> のレコードではなく、読み手はそれとして数えてはなりません
-    （<em class="rfc2119">MUST NOT</em>）。
+    ページが求めた 1 回ごとに、WARC には
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
+    （[[BROWSERHIVE-WARC-PROFILE]]）が残ります。ウィンドウの文書のリクエストは送られて
+    いないので、このレコードは <a>urlPolicies</a> の項目が URL に当たるかどうかに関わらず
+    書かれ、withheld request のレコードではありません。
   </p>
   <p>
     それでもウィンドウが開いた取り込みは、パッケージを作ってはなりません
@@ -1400,10 +1259,6 @@ target: page</pre>
     走ります。ウィンドウを断るのはこれです。それらの script が、<code>window.open</code>・
     Fullscreen API・clipboard への書き込みのような gesture の要る API を使えないのも、
     同じ理由です。
-  </p>
-  <p class="note">
-    window not opened のレコードは、パッケージの CDXJ 索引に現れることを要求されません。
-    これを探す読み手は WARC を読みます。
   </p>
 </section>
 
@@ -1990,10 +1845,6 @@ target: page</pre>
       割り当てています。
     </li>
     <li>
-      WARC の <code>response</code> レコードのペイロードは、交信を運んだプロトコルの版に
-      関わらず HTTP/1.1 形で<em class="rfc2119">なければならない</em>。
-    </li>
-    <li>
       CDXJ 索引の値は、数値に見えるものも含めて string で
       <em class="rfc2119">なければならない</em>。
     </li>
@@ -2011,7 +1862,9 @@ target: page</pre>
   </ul>
   <p class="note">
     ここに記すのは、パッケージの作成者がこれらを満たせるようにするためです。それぞれが
-    なぜ存在するかは実装史の問題であり、本仕様の外で文書化されています。
+    なぜ存在するかは実装史の問題であり、本仕様の外で文書化されています。同じ種類の制約が
+    もう 1 つありますが、それはパッケージではなく WARC のレコードに掛かるもの ——
+    response のペイロードの形 —— で、[[BROWSERHIVE-WARC-PROFILE]] に書いてあります。
   </p>
 </section>
 
@@ -2030,7 +1883,8 @@ target: page</pre>
     とは主張しません。
   </p>
   <p>
-    適合するパッケージが、保持している本文について主張するのは <a href="#payloads"></a> の
+    適合するパッケージが、保持している本文について主張するのは
+    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.0.0/ja/#payloads">Payloads</a> の節の
     内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
     digest であり、producer が符号を変えた写しのものではありません。どちらも、オリジンが URL の
     名指す相手だったことは言いません。<a>tls</a> を参照してください。

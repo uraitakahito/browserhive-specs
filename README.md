@@ -2,9 +2,14 @@
 
 [BrowserHive](https://github.com/uraitakahito/browserhive) が書き出すファイル形式の仕様。
 
+WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/uraitakahito/browserhive-warc-spec)
+（BrowserHive WARC Profile）に在る。この repo の WACZ Profile は 1.16.0 から、`archive/` の WARC が
+その仕様に適合することを求めて、そちらを指す。
+
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | **1.15.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/) | **1.16.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | 1.15.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/) | 1.14.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/) | 1.13.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/) | 1.12.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/) |
@@ -36,12 +41,15 @@
 
 ## 作り方
 
-原稿は [ReSpec](https://respec.org/docs/)。`main` への push で
-[`w3c/spec-prod`](https://github.com/w3c/spec-prod) が静的 HTML へ焼き、
-リンクと markup を検査してから `gh-pages` へ配置する。
+原稿は [ReSpec](https://respec.org/docs/)。GitHub Pages が `main` をそのまま配り、ReSpec は
+読者のブラウザで走る。ReSpec は w3.org から読まず、repo に同梱した `assets/js/respec-w3c.js`
+を相対パスで読む。同一オリジンのファイルが読めないのは「無い」か「パスが違う」ときだけで、
+CI の assets job がブラウザを使わずにその 2 つを確かめる。
 
-**読者のブラウザでは何も実行されない。** ビルド時に完成させているので、
-崩れたページが 200 で配信され続けることがない。
+CI（`.github/workflows/build.yml`）は公開の経路に居ない。`main` への push と PR で
+[`w3c/spec-prod`](https://github.com/w3c/spec-prod) が各版を描いて markup を、linkcheck の job が
+リンクを検査するだけで、描いたものは公開しない。公開が CI を通らないので、壊れた原稿の
+merge を止められるのはこの検査だけ —— だから赤は merge を止める。同梱した ReSpec が上流から
+離れていないかは、`.github/workflows/respec-drift.yml` が週に 1 回見る。
 
-ローカルで見るには `wacz-profile/1.15.0/index.html` をブラウザで開く
-(そのときだけ ReSpec が実行時に走る)。
+ローカルで見るには `wacz-profile/1.16.0/index.html` をブラウザで開く。
