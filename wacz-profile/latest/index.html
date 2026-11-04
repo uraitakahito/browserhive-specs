@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.17.0</title>
+<title>BrowserHive WACZ Profile 1.18.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.18.0 exists: this document would
+    // is what makes the row still true once 1.19.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,21 +95,18 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.17.0 is not backward compatible with 1.16.0">
-    This version requires every WARC file in <code>archive/</code> to conform
-    to [[BROWSERHIVE-WARC-PROFILE]] 1.1.0, which adds snapshots: copies of the
-    document as it stood at a stage of the capture, which a reader that serves
-    archived pages opens like a page. It adds the required member
-    <a>snapshots</a>, which says at which stages the capture took one and why
-    it took none at the others, and it lists one page for each snapshot (see
-    <a href="#pages"></a>). A package written against 1.16.0 has no such
-    member, so it does not conform to 1.17.0.
+  <p class="note" title="1.18.0 is not backward compatible with 1.17.0">
+    This version puts the document first in <code>pages/pages.jsonl</code>: its
+    first entry is the document the capture was asked for, any snapshots follow
+    it, and <code>mainPageURL</code> names that first entry (see
+    <a href="#pages"></a>). A package written against 1.17.0 lists only its
+    snapshots when it holds one, so it does not conform to 1.18.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -203,7 +200,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -920,9 +917,10 @@
       The page-derived records are read stage by stage.
       The snapshot of a stage, and the entry of <code>pages/pages.jsonl</code>
       that lists it (see <a href="#pages"></a>), are read from the document in
-      the main frame at that stage. The <code>title</code> of
-      <code>datapackage.json</code> and <code>accessibility/axtree.jsonl</code>
-      are read after the behaviors, from the document that <code>document</code>
+      the main frame at that stage. The <code>title</code> and <code>text</code> of
+      the entry of the document in <code>pages/pages.jsonl</code>, the
+      <code>title</code> of <code>datapackage.json</code> and
+      <code>accessibility/axtree.jsonl</code> are read after the behaviors, from the document that <code>document</code>
       names, as is the snapshot of the <code>"after-behaviors"</code> stage.
       The rules below on <code>withheld</code> apply at each stage to the
       document at that stage: a stage whose document they withhold has no
@@ -972,8 +970,8 @@
       that document. The <code>title</code> of <code>datapackage.json</code>
       <em class="rfc2119">MUST NOT</em> be read from the page, and the package
       <em class="rfc2119">MUST NOT</em> contain
-      <code>accessibility/axtree.jsonl</code>. When the package then holds no
-      snapshot, its single entry in <code>pages/pages.jsonl</code>
+      <code>accessibility/axtree.jsonl</code>. The entry of the document in
+      <code>pages/pages.jsonl</code> (see <a href="#pages"></a>)
       <em class="rfc2119">MUST NOT</em> have a <code>text</code> or
       <code>title</code> member. That entry <em class="rfc2119">MAY</em> carry
       the reason as <code>textWithheld</code>; if it does, the value
@@ -1321,14 +1319,32 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     [[WACZ]] lists the pages of a package in <code>pages/pages.jsonl</code>, and
     a reader that serves archived pages opens a page by the <code>url</code> and
-    <code>ts</code> of its entry. This section fixes the entries, so that each
-    snapshot of the document (see <a>snapshots</a>) opens as a page.
+    <code>ts</code> of its entry. This section fixes the entries, so that the
+    document the capture was asked for, and each snapshot of it (see
+    <a>snapshots</a>), opens as a page.
   </p>
   <p>
-    When the package holds a snapshot, <code>pages/pages.jsonl</code>
-    <em class="rfc2119">MUST</em> have one entry for each snapshot, in the
-    order of <a>snapshots</a>, and no other entry. The entry of a snapshot:
+    The first entry of <code>pages/pages.jsonl</code>
+    <em class="rfc2119">MUST</em> be the entry of the document. After it, the
+    file <em class="rfc2119">MUST</em> have one entry for each snapshot, in the
+    order of <a>snapshots</a>, and no other entry. The entry of the document:
   </p>
+  <ul>
+    <li><code>url</code> <em class="rfc2119">MUST</em> be the URL the capture
+        was asked for, written as the
+        <a href="https://url.spec.whatwg.org/#concept-url-serializer">URL serializer</a> of the URL Standard writes it, without
+        its fragment. That is the URL of the first request the capture made for
+        the document: a URL with an empty path gains its trailing slash, as the
+        request did.</li>
+    <li><code>ts</code> is the time the capture started.</li>
+    <li>The entry <em class="rfc2119">MUST NOT</em> carry
+        <code>stage</code>.</li>
+    <li><code>id</code> <em class="rfc2119">MUST</em> differ from that of every
+        other entry.</li>
+    <li><code>title</code> and <code>text</code>, when present, are read after
+        the behaviors, from the document that <a>document</a> names.</li>
+  </ul>
+  <p>The entry of a snapshot:</p>
   <ul>
     <li><code>url</code> and <code>ts</code> <em class="rfc2119">MUST</em> be
         the <code>WARC-Target-URI</code> and the <code>WARC-Date</code> of the
@@ -1342,28 +1358,29 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
         the document at that stage (see <a>document</a>).</li>
   </ul>
   <p>
-    When the package holds no snapshot, <code>pages/pages.jsonl</code>
-    <em class="rfc2119">MUST</em> have exactly one entry, whose
-    <code>url</code> is the URL the capture was asked for, and that entry
-    <em class="rfc2119">MUST NOT</em> carry <code>stage</code>.
-  </p>
-  <p>
-    When the package holds a snapshot, the <code>mainPageURL</code> of
-    <code>datapackage.json</code> <em class="rfc2119">MUST</em> be the
-    <code>url</code> of the first entry of <code>pages/pages.jsonl</code>. When
-    it holds none, <code>mainPageURL</code> is, as before, the URL the capture
-    was asked for.
+    The <code>mainPageURL</code> of <code>datapackage.json</code>
+    <em class="rfc2119">MUST</em> be the <code>url</code> of the first entry of
+    <code>pages/pages.jsonl</code>, the entry of the document.
   </p>
   <pre class="json">
 {"format":"json-pages-1.0","id":"pages","title":"All Pages"}
+{"id":"5f2c9a1e","url":"https://example.com/","ts":"2026-11-02T01:20:03.502Z","title":"Results for lamp","text":"3 results &hellip;"}
 {"id":"5f2c9a1e-after-load","url":"urn:browserhive:snapshot:after-load:https://example.com/","ts":"2026-11-02T01:20:05.118Z","stage":"after-load","title":"Search","text":"Search the shop &hellip;"}
 {"id":"5f2c9a1e-after-behaviors","url":"urn:browserhive:snapshot:after-behaviors:https://example.com/results","ts":"2026-11-02T01:20:07.415Z","stage":"after-behaviors","title":"Results for lamp","text":"3 results &hellip;"}</pre>
-  <p class="note" title="Why the main page is the first snapshot">
-    A reader opens <code>mainPageURL</code> first and expects to find it among
-    the pages. The URL the capture was asked for may be redirected before the
-    page loads &mdash; from <code>http</code> to <code>https</code>, or to add a
-    trailing slash &mdash; and then names no entry, while the first snapshot
-    always names one.
+  <p class="note" title="Why the first entry is the document">
+    A snapshot is a copy of the document's DOM without the page's scripts, so
+    what the scripts show &mdash; a picture put in place once an animation
+    ends, a list that a request fills in &mdash; can be missing from it. The
+    entry of the document opens the archived responses with the page's scripts
+    running, as the page was first shown. When the document was archived, the
+    URL the capture was asked for names a record: the response that served the
+    document, or the redirect that led to it, which a reader follows.
+  </p>
+  <p class="note" title="Which entry a reader opens first">
+    Readers differ in where they start. One may open <code>mainPageURL</code>;
+    another may list the entries newest first, which puts the document last.
+    A link that wants a reader to show the document names its <code>url</code>
+    and <code>ts</code>.
   </p>
 </section>
 
