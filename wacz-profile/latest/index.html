@@ -2307,9 +2307,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       When <a>document</a> carries <code>withheld</code>, the entry
       <em class="rfc2119">MUST NOT</em> contain a line whose
       <code>source</code> is <code>"page"</code>, whichever document wrote it.
-      A producer that leaves such lines out <em class="rfc2119">MUST</em> write
-      a line whose <code>source</code> is <code>"browserhive"</code> that says
-      how many it left out and why.
+      When <a>snapshots</a> records a stage as <code>"withheld"</code> and
+      <code>document</code> carries no <code>withheld</code>, the producer
+      <em class="rfc2119">MAY</em> still leave out every such line: a line does
+      not say which document wrote it, so keeping the lines of the documents
+      that were kept could keep those of the one that was withheld. A producer
+      that leaves lines out for either reason <em class="rfc2119">MUST</em>
+      write a line whose <code>source</code> is <code>"browserhive"</code> that
+      says how many it left out and why.
     </p>
     <p>
       As everywhere in the package (see <a>settings</a>), the value of a secret
@@ -2474,10 +2479,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>"page"</code> hold what the captured page's scripts wrote to the
     console and the errors they did not catch, which routinely include URLs,
     identifiers and the page's own text. When the document was withheld, the
-    log holds none of them (see <a href="#logs-lines"></a>), but the rule looks
-    only at the document that <a>document</a> names: when the page moved on
-    from a withheld document to one that was kept, the lines the first document
-    wrote stay.
+    log holds none of them (see <a href="#logs-lines"></a>). That requirement
+    looks only at the document that <a>document</a> names, and a line does not
+    say which document wrote it, so when the page moved on from a withheld
+    document to one that was kept, the first document's lines would stay. A
+    producer may therefore leave out every line of the page whenever
+    <a>snapshots</a> records a stage as <code>"withheld"</code>, and one that
+    does says so in a line of its own, so a reader can tell that the page's
+    lines were left out rather than never written.
   </p>
   <p>
     In the log, the producer replaces the value of a secret wherever it appears

@@ -2148,9 +2148,13 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <p>
       <a>document</a> が <code>withheld</code> を持つとき、エントリは、どの文書が書いたかに
       関わらず、<code>source</code> が <code>"page"</code> の行を含んでは
-      <em class="rfc2119">なりません</em>（MUST NOT）。そうした行を残さなかった producer は、
-      <code>source</code> が <code>"browserhive"</code> の行を書いて、何行をなぜ残さなかったかを
-      述べ<em class="rfc2119">なければなりません</em>（MUST）。
+      <em class="rfc2119">なりません</em>（MUST NOT）。<code>document</code> が
+      <code>withheld</code> を持たなくても、<a>snapshots</a> がある時点を
+      <code>"withheld"</code> と記録したときは、producer はそうした行を全部残さ
+      <em class="rfc2119">なくてもよい</em>（MAY）—— 行はどの文書が書いたかを名乗らないので、
+      残された文書の行を残すと、伏せられた文書の行まで残しかねないからです。どちらの理由で
+      行を残さなかった producer も、<code>source</code> が <code>"browserhive"</code> の行を
+      書いて、何行をなぜ残さなかったかを述べ<em class="rfc2119">なければなりません</em>（MUST）。
     </p>
     <p>
       パッケージのどこでもそうであるように（<a>settings</a> を参照）、シークレットの値は行に
@@ -2293,9 +2297,12 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     ログは、ページが書いた文字を運びます。<code>source</code> が <code>"page"</code> の行は、
     取り込んだページのスクリプトが console に書いたものと、それらが捕まえなかった誤りを持ち、
     そこには URL・識別子・ページ自身の文字が日常的に入ります。文書が伏せられたとき、ログは
-    それらを 1 行も持ちません（<a href="#logs-lines"></a> を参照）。ただし、この決まりが見るのは
-    <a>document</a> が名指す文書だけです: ページが伏せられた文書から残された文書へ移ったとき、
-    はじめの文書が書いた行は残ります。
+    それらを 1 行も持ちません（<a href="#logs-lines"></a> を参照）。この要求が見るのは
+    <a>document</a> が名指す文書だけで、行はどの文書が書いたかを名乗らないので、ページが
+    伏せられた文書から残された文書へ移ったときは、はじめの文書の行が残ってしまいます。そこで
+    producer は、<a>snapshots</a> がある時点を <code>"withheld"</code> と記録したときは
+    いつでも、ページの行を全部省いてよく、省いた producer はそれを自分の行で述べます。読み手は、
+    ページの行が書かれなかったのではなく省かれたことを見分けられます。
   </p>
   <p>
     ログの中で producer がシークレットの値を置き換えるのは、値がそのままの形で現れたところ
