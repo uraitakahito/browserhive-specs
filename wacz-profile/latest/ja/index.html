@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.18.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.19.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.19.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.20.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.18.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.19.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,14 +92,14 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.18.0 は 1.17.0 と後方互換ではありません">
-    この版は、<code>pages/pages.jsonl</code> で文書を先頭に置きます: 最初のエントリは
-    取り込みを求められた文書で、写しはその後に続き、<code>mainPageURL</code> はその最初の
-    エントリを名指します（<a href="#pages"></a> を参照）。写しを持つとき写しだけを並べる 1.17.0
-    向けのパッケージは、1.18.0 に適合しません。これは
+  <p class="note" title="1.19.0 は 1.18.0 と後方互換ではありません">
+    この版は、どのパッケージにも、取り込みのログを <code>logs/capture.jsonl</code> に持つことを
+    求めます（<a href="#logs-directory"></a> を参照）—— 取り込みが走っている間に producer・
+    behavior・取り込んだページが書いた行を、パッケージを組んだ時点まで。そのエントリを持たない
+    1.18.0 向けのパッケージは、1.19.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -122,15 +122,15 @@
   </p>
   <p>
     この喪失が問題になるのは、旅をするのがアーカイブの方だからです。3 年後にパッケージを開いた
-    読み手には、ログも API の応答も、それを作った機械も残っていません。「ここに欠けているものは
-    あるか」にパッケージ自身が答えられないなら、他の誰も答えられません。
+    読み手には、API の応答も、それを作った機械も、その機械が持っていたログも残っていません。
+    「ここに欠けているものはあるか」にパッケージ自身が答えられないなら、他の誰も答えられません。
   </p>
   <p>
     そこで本プロファイルは、パッケージが取り込みについての自身の申告を運ぶことを要求します ——
     どの本文が欠けていてそれはなぜか、どの上限が効いていたか、どのリクエストを送らず
     どのリクエストを送って保持しなかったか、記録の前にページから何を取り除いたか、
-    各オリジンがどの証明書を提示したか。これらは [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを
-    記録します。
+    各オリジンがどの証明書を提示したか、そして取り込みが走りながら書いたログ。これらは
+    [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
   </p>
 </section>
 
@@ -185,7 +185,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -816,8 +816,9 @@
     <p>
       <strong>ページ由来の記録</strong>とは、文書の写し（<a>snapshots</a> を参照）、
       <code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
-      <code>datapackage.json</code> の <code>title</code>、そして
-      <code>accessibility/axtree.jsonl</code> です。これらは
+      <code>datapackage.json</code> の <code>title</code>、
+      <code>accessibility/axtree.jsonl</code>、そして <code>logs/capture.jsonl</code> の
+      <code>source</code> が <code>"page"</code> の行（<a href="#logs-lines"></a> を参照）です。これらは
       ネットワークからではなく描画されたページから読むので、WARC の本文はそれらを縛りません ——
       <strong>方針が文書の本文を archive に入れなくても、それだけではその文書の文字は
       締め出されません。</strong>
@@ -849,7 +850,9 @@
       と <code>accessibility/axtree.jsonl</code> は、behavior の後に、<code>document</code> が
       名指す文書から読み、<code>"after-behaviors"</code> の時点の写しと、
       <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
-      も同じです。下の
+      も同じです。<code>logs/capture.jsonl</code> の <code>source</code> が
+      <code>"page"</code> の行は、ある時点で読むのではなく取り込みの間ずっと書かれるもので、
+      <code>document</code> が名指す文書から読んだものとして扱います。下の
       <code>withheld</code> の決まりは、各時点で、その時点の文書に当てはまります: 決まりが文書を
       伏せる時点には写しが無く、<a>snapshots</a> はそれを <code>"withheld"</code> と記録します。
     </p>
@@ -1990,6 +1993,212 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </section>
 </section>
 
+<section id="logs-directory">
+  <h2>The logs directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは、その取り込みのログである <code>logs/capture.jsonl</code> という
+    エントリを持た<em class="rfc2119">なければなりません</em>（MUST）。それは他のファイルと
+    同様に <code>resources</code> で宣言し<em class="rfc2119">なければならず</em>（MUST）、
+    <a href="https://jsonlines.org/">JSON Lines</a> で<em class="rfc2119">なければなりません</em>
+    （MUST） —— 1 行に 1 つの JSON オブジェクトで、各オブジェクトはログの 1 行を記録します。
+  </p>
+  <p>
+    このエントリは、ログに 1 行も無いときも、空のファイルとして在ら
+    <em class="rfc2119">なければなりません</em>（MUST）。空のログを、書き漏らしではなく
+    主張にするためです。このエントリを持たないパッケージは、この版に適合しません。
+    このエントリを定めていなかった以前の版に向けて書かれたパッケージでは、その不在は、
+    取り込みがログに何を書いたかについて何も述べません。
+  </p>
+  <p class="note" title="なぜログがパッケージと共に旅をするのか">
+    producer のログは、ふつう取り込みを走らせた機械に残り、機械と共に失われます。それでも
+    ログこそが、取り込みが何を待ったか、behavior が何をしたか、ページがどんな誤りを出したかを
+    述べる場所です —— アーカイブの中のページが思っていたものと違うときに、読み手が要るものです。
+    <code>resources</code> で宣言したエントリは、パッケージの digest に覆われ、署名があれば
+    署名にも覆われます。
+  </p>
+
+  <section id="logs-lines">
+    <h3>Log lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:log/1",
+  "at": "2026-11-04T05:12:04.551Z",
+  "ms": 4522,
+  "dpr": 1,
+  "source": "script",
+  "script": "example.com:gallery",
+  "level": "info",
+  "msg": "searched the gallery",
+  "data": { "query": "gallery", "results": 24 }
+}
+    </pre>
+    <p class="note">
+      読みやすさのため複数行で示しています。ファイル中では、各オブジェクトはちょうど 1 行を
+      占めます。
+    </p>
+    <p>
+      各行は <code>profile</code>・<code>at</code>・<code>ms</code>・<code>source</code>・
+      <code>level</code>・<code>msg</code> を持た<em class="rfc2119">なければならず</em>（MUST）、
+      <code>dpr</code>・<code>script</code>・<code>data</code>・<code>truncated</code> を
+      持っ<em class="rfc2119">てもよい</em>（MAY）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profile</code></td><td>string</td><td>はい</td>
+            <td>その行が従う規則。本仕様のこの版では、値は <code>"browserhive:log/1"</code> で
+            <em class="rfc2119">なければなりません</em>（MUST）。</td></tr>
+        <tr><td><code>at</code></td><td>string</td><td>はい</td>
+            <td>producer がその行を受け取った時刻。[[RFC3339]] のタイムスタンプ。</td></tr>
+        <tr><td><code>ms</code></td><td>number</td><td>はい</td>
+            <td>取り込みの始まりから、producer がその行を受け取るまでのミリ秒。<code>at</code> と
+            同じ時計で測った、0 以上の整数。</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>いいえ</td>
+            <td>その行が書かれた読み込みの device pixel ratio。<a>settings</a> の
+            <code>devicePixelRatios</code> の要素のどれか。どの読み込みの間でもなく書かれた行
+            —— たとえば producer がほかの形式を書いている間や、パッケージを組んでいる間の行 ——
+            には無い。</td></tr>
+        <tr><td><code>source</code></td><td>string</td><td>はい</td>
+            <td>その行を書いたもの: <code>"script"</code>・<code>"page"</code>・
+            <code>"browserhive"</code>（下を参照）。</td></tr>
+        <tr><td><code>script</code></td><td>string</td><td><code>source</code> が <code>"script"</code> のとき</td>
+            <td>producer がその行の書き手とみなした behavior。<a>settings</a> の
+            <code>behaviors</code> の項目の <code>id</code>。</td></tr>
+        <tr><td><code>level</code></td><td>string</td><td>はい</td>
+            <td>書いた側が付けた、その行の重さ: <code>"debug"</code>・<code>"info"</code>・
+            <code>"warn"</code>・<code>"error"</code>。</td></tr>
+        <tr><td><code>msg</code></td><td>string</td><td>はい</td>
+            <td>その行の文。</td></tr>
+        <tr><td><code>data</code></td><td>any</td><td>いいえ</td>
+            <td>書いた側がその行に添えた JSON の値。</td></tr>
+        <tr><td><code>truncated</code></td><td>boolean</td><td>いいえ</td>
+            <td>producer が、行を自分の決めた大きさに収めるために <code>msg</code> か
+            <code>data</code> を切ったとき <code>true</code>（下を参照）。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>source</code> は次のどれか、<code>level</code> は上の 4 つの値のどれかで
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <ul>
+      <li><code>"browserhive"</code> &mdash; producer 自身による取り込みの申告: 通った段、何を
+          待ち、待ちがどう終わったか、何をあきらめたか、そして残さなかった行（下を参照）。</li>
+      <li><code>"script"</code> &mdash; behavior が runtime（<a href="#behaviors-runtime"></a>
+          を参照）を通して書いた行、または behavior が失敗したときの誤り。</li>
+      <li><code>"page"</code> &mdash; 取り込んだページが書いた行: ページのスクリプトと、
+          <a>preload</a> の下で持ち込まれたコードが console に書いたもの、それらが捕まえなかった
+          誤り、そして runtime を通して書かれたが、producer がどの behavior のものとも言えない行。</li>
+    </ul>
+    <p>
+      <code>script</code> は、<code>source</code> が <code>"script"</code> の行には
+      在ら<em class="rfc2119">なければならず</em>（MUST）、それ以外の行には在っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。その値は、<a>settings</a> の
+      <code>behaviors</code> の項目の <code>id</code> で<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      行は producer が受け取った順に並ば<em class="rfc2119">なければならず</em>（MUST）、
+      <code>ms</code> は前の行の値より小さくては<em class="rfc2119">なりません</em>（MUST NOT）。
+      エントリは、producer がパッケージを組むまでにその取り込みについて受け取ったすべての行を、
+      下に述べるとおり残さない行を除いて、持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p class="note" title="ログはパッケージを組んだところで終わる">
+      パッケージは組んだ時点で閉じます —— resources のハッシュを取り、そのハッシュに署名する
+      こともあります。そのため、その後に起きたことは入りえません: producer がパッケージを
+      保管庫に置くこと、置いたパッケージに対して走らせる検査、遅れて発火したタイマーから
+      behavior が書いた行。そうした行が無いことは、それらの出来事について何も述べません。
+    </p>
+    <p class="note" title="誰の時計か">
+      <code>at</code> と <code>ms</code> は、各行が届いたときに読んだ producer の時計で、
+      ページの時計ではありません。ページは自分のスクリプトが読む時刻を変えられますし、
+      どの読み込みの行も 1 つの時計で並べて読む必要があります。
+    </p>
+    <p>
+      producer は、行を自分の決めた大きさに収めるために <code>msg</code> か <code>data</code> を
+      切っ<em class="rfc2119">てもよい</em>（MAY）。切った行は、値が <code>true</code> の
+      <code>truncated</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。
+      <code>data</code> を切ると、その場所に文字列 —— 値の JSON の文字の頭 —— が残ることが
+      あります。
+    </p>
+    <p>
+      producer は、ログを自分の決めた上限に収めるために、行を残さ
+      <em class="rfc2119">なくてもよい</em>（MAY）。そうする producer は、残さなかった最初の行が
+      在ったはずの場所に、その行と同じ <code>at</code> と <code>ms</code> を持ち、
+      <code>source</code> が <code>"browserhive"</code> の行を書いて、何行をなぜ残さなかったかを
+      述べ<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <pre class="json">
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:02.377Z","ms":2348,"dpr":1,"source":"page","level":"error","msg":"Uncaught TypeError: Cannot read properties of null (reading 'offsetTop')"}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:03.016Z","ms":2987,"source":"browserhive","level":"warn","msg":"dropped 1250 lines to stay within the capture's log limits","data":{"dropped":1250}}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:04.551Z","ms":4522,"dpr":1,"source":"script","script":"example.com:gallery","level":"info","msg":"searched the gallery","data":{"query":"gallery","results":24}}</pre>
+    <p>
+      この抜き出しでは、ページが読み込みの間に誤りを投げ、その後あまりに多くの行を書いたので、
+      producer はそのうち 1,250 行を残さず、その最初の行が在った場所でそう述べています。
+      behavior の行はその後に続きます。<code>msg</code> の文と <code>data</code> の member は
+      書いた側が決めるもので、ここに挙げたものをこのプロファイルが定めているわけでは
+      ありません。
+    </p>
+    <p>
+      <a>document</a> が <code>withheld</code> を持つとき、エントリは、どの文書が書いたかに
+      関わらず、<code>source</code> が <code>"page"</code> の行を含んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。そうした行を残さなかった producer は、
+      <code>source</code> が <code>"browserhive"</code> の行を書いて、何行をなぜ残さなかったかを
+      述べ<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      パッケージのどこでもそうであるように（<a>settings</a> を参照）、シークレットの値は行に
+      現れては<em class="rfc2119">なりません</em>（MUST NOT）—— <code>msg</code> にも、
+      <code>data</code> のどの深さにも（値だけでなく鍵にも）、他のどの member にも。値の長さに
+      関わらずです。
+    </p>
+    <p class="note" title="置き換えてから切る">
+      順番が大事です。シークレットの値を置き換える前に行を切る producer は、切り口に値の頭を
+      残しかねず、そこにはもう何も当たりません。行の JSON の文字の上で置き換える producer は、
+      JSON が escape した値を見逃します。
+    </p>
+    <p class="note" title="答えと同じ行">
+      producer は、ログをパッケージの外でも伝えることがあります。BrowserHive は取り込みの
+      要求への答えで伝え、そこにある行は、このエントリの行から <code>profile</code> を除いた
+      ものです —— producer はパッケージを組む直前に、ログを 1 度だけ閉じるからです。
+    </p>
+  </section>
+
+  <section id="logs-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      読み手は <code>logs/capture.jsonl</code> の中身を実行しては<em class="rfc2119">なりません</em>
+      （MUST NOT）。行は取り込みの記録であって、アーカイブされたページの一部ではありません。
+      行の中に現れるコードは、ページか behavior が書き留めたものであり、パッケージの何も
+      それを走らせることを求めていません。
+    </p>
+    <p>
+      読み手は、<code>source</code> が <code>"page"</code> の行を producer の申告として読んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。producer は取り込んだページが書いたものを
+      取り次ぐだけで、言葉を選んだのはページです —— producer の言葉のように読める言葉も含めて。
+    </p>
+    <p>
+      <code>source</code> が <code>"script"</code> の行も、behavior が書いた証拠ではありません。
+      behavior はページの main world に在る通り道を通して行を書き、そこではページ自身の
+      スクリプトも走ります。producer は各行を、それが出てきたコードから behavior のものとし、
+      それが分からないときは、そのとき走っていた behavior のものとします。そのためページの
+      スクリプトは、behavior のもののように読める行を書けます。producer 自身の申告は、
+      <code>source</code> が <code>"browserhive"</code> の行だけです。
+    </p>
+    <p class="note">
+      ページの行が無いログは、ページが何も書かなかったことを述べません。producer は、ページが
+      書きうるすべての場所 —— たとえばあらゆる種類の worker —— を聞いているとは限らず、
+      残さなかった行は数えるだけで、持ちません。
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -2065,7 +2274,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>display: none</code> で隠されたテキストは、レスポンス本文には在っても、この木には
     現れません。方針が文書の本文を archive に入れなかったなら、そのテキストは本文に
     <strong>入っていない</strong>ので、パッケージは、木も、ページの文字と題も、その文書から
-    読んだ写しも持ちません（<a>document</a> を参照）。
+    読んだ写しも、ページがログに書いた行も持ちません（<a>document</a> を参照）。
   </p>
   <p>
     写しは、そのときのページの姿 —— 文字と、パスワードの欄を除く欄の値 —— を持ちます
@@ -2079,6 +2288,22 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     スクリプトが出した要求への応答や、frame の文書 —— が入りえます。方針がそうした本文の
     どれかを archive に入れなくても、残された文書のページ由来の記録からは、その中身は
     締め出されません。その中身を完全に締め出したい要求者は、文書ごと締め出す必要があります。
+  </p>
+  <p>
+    ログは、ページが書いた文字を運びます。<code>source</code> が <code>"page"</code> の行は、
+    取り込んだページのスクリプトが console に書いたものと、それらが捕まえなかった誤りを持ち、
+    そこには URL・識別子・ページ自身の文字が日常的に入ります。文書が伏せられたとき、ログは
+    それらを 1 行も持ちません（<a href="#logs-lines"></a> を参照）。ただし、この決まりが見るのは
+    <a>document</a> が名指す文書だけです: ページが伏せられた文書から残された文書へ移ったとき、
+    はじめの文書が書いた行は残ります。
+  </p>
+  <p>
+    ログの中で producer がシークレットの値を置き換えるのは、値がそのままの形で現れたところ
+    です —— <code>msg</code> にも <code>data</code> にも、鍵にも値にも、どの深さでも、長さに
+    関わらず。シークレットを別の形 —— 符号化したものや、分けたもの —— で書く behavior は、
+    その形をパッケージに入れ、誰もシークレットと告げなかった値も残ります。そして behavior が
+    行を書く通り道はページの main world に在るので、ページのスクリプトは behavior のもののように
+    読める行を書けます（<a href="#logs-reading"></a> を参照）。
   </p>
   <p>
     <a>storage</a> は、パッケージが既に保持している以上のものを晒しません。

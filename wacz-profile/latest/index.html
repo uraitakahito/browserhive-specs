@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.18.0</title>
+<title>BrowserHive WACZ Profile 1.19.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.19.0 exists: this document would
+    // is what makes the row still true once 1.20.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,18 +95,18 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.18.0 is not backward compatible with 1.17.0">
-    This version puts the document first in <code>pages/pages.jsonl</code>: its
-    first entry is the document the capture was asked for, any snapshots follow
-    it, and <code>mainPageURL</code> names that first entry (see
-    <a href="#pages"></a>). A package written against 1.17.0 lists only its
-    snapshots when it holds one, so it does not conform to 1.18.0.
+  <p class="note" title="1.19.0 is not backward compatible with 1.18.0">
+    This version requires every package to carry the log of its capture at
+    <code>logs/capture.jsonl</code> (see <a href="#logs-directory"></a>): the
+    lines that the producer, the behaviors and the captured page wrote while
+    the capture ran, up to the moment the package was assembled. A package
+    written against 1.18.0 has no such entry, so it does not conform to 1.19.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -131,17 +131,18 @@
   </p>
   <p>
     That loss matters because the archive is the thing that travels. A reader
-    opening a package three years later has no access to the logs, the API
-    response, or the machine that produced it. If the package cannot answer
-    &ldquo;is anything missing here?&rdquo;, nothing else can.
+    opening a package three years later has no access to the API response, to
+    the machine that produced it, or to the logs that machine kept. If the
+    package cannot answer &ldquo;is anything missing here?&rdquo;, nothing else
+    can.
   </p>
   <p>
     This profile therefore requires a package to carry its own account of the
     capture: which bodies are absent and why, which limits were in force, which
     requests it declined to send and which it sent but did not keep, what it
     removed from the page before recording it, which certificates the origins
-    presented. None of these change what [[WACZ]] means. They record what would
-    otherwise be unrecoverable.
+    presented, and the log the capture wrote as it ran. None of these change
+    what [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
 
@@ -200,7 +201,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -886,11 +887,13 @@
       The <strong>page-derived records</strong> are the snapshots of the
       document (see <a>snapshots</a>), the <code>text</code> and
       <code>title</code> of the entries in <code>pages/pages.jsonl</code>, the
-      <code>title</code> of <code>datapackage.json</code>, and
-      <code>accessibility/axtree.jsonl</code>. They are read from the rendered
-      page rather than from the network, so nothing in the WARC payload bounds
-      them: <strong>a policy that keeps a document's body out of the archive does
-      not by itself keep that document's text out.</strong>
+      <code>title</code> of <code>datapackage.json</code>,
+      <code>accessibility/axtree.jsonl</code>, and the lines of
+      <code>logs/capture.jsonl</code> whose <code>source</code> is
+      <code>"page"</code> (see <a href="#logs-lines"></a>). They are read from
+      the rendered page rather than from the network, so nothing in the WARC
+      payload bounds them: <strong>a policy that keeps a document's body out of
+      the archive does not by itself keep that document's text out.</strong>
     </p>
     <table class="simple">
       <thead>
@@ -922,6 +925,10 @@
       <code>title</code> of <code>datapackage.json</code> and
       <code>accessibility/axtree.jsonl</code> are read after the behaviors, from the document that <code>document</code>
       names, as is the snapshot of the <code>"after-behaviors"</code> stage.
+      The lines of <code>logs/capture.jsonl</code> whose <code>source</code> is
+      <code>"page"</code> are written all through the capture rather than read
+      at a stage, and they count as read from the document that
+      <code>document</code> names.
       The rules below on <code>withheld</code> apply at each stage to the
       document at that stage: a stage whose document they withhold has no
       snapshot, and <a>snapshots</a> records it as <code>"withheld"</code>.
@@ -2125,6 +2132,240 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </section>
 </section>
 
+<section id="logs-directory">
+  <h2>The logs directory</h2>
+  <p>
+    [[WACZ]] permits additional files and directories, provided they stay out of
+    <code>archive</code>, <code>indexes</code> and <code>pages</code>, and are
+    listed in the <code>resources</code> section of <code>datapackage.json</code>.
+    A conforming package <em class="rfc2119">MAY</em> use that allowance.
+  </p>
+  <p>
+    A conforming package <em class="rfc2119">MUST</em> contain an entry at
+    <code>logs/capture.jsonl</code>, the log of its capture. It
+    <em class="rfc2119">MUST</em> be declared in <code>resources</code> like any
+    other file, and it <em class="rfc2119">MUST</em> be
+    <a href="https://jsonlines.org/">JSON Lines</a>: one JSON object per line,
+    each object recording one line of the log.
+  </p>
+  <p>
+    The entry <em class="rfc2119">MUST</em> be present even when the log has no
+    lines, as an empty file, so that an empty log is a claim rather than an
+    omission. A package without the entry does not conform to this version. In
+    a package written against an earlier version, which did not define the
+    entry, its absence says nothing about what the capture logged.
+  </p>
+  <p class="note" title="Why the log travels with the package">
+    A producer's log usually stays on the machine that ran the capture, and is
+    lost with it. Yet the log is where the capture says what it waited for,
+    what its behaviors did and which errors the page raised &mdash; what a
+    reader needs when a page in the archive is not the one they expected.
+    Declared in <code>resources</code>, the entry is covered by the package's
+    digests, and by its signature when it has one.
+  </p>
+
+  <section id="logs-lines">
+    <h3>Log lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:log/1",
+  "at": "2026-11-04T05:12:04.551Z",
+  "ms": 4522,
+  "dpr": 1,
+  "source": "script",
+  "script": "example.com:gallery",
+  "level": "info",
+  "msg": "searched the gallery",
+  "data": { "query": "gallery", "results": 24 }
+}
+    </pre>
+    <p class="note">
+      Shown across several lines for readability. In the file each object
+      occupies exactly one line.
+    </p>
+    <p>
+      Each line <em class="rfc2119">MUST</em> contain <code>profile</code>,
+      <code>at</code>, <code>ms</code>, <code>source</code>, <code>level</code>
+      and <code>msg</code>, and <em class="rfc2119">MAY</em> contain
+      <code>dpr</code>, <code>script</code>, <code>data</code> and
+      <code>truncated</code>.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profile</code></td><td>string</td><td>yes</td>
+            <td>The rules the line follows. For this version of this
+            specification the value <em class="rfc2119">MUST</em> be
+            <code>"browserhive:log/1"</code>.</td></tr>
+        <tr><td><code>at</code></td><td>string</td><td>yes</td>
+            <td>When the producer received the line, as an [[RFC3339]]
+            timestamp.</td></tr>
+        <tr><td><code>ms</code></td><td>number</td><td>yes</td>
+            <td>Milliseconds from the start of the capture to when the producer
+            received the line, on the same clock as <code>at</code>: an
+            integer, 0 or more.</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>no</td>
+            <td>The device pixel ratio of the load the line was written during:
+            one of the entries of <code>devicePixelRatios</code> in
+            <a>settings</a>. Absent from a line written outside every load
+            &mdash; while the producer writes the other formats or assembles
+            the package, for instance.</td></tr>
+        <tr><td><code>source</code></td><td>string</td><td>yes</td>
+            <td>Who wrote the line: <code>"script"</code>, <code>"page"</code>
+            or <code>"browserhive"</code> (below).</td></tr>
+        <tr><td><code>script</code></td><td>string</td><td>when <code>source</code> is <code>"script"</code></td>
+            <td>The behavior the producer attributes the line to: the
+            <code>id</code> of an entry of <code>behaviors</code> in
+            <a>settings</a>.</td></tr>
+        <tr><td><code>level</code></td><td>string</td><td>yes</td>
+            <td>How much the line matters, as its writer rated it:
+            <code>"debug"</code>, <code>"info"</code>, <code>"warn"</code> or
+            <code>"error"</code>.</td></tr>
+        <tr><td><code>msg</code></td><td>string</td><td>yes</td>
+            <td>The text of the line.</td></tr>
+        <tr><td><code>data</code></td><td>any</td><td>no</td>
+            <td>A JSON value the writer attached to the line.</td></tr>
+        <tr><td><code>truncated</code></td><td>boolean</td><td>no</td>
+            <td><code>true</code> when the producer cut <code>msg</code> or
+            <code>data</code> to keep the line within a size of its own
+            (below).</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>source</code> <em class="rfc2119">MUST</em> be one of the
+      following, and <code>level</code> one of the four values above.
+    </p>
+    <ul>
+      <li><code>"browserhive"</code> &mdash; the producer's own account of the
+          capture: the stages it went through, what it waited for and how the
+          wait ended, what it gave up on, and the lines it left out
+          (below).</li>
+      <li><code>"script"</code> &mdash; a line a behavior wrote through the
+          runtime (see <a href="#behaviors-runtime"></a>), or the error a
+          behavior failed with.</li>
+      <li><code>"page"</code> &mdash; a line the captured page wrote: what its
+          scripts, and code supplied under <a>preload</a>, wrote to the
+          console, the errors they did not catch, and lines written through
+          the runtime that the producer cannot attribute to a behavior.</li>
+    </ul>
+    <p>
+      <code>script</code> <em class="rfc2119">MUST</em> be present on a line
+      whose <code>source</code> is <code>"script"</code>, and
+      <em class="rfc2119">MUST NOT</em> be present on any other. Its value
+      <em class="rfc2119">MUST</em> be the <code>id</code> of an entry of
+      <code>behaviors</code> in <a>settings</a>.
+    </p>
+    <p>
+      The lines <em class="rfc2119">MUST</em> be in the order the producer
+      received them, and <code>ms</code> <em class="rfc2119">MUST NOT</em> be
+      less than that of the line before. The entry
+      <em class="rfc2119">MUST</em> hold every line the producer received for
+      the capture before it assembled the package, except the ones it leaves
+      out as described below.
+    </p>
+    <p class="note" title="The log ends where the package was assembled">
+      The package is closed once it is assembled &mdash; its resources are
+      hashed, and the hashes perhaps signed &mdash; so nothing that happens
+      afterwards can be in it: the producer storing the package, a check it
+      runs on the stored package, or a line a behavior writes from a timer that
+      fires late. The absence of such lines says nothing about those events.
+    </p>
+    <p class="note" title="Whose clock">
+      <code>at</code> and <code>ms</code> are the producer's clock, read as each
+      line reached it, not the page's. A page can change the time its own
+      scripts read, and the lines of every load are to be read on one clock.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MAY</em> cut <code>msg</code> or
+      <code>data</code> to keep a line within a size of its own. A line it cut
+      <em class="rfc2119">MUST</em> carry <code>truncated</code> with the value
+      <code>true</code>. Cutting <code>data</code> can leave a string in its
+      place: the beginning of the value's JSON text.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MAY</em> leave lines out to keep the log
+      within limits of its own. One that does <em class="rfc2119">MUST</em>
+      write, where the first line it left out would have been and with that
+      line's <code>at</code> and <code>ms</code>, a line whose
+      <code>source</code> is <code>"browserhive"</code> that says how many
+      lines it left out and why.
+    </p>
+    <pre class="json">
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:02.377Z","ms":2348,"dpr":1,"source":"page","level":"error","msg":"Uncaught TypeError: Cannot read properties of null (reading 'offsetTop')"}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:03.016Z","ms":2987,"source":"browserhive","level":"warn","msg":"dropped 1250 lines to stay within the capture's log limits","data":{"dropped":1250}}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:04.551Z","ms":4522,"dpr":1,"source":"script","script":"example.com:gallery","level":"info","msg":"searched the gallery","data":{"query":"gallery","results":24}}</pre>
+    <p>
+      In this excerpt the page threw an error during the load, and then wrote
+      so many lines that the producer left 1,250 of them out, saying so where
+      the first of them had been; the behavior's line comes later. The texts of
+      <code>msg</code> and the members of <code>data</code> are the writer's to
+      choose; this profile does not define the ones shown here.
+    </p>
+    <p>
+      When <a>document</a> carries <code>withheld</code>, the entry
+      <em class="rfc2119">MUST NOT</em> contain a line whose
+      <code>source</code> is <code>"page"</code>, whichever document wrote it.
+      A producer that leaves such lines out <em class="rfc2119">MUST</em> write
+      a line whose <code>source</code> is <code>"browserhive"</code> that says
+      how many it left out and why.
+    </p>
+    <p>
+      As everywhere in the package (see <a>settings</a>), the value of a secret
+      <em class="rfc2119">MUST NOT</em> appear in a line &mdash; not in
+      <code>msg</code>, not in <code>data</code> at any depth, in a key as well
+      as in a value, and not in any other member, whatever the value's length.
+    </p>
+    <p class="note" title="Replace, then cut">
+      The order matters. A producer that cut a line before replacing the values
+      of the secrets could leave the start of one at the cut, where nothing
+      matches it any more, and one that replaced them in the JSON text of the
+      line would miss a value the JSON had escaped.
+    </p>
+    <p class="note" title="The same lines as the answer">
+      A producer may report the log outside the package as well. BrowserHive
+      does, in its answer to the capture request, and the lines there are the
+      ones in this entry without <code>profile</code>, because the producer
+      closes the log once, just before it assembles the package.
+    </p>
+  </section>
+
+  <section id="logs-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> execute the contents of
+      <code>logs/capture.jsonl</code>. The lines are a record of the capture,
+      not part of the archived page. Code that appears in a line is something
+      the page or a behavior wrote down, and nothing in the package asks for it
+      to be run.
+    </p>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> take a line whose
+      <code>source</code> is <code>"page"</code> as a statement of the
+      producer. The producer passes on what the captured page wrote, and the
+      page chose the words &mdash; including words that read like the
+      producer's.
+    </p>
+    <p>
+      Nor is a line whose <code>source</code> is <code>"script"</code> proof
+      that a behavior wrote it. A behavior writes its lines through a channel
+      in the page's main world, where the page's own scripts run too, and the
+      producer attributes each line to a behavior by the code it came from, or,
+      when it cannot tell, to the behavior running at the time. A script of the
+      page can therefore write lines that read as a behavior's. Only the lines
+      whose <code>source</code> is <code>"browserhive"</code> are the
+      producer's own account.
+    </p>
+    <p class="note">
+      A log without lines from the page does not say that the page wrote none.
+      The producer need not listen everywhere a page can write &mdash; in every
+      kind of worker, for instance &mdash; and the lines it leaves out are
+      counted, not kept.
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -2209,7 +2450,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     in the response body. When a policy kept the document's body out of the
     archive, that text is <strong>not</strong> in the payload, and the package
     carries neither the tree, nor the page's text and title, nor a snapshot read
-    from that document (see <a>document</a>).
+    from that document, nor the lines the page wrote to the log (see
+    <a>document</a>).
   </p>
   <p>
     A snapshot carries the page as it stood: its text, and the values in its
@@ -2226,6 +2468,25 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     bodies out of the archive does not keep its content out of the page-derived
     records of a document that was kept. A requester who needs that content kept
     out entirely has to keep the document out.
+  </p>
+  <p>
+    The log carries text the page wrote. The lines whose <code>source</code> is
+    <code>"page"</code> hold what the captured page's scripts wrote to the
+    console and the errors they did not catch, which routinely include URLs,
+    identifiers and the page's own text. When the document was withheld, the
+    log holds none of them (see <a href="#logs-lines"></a>), but the rule looks
+    only at the document that <a>document</a> names: when the page moved on
+    from a withheld document to one that was kept, the lines the first document
+    wrote stay.
+  </p>
+  <p>
+    In the log, the producer replaces the value of a secret wherever it appears
+    as it is &mdash; in <code>msg</code> and in <code>data</code>, in a key or a
+    value, at any depth, whatever its length. A behavior that writes a secret
+    in another form, encoded or split, puts that form in the package, and a
+    value nobody declared a secret stays. And the channel a behavior writes its
+    lines through is in the page's main world, so the page's scripts can write
+    lines that read as a behavior's (see <a href="#logs-reading"></a>).
   </p>
   <p>
     <a>storage</a> exposes nothing the package did not already hold. It records

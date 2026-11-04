@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.19.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/) | 2026-11-04 | 取り込みのログをパッケージに入れる（`logs/capture.jsonl`） |
 | [1.18.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/) | 2026-11-04 | ページ一覧の最初の行を、取り込みを求められた文書にする（`pages`） |
 | [1.17.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/) | 2026-11-02 | 時点ごとの文書の写しをページとして並べる（`snapshots`・`pages`） |
 | [1.16.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/) | 2026-11-01 | WARC のレコードの決まりを BrowserHive WARC Profile へ移す |
@@ -46,6 +47,40 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.19.0
+
+取り込みのログを、パッケージに入れるようにした。新しいエントリ `logs/capture.jsonl` は、取り込みが
+走っている間に producer（`browserhive`）・behavior（`script`）・取り込んだページ（`page`）が書いた行を、
+パッケージを組んだ時点まで持つ。
+
+- **`logs-directory`（新しい節）:** `logs/capture.jsonl` は必須（MUST）。`resources` に載せ（MUST）、
+  JSON Lines で書く（MUST）。行が 0 でも空のファイルで置く（MUST）。
+- **`logs-lines`（新しい節）:** 各行は `profile`（`"browserhive:log/1"`）・`at`（producer が受け取った
+  時刻）・`ms`（取り込みの始まりからのミリ秒。0 以上の整数）・`source`（`script`・`page`・`browserhive`）・
+  `level`（`debug`・`info`・`warn`・`error`）・`msg` を持ち（MUST）、`dpr`（`devicePixelRatios` の要素。
+  読み込みの外の行には無い）・`script`・`data`・`truncated` を持ちうる。`script` は `source` が `script`
+  の行にだけ在り（MUST・MUST NOT）、値は `settings.behaviors` の `id`（MUST）。行は受け取った順で、
+  `ms` は減らない（MUST・MUST NOT）。パッケージを組むまでに受け取った行をすべて持ち（MUST）、その後の
+  出来事（保管庫に置く・置いた後の検査）は入らない。切った行は `truncated: true`（MUST）。上限で行を
+  残さなかったときは、残さなかった最初の行の場所に、その行の `at`・`ms` で、数と理由を述べる
+  `browserhive` の行を置く（MUST）。`document` が `withheld` を持つときは `page` の行を置かず
+  （MUST NOT）、数と理由を述べる `browserhive` の行を置く（MUST）。シークレットの値は、どの member にも、
+  `data` のどの深さ（鍵も）にも、長さに依らず置かない（MUST NOT）。
+- **`logs-reading`（新しい節）:** 読み手は行を実行しない（MUST NOT）。`page` の行を producer の申告と
+  して読まない（MUST NOT）。`script` の行もページが書ける（行の通り道が main world に在る）ことを書いた。
+- **`document`:** ページ由来の記録に、ログの `page` の行を足した。`page` の行は時点ごとに読む物ではなく、
+  `document` が名指す文書から読んだものとして扱う。
+- **Introduction と Security and privacy considerations:** 「読み手はログを持たない」を直した。ログが
+  運ぶページの文字、シークレットを置き換える範囲、`page` の行の決まりが `document` の文書しか見ない
+  ことを書いた。
+
+**なぜ。** 取り込みのログは BrowserHive の機械に残り、機械と共に消えていた。behavior が何をしたか、
+ページがどんな誤りを出したか、取り込みが何を待ったかは、アーカイブの中のページが思っていたものと違う
+ときに読み手が要るのに、パッケージには無かった。`resources` に載せれば、ログも digest（と署名）に
+覆われる。行は BrowserHive の答えの `log.lines` と同じで、違いは各行の `profile` だけ。
+
+`logs/capture.jsonl` を持たない、1.18.0 に対して書いたパッケージは、1.19.0 に適合しない。
 
 ## 1.18.0
 
