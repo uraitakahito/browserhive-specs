@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.17.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.18.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.18.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.19.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.17.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.18.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,17 +92,14 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.17.0 は 1.16.0 と後方互換ではありません">
-    この版は、<code>archive/</code> のどの WARC ファイルにも [[BROWSERHIVE-WARC-PROFILE]]
-    1.1.0 への適合を求めます。その版は写し —— 取り込みのある時点の文書の姿を写したもので、
-    アーカイブしたページを配る読み手がページとして開くもの —— を足しています。この版は
-    あわせて、どの時点で写しを取り、ほかの時点ではなぜ取らなかったかを述べる必須の
-    <a>snapshots</a> member を足し、写しごとに 1 つのページを並べます（<a href="#pages"></a>
-    を参照）。そのため、その member を持たない 1.16.0 向けのパッケージは、1.17.0 に適合
-    しません。これは
+  <p class="note" title="1.18.0 は 1.17.0 と後方互換ではありません">
+    この版は、<code>pages/pages.jsonl</code> で文書を先頭に置きます: 最初のエントリは
+    取り込みを求められた文書で、写しはその後に続き、<code>mainPageURL</code> はその最初の
+    エントリを名指します（<a href="#pages"></a> を参照）。写しを持つとき写しだけを並べる 1.17.0
+    向けのパッケージは、1.18.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -188,7 +185,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -850,7 +847,9 @@
       <code>pages/pages.jsonl</code> のエントリ（<a href="#pages"></a> を参照）は、その時点で
       主フレームにあった文書から読みます。<code>datapackage.json</code> の <code>title</code>
       と <code>accessibility/axtree.jsonl</code> は、behavior の後に、<code>document</code> が
-      名指す文書から読み、<code>"after-behaviors"</code> の時点の写しも同じです。下の
+      名指す文書から読み、<code>"after-behaviors"</code> の時点の写しと、
+      <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
+      も同じです。下の
       <code>withheld</code> の決まりは、各時点で、その時点の文書に当てはまります: 決まりが文書を
       伏せる時点には写しが無く、<a>snapshots</a> はそれを <code>"withheld"</code> と記録します。
     </p>
@@ -892,8 +891,8 @@
       持ってはなりません（<em class="rfc2119">MUST NOT</em>）。<code>datapackage.json</code>
       の <code>title</code> はページから読んではならず（<em class="rfc2119">MUST NOT</em>）、
       パッケージは <code>accessibility/axtree.jsonl</code> を含んではなりません
-      （<em class="rfc2119">MUST NOT</em>）。そのときパッケージが写しを 1 つも持たないなら、
-      <code>pages/pages.jsonl</code> のただ 1 つのエントリは <code>text</code> と
+      （<em class="rfc2119">MUST NOT</em>）。<code>pages/pages.jsonl</code> の文書のエントリ（<a href="#pages"></a>
+      を参照）は <code>text</code> と
       <code>title</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。そのエントリは
       理由を <code>textWithheld</code> として持ってもよく（<em class="rfc2119">MAY</em>）、
       持つなら値は <code>withheld</code> と等しくなければなりません
@@ -1206,14 +1205,28 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     [[WACZ]] はパッケージのページを <code>pages/pages.jsonl</code> に並べ、アーカイブした
     ページを配る読み手は、エントリの <code>url</code> と <code>ts</code> でページを開きます。
-    この節はそのエントリを定め、文書のどの写し（<a>snapshots</a> を参照）もページとして
-    開けるようにします。
+    この節はそのエントリを定め、取り込みを求められた文書と、そのどの写し（<a>snapshots</a> を
+    参照）も、ページとして開けるようにします。
   </p>
   <p>
-    パッケージが写しを持つとき、<code>pages/pages.jsonl</code> は、写しごとに 1 つのエントリを
-    <a>snapshots</a> の順に持たなければならず、ほかのエントリは持ちません
-    （<em class="rfc2119">MUST</em>）。写しのエントリは:
+    <code>pages/pages.jsonl</code> の最初のエントリは、文書のエントリでなければなりません
+    （<em class="rfc2119">MUST</em>）。その後に、写しごとに 1 つのエントリを <a>snapshots</a>
+    の順に持たなければならず、ほかのエントリは持ちません（<em class="rfc2119">MUST</em>）。
+    文書のエントリは:
   </p>
+  <ul>
+    <li><code>url</code> が、取り込みを求められた URL を、URL Standard の
+        <a href="https://url.spec.whatwg.org/#concept-url-serializer">URL serializer</a> が書くとおりに書き、fragment を除いたもので
+        なければなりません（<em class="rfc2119">MUST</em>）。これは、取り込みが文書のために出した
+        最初の要求の URL です。path が空の URL には、要求と同じく末尾の <code>/</code> が付きます。</li>
+    <li><code>ts</code> は、取り込みを始めた時刻です。</li>
+    <li><code>stage</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。</li>
+    <li><code>id</code> が、ほかのどのエントリのものとも違わなければなりません
+        （<em class="rfc2119">MUST</em>）。</li>
+    <li><code>title</code> と <code>text</code> は、在るなら、behavior の後に、<a>document</a>
+        が名指す文書から読みます。</li>
+  </ul>
+  <p>写しのエントリは:</p>
   <ul>
     <li><code>url</code> と <code>ts</code> が、写しの <code>resource</code> レコードの
         <code>WARC-Target-URI</code> と <code>WARC-Date</code> でなければなりません
@@ -1226,26 +1239,26 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
         （<a>document</a> を参照）。</li>
   </ul>
   <p>
-    パッケージが写しを 1 つも持たないとき、<code>pages/pages.jsonl</code> はエントリを
-    ちょうど 1 つ持たなければならず、その <code>url</code> は取り込みを求められた URL です
-    （<em class="rfc2119">MUST</em>）。そのエントリは <code>stage</code> を持ってはなりません
-    （<em class="rfc2119">MUST NOT</em>）。
-  </p>
-  <p>
-    パッケージが写しを持つとき、<code>datapackage.json</code> の <code>mainPageURL</code> は、
-    <code>pages/pages.jsonl</code> の最初のエントリの <code>url</code> と同じでなければなりません
-    （<em class="rfc2119">MUST</em>）。写しを 1 つも持たないとき、<code>mainPageURL</code> は、
-    これまでどおり、取り込みを求められた URL です。
+    <code>datapackage.json</code> の <code>mainPageURL</code> は、<code>pages/pages.jsonl</code>
+    の最初のエントリ、つまり文書のエントリの <code>url</code> と同じでなければなりません
+    （<em class="rfc2119">MUST</em>）。
   </p>
   <pre class="json">
 {"format":"json-pages-1.0","id":"pages","title":"All Pages"}
+{"id":"5f2c9a1e","url":"https://example.com/","ts":"2026-11-02T01:20:03.502Z","title":"Results for lamp","text":"3 results &hellip;"}
 {"id":"5f2c9a1e-after-load","url":"urn:browserhive:snapshot:after-load:https://example.com/","ts":"2026-11-02T01:20:05.118Z","stage":"after-load","title":"Search","text":"Search the shop &hellip;"}
 {"id":"5f2c9a1e-after-behaviors","url":"urn:browserhive:snapshot:after-behaviors:https://example.com/results","ts":"2026-11-02T01:20:07.415Z","stage":"after-behaviors","title":"Results for lamp","text":"3 results &hellip;"}</pre>
-  <p class="note" title="なぜ最初の写しを main page にするのか">
-    読み手は <code>mainPageURL</code> を最初に開き、それがページの中に在ることを期待します。
-    取り込みを求められた URL は、ページが読み込まれる前に転送されることがあり
-    （<code>http</code> から <code>https</code> へ、末尾に <code>/</code> を足すなど）、
-    そのときはどのエントリも名指しませんが、最初の写しは必ずエントリを名指します。
+  <p class="note" title="なぜ最初のエントリを文書にするのか">
+    写しは、頁の script を除いた文書の DOM の写しです。そのため、script が出すもの ——
+    アニメーションが終わってから置かれる絵や、要求で埋まる一覧 —— が、写しに無いことがあります。
+    文書のエントリは、記録した応答を頁の script を動かして開き、最初に見えた頁を出します。
+    文書を記録したなら、取り込みを求められた URL は記録を名指します: 文書を返した応答か、
+    そこへ導いた転送で、読み手は転送を辿ります。
+  </p>
+  <p class="note" title="読み手が最初に開くエントリ">
+    どこから開くかは、読み手によって違います。<code>mainPageURL</code> を開く読み手もいれば、
+    エントリを新しい順に並べ、文書を最後に置く読み手もいます。読み手に文書を見せたいリンクは、
+    その <code>url</code> と <code>ts</code> を名指します。
   </p>
 </section>
 

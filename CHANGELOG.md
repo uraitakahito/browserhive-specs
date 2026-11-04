@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.18.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/) | 2026-11-04 | ページ一覧の最初の行を、取り込みを求められた文書にする（`pages`） |
 | [1.17.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/) | 2026-11-02 | 時点ごとの文書の写しをページとして並べる（`snapshots`・`pages`） |
 | [1.16.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/) | 2026-11-01 | WARC のレコードの決まりを BrowserHive WARC Profile へ移す |
 | [1.15.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/) | 2026-11-01 | 要求が behavior に渡した値を `settings` に記録する（シークレットは名前だけ） |
@@ -45,6 +46,29 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.18.0
+
+ページ一覧（`pages/pages.jsonl`）の最初の行を、取り込みを求められた文書にした。写しの行は、その後に続く。
+
+- **`pages`:** 最初の行は文書の行（MUST）。`url` は取り込みを求められた URL を URL Standard の
+  serializer で書き、fragment を除いたもの（MUST）。これは文書のための最初の要求の URL で、path が空なら
+  末尾の `/` が付く。`ts` は取り込みの開始。`stage` を持たない（MUST NOT）。`id` は互いに違う（MUST）。
+  `title` と `text` は、behavior の後に `document` が名指す文書から読む。写しがあれば、その後に写しごとに
+  1 行を `snapshots` の順に（写しの行の決まりは 1.17.0 と同じ）。`mainPageURL` は、いつでも最初の行の
+  `url`（MUST）。
+- **`document`:** 伏せたとき（`withheld`）、文書の行は `text` と `title` を持たない（MUST NOT）。
+  理由を `textWithheld` に書いてよい（MAY）。1.17.0 は、写しが無いときの 1 行にだけ当てていた。
+- **注記:** 「なぜ最初の写しを main page にするのか」を外し、「なぜ最初のエントリを文書にするのか」と
+  「読み手が最初に開くエントリ」を足した。
+
+**なぜ。** 写しは頁の script を除いた DOM なので、script が出す絵（アニメーションの後に置かれる
+静止画など）が、写しに無いことがある。1.17.0 では写しを持つパッケージの一覧に文書の行が無く、記録した
+応答を script を動かして開く入口が、一覧から消えていた（Jira CAPTURE-29・CAPTURE-48）。1.17.0 は
+「読み手は `mainPageURL` を最初に開く」を理由にしていたが、ReplayWeb.page 2.5.0 は `mainPageURL` を
+読まず、一覧を新しい順に並べる。
+
+写しを持つとき写しの行だけを並べる、1.17.0 に対して書いたパッケージは、1.18.0 に適合しない。
 
 ## 1.17.0
 
