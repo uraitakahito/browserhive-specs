@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.19.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.20.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.20.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.21.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.19.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.20.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,14 +92,13 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.19.0 は 1.18.0 と後方互換ではありません">
-    この版は、どのパッケージにも、取り込みのログを <code>logs/capture.jsonl</code> に持つことを
-    求めます（<a href="#logs-directory"></a> を参照）—— 取り込みが走っている間に producer・
-    behavior・取り込んだページが書いた行を、パッケージを組んだ時点まで。そのエントリを持たない
-    1.18.0 向けのパッケージは、1.19.0 に適合しません。これは
+  <p class="note" title="1.20.0 は 1.19.0 と後方互換ではありません">
+    この版は、どのパッケージにも、取り込みが送った <code>User-Agent</code> を
+    <a href="#settings"></a> の <code>userAgent</code> に記録することを求めます。その member を
+    持たない 1.19.0 向けのパッケージは、1.20.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -185,7 +184,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -287,6 +286,9 @@
             走ったのか、取り込みをまたいで使い回される context で走ったのか。
             前の取り込みが残した状態にパッケージが依存しうるかどうかを、
             読み手はこれで判定します。</td></tr>
+        <tr><td><code>userAgent</code></td><td>string</td><td>はい</td>
+            <td>取り込みが送った <code>User-Agent</code>。要求が指定した値を解決した後の値で、
+            指定が無ければブラウザ自身の値。</td></tr>
         <tr><td><code>behaviors</code></td><td>array of object</td><td>はい</td>
             <td>読み込み後に走った behavior。走った順のまま。
             各項目は <code>id</code>（その behavior が走った名前）と
@@ -328,6 +330,7 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1],
   "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
   "behaviors": [
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "autofetch", "origin": "builtin" }
@@ -349,7 +352,8 @@
       表しています。<code>devicePixelRatios</code> の要素が 1 つなのは、ページを
       1 回だけ読み込んだという意味です。<code>behaviors</code> に並ぶ 2 つは実際に走った
       behavior です —— 有効化されていた
-      ものの一覧ではありません。<code>acceptLanguage</code> は、この取り込みが設定しなかった
+      ものの一覧ではありません。<code>userAgent</code> がブラウザ自身の値なのは、要求が指定
+      しなかったからです。<code>acceptLanguage</code> は、この取り込みが設定しなかった
       ので在りません。<code>variables</code> と <code>secrets</code> が空なのは、要求が behavior に
       値を 1 つも渡さなかったからです。値そのものは producer が決めるもので、ここに挙げた綴りを
       このプロファイルが定めているわけではありません。
@@ -372,8 +376,9 @@
       するためです —— ページの見た目を伴う成果物は、最後の読み込みが残した状態に従います。
     </p>
     <p>
-      2 回読み込む取り込みでは、読み込んだ数だけ値が並びます。要求が
-      <code>acceptLanguage</code> を指定した場合は、それもここに現れます。behavior に値を渡した
+      2 回読み込む取り込みでは、読み込んだ数だけ値が並びます。要求が <code>User-Agent</code> を
+      指定した場合は送った値が現れ、<code>acceptLanguage</code> を指定した場合は、それもここに
+      現れます。behavior に値を渡した
       要求では、その値も現れます —— 変数は値ごと、シークレットは名前だけ:
     </p>
     <pre class="json">
@@ -382,6 +387,7 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1, 2],
   "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 BrowserHive",
   "behaviors": [
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "example.com:gallery", "origin": "custom" }
@@ -427,6 +433,18 @@
       <strong>区別しません</strong>。
       対処が違う (前者は 1 件が大きすぎ、後者はページ全体が重い) にもかかわらずです。
       区別が要る読み手は、パッケージの外 —— 取り込みが出した報告 —— を見ることになります。
+    </p>
+    <p>
+      <code>userAgent</code> は送った値で、要求が書いた文字列ではありません。要求は値の一部を
+      producer に埋めさせることができ、オリジンが見たのは埋めた後の値だからです。
+      <code>WARC-Target-URI</code> が <code>mainPageURL</code> である <code>request</code> レコードは
+      どれも、この値を <code>User-Agent</code> ヘッダに持た<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <p class="note">
+      決まりが掛かるのはそのレコードだけです。ページ自身のスクリプトが出す要求は別の値を持ちうるし、
+      service worker の要求はパッケージに入らないことがあります。この値が何であれ、<a>browser</a> は
+      取り込みを行ったブラウザを名指し続けるので、読み手はオリジンに何と伝えたかと、実際に何が
+      取り込んだかを区別できます。
     </p>
     <p>
       <code>variables</code> と <code>secrets</code> は、要求が behavior に読ませるために渡したものを

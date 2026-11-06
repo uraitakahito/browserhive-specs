@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.20.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/) | 2026-11-06 | 取り込みが送った `User-Agent` を `settings` に記録する |
 | [1.19.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/) | 2026-11-04 | 取り込みのログをパッケージに入れる（`logs/capture.jsonl`） |
 | [1.18.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/) | 2026-11-04 | ページ一覧の最初の行を、取り込みを求められた文書にする（`pages`） |
 | [1.17.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/) | 2026-11-02 | 時点ごとの文書の写しをページとして並べる（`snapshots`・`pages`） |
@@ -47,6 +48,21 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.20.0
+
+取り込みが送った `User-Agent` を、`settings` の必須の member にした。
+
+- **`settings`:** `userAgent`（string・必須）を足した。要求が指定した値を解決した後の値で、指定が無ければブラウザ自身の値。
+  `mainPageURL` を `WARC-Target-URI` に持つ `request` レコードは、どれもこの値を `User-Agent` ヘッダに持つ（MUST）。
+  ページ自身のスクリプトが出す要求と、service worker の要求には掛からない。`browser` の節は変えない。
+
+**なぜ。** `settings` は効いていた解決後の値を記録する節なのに、送った `User-Agent` はどこにも無かった。`User-Agent` は
+オリジンが返すものを変える（`HeadlessChrome` を含む字に 404 を返すサイトがある）ので、パッケージを証拠として読む人は、
+何と名乗って取ったかを言えなければならない。`request` レコードを読めば分かるが、レコードを 1 本ずつ読まずに言える場所が
+無く、記録と実際の食い違いを見つける手立ても無かった。
+
+`userAgent` を持たない、1.19.0 に対して書いたパッケージは、1.20.0 に適合しない。
 
 ## 1.19.0
 

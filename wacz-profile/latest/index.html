@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.19.0</title>
+<title>BrowserHive WACZ Profile 1.20.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.20.0 exists: this document would
+    // is what makes the row still true once 1.21.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,18 +95,17 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.19.0 is not backward compatible with 1.18.0">
-    This version requires every package to carry the log of its capture at
-    <code>logs/capture.jsonl</code> (see <a href="#logs-directory"></a>): the
-    lines that the producer, the behaviors and the captured page wrote while
-    the capture ran, up to the moment the package was assembled. A package
-    written against 1.18.0 has no such entry, so it does not conform to 1.19.0.
+  <p class="note" title="1.20.0 is not backward compatible with 1.19.0">
+    This version requires every package to record the <code>User-Agent</code>
+    its capture sent, as <code>userAgent</code> in <a href="#settings"></a>. A
+    package written against 1.19.0 has no such member, so it does not conform
+    to 1.20.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> and
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -201,7 +200,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -310,6 +309,10 @@
             discarded afterwards, or in one the capturing process reuses across
             captures. It tells a reader whether the package could depend on
             state left by an earlier capture.</td></tr>
+        <tr><td><code>userAgent</code></td><td>string</td><td>yes</td>
+            <td>The <code>User-Agent</code> the capture sent, after resolving what
+            the request asked for. Without a request for one, the browser's own
+            value.</td></tr>
         <tr><td><code>behaviors</code></td><td>array of object</td><td>yes</td>
             <td>Behaviors that ran after load, in the order they ran. Each entry
             carries <code>id</code>, the name the behavior was run under, and
@@ -355,6 +358,7 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1],
   "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
   "behaviors": [
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "autofetch", "origin": "builtin" }
@@ -377,6 +381,8 @@
       <code>devicePixelRatios</code> that it loaded the page once. The two
       entries under <code>behaviors</code> are the
       behaviors that ran &mdash; not the ones that were enabled.
+      <code>userAgent</code> is the browser's own value because the request
+      asked for none.
       <code>acceptLanguage</code> is absent because this capture set none, and
       <code>variables</code> and <code>secrets</code> are empty because the
       request supplied no values for the behaviors. The
@@ -403,6 +409,7 @@
     </p>
     <p>
       A capture that loads the page twice carries one value per load. A request
+      that asked for a <code>User-Agent</code> shows the value that was sent, one
       that set <code>acceptLanguage</code> shows it here as well, and one that
       supplied values for its behaviors shows them &mdash; the variables with
       their values, the secrets by name alone:
@@ -413,6 +420,7 @@
   "viewport": { "width": 1280, "height": 800 },
   "devicePixelRatios": [1, 2],
   "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 BrowserHive",
   "behaviors": [
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "example.com:gallery", "origin": "custom" }
@@ -463,6 +471,21 @@
       though the remedies differ (one response too large
       versus the whole page too heavy). A reader who needs the distinction has to
       look outside the package, at what the capture reported.
+    </p>
+    <p>
+      <code>userAgent</code> is the value that was sent, not the text the request
+      asked for: a request may leave part of the value for the producer to fill
+      in, and what an origin saw is the filled-in value. Every
+      <code>request</code> record whose <code>WARC-Target-URI</code> is
+      <code>mainPageURL</code> <em class="rfc2119">MUST</em> carry this value in
+      its <code>User-Agent</code> header.
+    </p>
+    <p class="note">
+      Only those records are bound. A page's own scripts may send another value
+      on the requests they make, and the requests of a service worker may not be
+      in the package at all. <a>browser</a> keeps naming the browser that
+      performed the capture whatever this value says, so a reader can tell what
+      the origins were told from what actually captured.
     </p>
     <p>
       <code>variables</code> and <code>secrets</code> record what the request
