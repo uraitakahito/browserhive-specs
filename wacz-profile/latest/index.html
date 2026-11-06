@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.20.0</title>
+<title>BrowserHive WACZ Profile 1.21.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.21.0 exists: this document would
+    // is what makes the row still true once 1.22.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,17 +95,17 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.20.0 is not backward compatible with 1.19.0">
-    This version requires every package to record the <code>User-Agent</code>
-    its capture sent, as <code>userAgent</code> in <a href="#settings"></a>. A
-    package written against 1.19.0 has no such member, so it does not conform
-    to 1.20.0.
+  <p class="note" title="1.21.0 is not backward compatible with 1.20.0">
+    This version requires every package to list the targets whose renderer
+    crashed during its capture, as <code>crashedTargets</code> in
+    <a href="#completeness"></a>. A package written against 1.20.0 has no such
+    member, so it does not conform to 1.21.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -200,7 +200,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -523,8 +523,8 @@
     <h3><code>completeness</code></h3>
     <p>
       <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
-      member <dfn>completeness</dfn>, the package's own account of the bodies it
-      does not hold.
+      member <dfn>completeness</dfn>, the package's own account of what it does
+      not hold: the bodies it is missing, and the targets that crashed.
     </p>
     <table class="simple">
       <thead>
@@ -541,8 +541,11 @@
             obtain as bytes, so the archive holds none (see
             <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#response-payloads">Response payloads</a> in
             [[BROWSERHIVE-WARC-PROFILE]]).</td></tr>
+        <tr><td><code>crashedTargets</code></td><td>array of object</td><td>yes</td>
+            <td>Targets other than the main document whose renderer crashed during
+            the capture (see <a href="#completeness-crashed-targets"></a>).</td></tr>
         <tr><td><code>complete</code></td><td>boolean</td><td>yes</td>
-            <td><code>true</code> if and only if all three arrays are empty.</td></tr>
+            <td><code>true</code> if and only if all four arrays are empty.</td></tr>
       </tbody>
     </table>
     <pre class="json">
@@ -550,11 +553,12 @@
   "bodylessUrls": [],
   "truncatedUrls": [],
   "uninterceptedUrls": [],
+  "crashedTargets": [],
   "complete": true
 }</pre>
     <p>
       A capture that lost nothing takes this shape. <code>complete</code> is
-      derived from the three arrays, so three empty arrays alongside
+      derived from the four arrays, so four empty arrays alongside
       <code>false</code> never occur.
     </p>
     <p>
@@ -572,6 +576,7 @@
   "uninterceptedUrls": [
     "https://example.com/api/feed"
   ],
+  "crashedTargets": [],
   "complete": false
 }</pre>
     <p>
@@ -581,8 +586,8 @@
       read it as bytes. A URL dropped twice still appears once.
     </p>
     <p>
-      All three arrays <em class="rfc2119">MUST</em> be sorted, so that two
-      captures of the same page produce comparable output.
+      The three arrays of URLs <em class="rfc2119">MUST</em> be sorted, so that
+      two captures of the same page produce comparable output.
     </p>
     <p>
       The three are separate members because they call for different responses.
@@ -645,6 +650,71 @@
             not obtain it as bytes.</td></tr>
       </tbody>
     </table>
+
+    <section id="completeness-crashed-targets">
+      <h4><code>crashedTargets</code></h4>
+      <p>
+        A page can run in more than one renderer process: a cross-site iframe has
+        a process of its own. When such a renderer crashes, the rest of the page
+        goes on and the capture can finish, but what that target was showing is
+        gone. A screenshot shows an empty frame there, which nothing distinguishes
+        from a frame that was meant to be empty, so the package has to say so.
+      </p>
+      <p>
+        <code>crashedTargets</code> <em class="rfc2119">MUST</em> contain one entry
+        for each target, other than the main document, whose renderer crashed after
+        the capture started and before the package was assembled.
+      </p>
+      <table class="simple">
+        <thead>
+          <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>type</code></td><td>string</td><td>yes</td>
+              <td>The kind of target, in the browser's own word: <code>iframe</code>,
+              <code>service_worker</code> and so on.</td></tr>
+          <tr><td><code>url</code></td><td>string</td><td>no</td>
+              <td>The target's URL. See below for when it is absent.</td></tr>
+          <tr><td><code>status</code></td><td>string</td><td>yes</td>
+              <td>How the renderer ended, in the browser's own word:
+              <code>killed</code> when something outside the process ended it,
+              <code>crashed</code> when the process itself failed, and so on.</td></tr>
+        </tbody>
+      </table>
+      <pre class="json">
+"completeness": {
+  "bodylessUrls": [],
+  "truncatedUrls": [],
+  "uninterceptedUrls": [],
+  "crashedTargets": [
+    {
+      "type": "iframe",
+      "url": "https://ads.example.net/slot/1",
+      "status": "killed"
+    }
+  ],
+  "complete": false
+}</pre>
+      <p>
+        <code>url</code> <em class="rfc2119">MUST</em> be omitted when the first entry
+        of <a>urlPolicies</a> to match it has the action <code>no-archive</code> or
+        <code>deny</code>, and when <a>document</a> has <code>withheld</code>. A target's
+        URL comes from the page, so it <em class="rfc2119">MUST NOT</em> carry out what
+        the requester asked not to keep.
+      </p>
+      <p>
+        The array <em class="rfc2119">MUST</em> be sorted by <code>url</code>, then
+        <code>type</code>, then <code>status</code>, with an entry without a
+        <code>url</code> ahead of those with one.
+      </p>
+      <p>
+        The main document does not appear here. When its renderer crashes before the
+        package is assembled, the capture fails and no package is written. After that
+        the renderer is no longer needed, so the crash changes nothing the package
+        says. A same-site iframe and a dedicated worker run in the main document's
+        renderer, so their crash is the main document's.
+      </p>
+    </section>
   </section>
 
   <section id="coverage">
