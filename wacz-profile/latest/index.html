@@ -657,8 +657,9 @@
         A page can run in more than one renderer process: a cross-site iframe has
         a process of its own. When such a renderer crashes, the rest of the page
         goes on and the capture can finish, but what that target was showing is
-        gone. A screenshot shows an empty frame there, which nothing distinguishes
-        from a frame that was meant to be empty, so the package has to say so.
+        gone. A screenshot shows the gray box Chromium draws for a crashed frame,
+        but that is a picture no tool reading the archive can act on, and a saved
+        document still holds the ordinary iframe element, so the package has to say so.
       </p>
       <p>
         <code>crashedTargets</code> <em class="rfc2119">MUST</em> contain one entry
