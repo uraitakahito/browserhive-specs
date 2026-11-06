@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.21.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 2026-11-07 | 取り込みの間に renderer が落ちた target を `completeness.crashedTargets` に載せる |
 | [1.20.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/) | 2026-11-06 | 取り込みが送った `User-Agent` を `settings` に記録する |
 | [1.19.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/) | 2026-11-04 | 取り込みのログをパッケージに入れる（`logs/capture.jsonl`） |
 | [1.18.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/) | 2026-11-04 | ページ一覧の最初の行を、取り込みを求められた文書にする（`pages`） |
@@ -48,6 +49,21 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.21.0
+
+取り込みの間に renderer が落ちた、主文書以外の target を、`completeness` の必須の member にした。
+
+- **`completeness`:** `crashedTargets`（array of object・必須）を足した。項目は `type`（必須）・`url`・`status`（必須）で、`type` と `status` はブラウザ自身の語のまま。
+  `complete` は 4 つの配列がすべて空のときだけ `true` になる。
+- **`url` を省く条件:** `url` に最初に当たる `urlPolicies` の項目の action が `no-archive` か `deny` のときと、`document` が `withheld` を持つとき（MUST）。
+- **整列:** `url`、`type`、`status` の順（MUST）。`url` の無い項目を前に置く。
+
+**なぜ。** 別サイトの iframe は自分の renderer プロセスを持つので、それが落ちても取り込みは終えられる。
+しかしスクリーンショットのその場所は空の枠になり、もともと空だった枠と見分けられない。パッケージを証拠として読む人は、
+ページの一部が取り込みの間に死んだことを、ファイルだけから知れなければならない。
+
+`crashedTargets` を持たない、1.20.0 に対して書いたパッケージは、1.21.0 に適合しない。
 
 ## 1.20.0
 
