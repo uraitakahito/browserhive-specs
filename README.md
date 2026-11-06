@@ -2,6 +2,15 @@
 
 [BrowserHive](https://github.com/uraitakahito/browserhive) が書き出すファイル形式の仕様。
 
+BrowserHive WACZ Profile は、[specs](https://github.com/uraitakahito/specs) に在る WACZ（Web Archive Collection Zipped）1.1.1 の、
+**後方互換性を持った拡張規格**である。WACZ 1.1.1 が認める範囲で要求を足すだけで、取り除くことも緩めることもしない。
+だから、この Profile に適合する WACZ は WACZ 1.1.1 にも適合し、ReplayWeb.page など WACZ を読むソフトウェアでそのまま開ける。
+逆は成り立たない。ふつうの WACZ 1.1.1 は `browserhive:capture` などを持たないので、この Profile には適合しない。
+
+`specs` は Webrecorder の仕様書（[webrecorder/specs](https://github.com/webrecorder/specs)）の fork で、
+WACZ 1.1.1 の[日本語訳](https://uraitakahito.github.io/specs/wacz/1.1.1/)を持つ。
+この repo の仕様が基底として名指しするのは、本家の[英語版](https://specs.webrecorder.net/wacz/1.1.1/)である。
+
 WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/uraitakahito/browserhive-warc-spec)
 （BrowserHive WARC Profile）に在る。この repo の WACZ Profile は 1.16.0 から、`archive/` の WARC が
 その仕様に適合することを求めて、そちらを指す。
@@ -30,7 +39,7 @@ WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/u
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 1.1.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
 
-各版は**後方互換ではない**。BrowserHive は最新版しか出力しないが、古い版の文書は
+Profile の版どうしは**後方互換ではない**。BrowserHive は最新版しか出力しないが、古い版の文書は
 それぞれの URL に残す —— 既存アーカイブの `conformsTo` がそこを指しており、消すと
 「何に適合していたか」を辿れなくなるため。版ごとに何が変わったかは
 [変更履歴](CHANGELOG.md)。
