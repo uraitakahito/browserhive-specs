@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.21.0</title>
+<title>BrowserHive WACZ Profile 1.22.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.22.0 exists: this document would
+    // is what makes the row still true once 1.23.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -69,9 +69,9 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/",
         publisher: "BrowserHive",
-        version: "1.1.0",
+        version: "1.2.0",
       },
     },
     lint: false,
@@ -95,17 +95,19 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.21.0 is not backward compatible with 1.20.0">
-    This version requires every package to list the targets whose renderer
-    crashed during its capture, as <code>crashedTargets</code> in
-    <a href="#completeness"></a>. A package written against 1.20.0 has no such
-    member, so it does not conform to 1.21.0.
+  <p class="note" title="1.22.0 is not backward compatible with 1.21.0">
+    This version requires every package to record which of its secrets were
+    kept, as <code>secretArchive</code> in <a>settings</a>, and requires its
+    WARC files to conform to
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/">BrowserHive WARC Profile 1.2.0</a>, which replaces the
+    values of the others. A package written against 1.21.0 has no such member,
+    so it does not conform to 1.22.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -139,8 +141,9 @@
     This profile therefore requires a package to carry its own account of the
     capture: which bodies are absent and why, which limits were in force, which
     requests it declined to send and which it sent but did not keep, what it
-    removed from the page before recording it, which certificates the origins
-    presented, and the log the capture wrote as it ran. None of these change
+    removed from the page before recording it, which secrets it was given and
+    which of them it kept, which certificates the origins presented, and the log
+    the capture wrote as it ran. None of these change
     what [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
@@ -200,7 +203,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -334,8 +337,14 @@
         <tr><td><code>secrets</code></td><td>array of string</td><td>yes</td>
             <td>The names of the values the request supplied in confidence for
             the behaviors to read, in lexicographic order. Names only &mdash;
-            the values themselves are not recorded (see below). An empty array
-            states that none were supplied.</td></tr>
+            this member holds no value (see below). An empty array states that
+            none were supplied.</td></tr>
+        <tr><td><code>secretArchive</code></td><td>object</td><td>yes</td>
+            <td>Which of those secrets the request asked to keep in the records
+            of the WARC. Each member's name is an entry of <code>secrets</code>
+            and its value is the string <code>"keep"</code>. A secret not named
+            here is hidden. An empty object states that none were kept. See
+            <a href="#secret-values"></a>.</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>yes</td>
             <td>The caps that were in force for this capture. Members
             <code>maxResponseBytes</code> and <code>maxTaskBytes</code>, the body caps, and
@@ -365,6 +374,7 @@
   ],
   "variables": {},
   "secrets": [],
+  "secretArchive": {},
   "limits": {
     "maxResponseBytes": 20971520,
     "maxTaskBytes": 209715200,
@@ -384,7 +394,8 @@
       <code>userAgent</code> is the browser's own value because the request
       asked for none.
       <code>acceptLanguage</code> is absent because this capture set none, and
-      <code>variables</code> and <code>secrets</code> are empty because the
+      <code>variables</code>, <code>secrets</code> and
+      <code>secretArchive</code> are empty because the
       request supplied no values for the behaviors. The
       values themselves are the producer's to choose; this profile does not
       define the spellings shown here.
@@ -412,7 +423,8 @@
       that asked for a <code>User-Agent</code> shows the value that was sent, one
       that set <code>acceptLanguage</code> shows it here as well, and one that
       supplied values for its behaviors shows them &mdash; the variables with
-      their values, the secrets by name alone:
+      their values, the secrets by name alone, and in
+      <code>secretArchive</code> the ones it asked to keep:
     </p>
     <pre class="json">
 "settings": {
@@ -426,7 +438,8 @@
     { "id": "example.com:gallery", "origin": "custom" }
   ],
   "variables": { "query": "gallery" },
-  "secrets": ["api_token"],
+  "secrets": ["api_token", "member_id"],
+  "secretArchive": { "member_id": "keep" },
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
     "maxResponseBytes": 20971520,
@@ -461,7 +474,7 @@
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
       <em>which line</em> a truncated body crossed &mdash; a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-bodies-not-kept">record of a body not kept</a>
       carries the fact and the actual size, but whether that size was too much
       is only legible next to the line.
     </p>
@@ -489,8 +502,9 @@
     </p>
     <p>
       <code>variables</code> and <code>secrets</code> record what the request
-      handed to the behaviors to read (see <a href="#behaviors-runtime"></a>).
-      Both <em class="rfc2119">MUST</em> be present even when the request
+      handed to the behaviors to read (see <a href="#behaviors-runtime"></a>),
+      and <code>secretArchive</code> which of the secrets it asked to keep.
+      All three <em class="rfc2119">MUST</em> be present even when the request
       supplied nothing, so that an empty object and an empty array are claims
       rather than omissions.
     </p>
@@ -501,17 +515,25 @@
       under every value.
     </p>
     <p>
-      <code>secrets</code> carries names only. The value of a secret
-      <em class="rfc2119">MUST NOT</em> appear anywhere in the package &mdash;
-      not in this member, not in <code>behaviors/runtime.js</code>, not in any
-      other member or entry. The names are recorded so that a reader can tell
-      the behaviors read something the package does not hold. What a behavior
-      then does with the value is outside this member; see
-      <a href="#security-and-privacy-considerations"></a>.
+      <code>secrets</code> carries names only. The names are recorded so that
+      a reader can tell the behaviors read something this member does not hold.
+      The producer <em class="rfc2119">MUST NOT</em> write the value of a secret
+      into <code>secrets</code> or <code>secretArchive</code>. What the rest
+      of the package holds of the values is set out in
+      <a href="#secret-values"></a>, and what a behavior then does with a value
+      in <a href="#security-and-privacy-considerations"></a>.
+    </p>
+    <p>
+      A secret the request says nothing about is hidden, so
+      <code>secretArchive</code> lists only what the request asked to keep. Each
+      name in <code>secretArchive</code> <em class="rfc2119">MUST</em> be an entry of
+      <code>secrets</code>, and each value <em class="rfc2119">MUST</em> be the
+      string <code>"keep"</code>.
     </p>
     <p class="note" title="Names are the request's">
       As with a behavior's <code>id</code>, the names under
-      <code>variables</code> and <code>secrets</code> are chosen by whoever
+      <code>variables</code>, <code>secrets</code> and
+      <code>secretArchive</code> are chosen by whoever
       supplied the values, and this profile says nothing about how they are
       spelled. The order of <code>secrets</code> is defined here &mdash;
       lexicographic &mdash; so that two packages that read the same names list
@@ -539,7 +561,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>yes</td>
             <td>URLs whose body crossed the wire but the producer could not
             obtain as bytes, so the archive holds none (see
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#response-payloads">Response payloads</a> in
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#response-payloads">Response payloads</a> in
             [[BROWSERHIVE-WARC-PROFILE]]).</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>yes</td>
             <td>Targets other than the main document whose renderer crashed during
@@ -599,10 +621,12 @@
     <p>
       Responses that legitimately carry no body
       <em class="rfc2119">MUST NOT</em> be listed: redirects, <code>204</code>,
-      and bodies omitted by a policy the requester configured &mdash; a
+      bodies omitted by a policy the requester configured &mdash; a
       <code>no-body</code> entry of <a>urlPolicies</a>, or an entry of
-      <a>contentTypePolicies</a>. Reporting those would tell the reader only
-      what they had already decided.
+      <a>contentTypePolicies</a> &mdash; and bodies dropped for holding the value
+      of a hidden secret, which the requester chose by not keeping the secret
+      (see <a href="#secret-values"></a>). Reporting those would tell the reader
+      only what they had already decided.
     </p>
     <p>
       This holds <strong>whatever the size of the omitted body</strong>. A body a
@@ -616,14 +640,15 @@
     <p>
       The WARC describes the same bodies one record at a time: each response
       recorded without the body the server sent carries a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-bodies-not-kept">record of a body not kept</a>
       ([[BROWSERHIVE-WARC-PROFILE]]), whose <code>truncated</code> says why. The
       URLs of bodies dropped at a size limit &mdash; <code>too-large</code> and
       <code>task-cap</code> &mdash; are listed in <code>truncatedUrls</code>,
       and those of bodies that were not intercepted &mdash;
       <code>not-intercepted</code> &mdash; in <code>uninterceptedUrls</code>.
       Bodies a policy omitted &mdash; <code>url-policy</code> and
-      <code>content-type</code> &mdash; are listed in neither.
+      <code>content-type</code> &mdash; and bodies dropped for a hidden secret
+      &mdash; <code>secret</code> &mdash; are listed in neither.
     </p>
     <p>
       [[BROWSERHIVE-WARC-PROFILE]] defines those values by the producer's
@@ -648,6 +673,11 @@
         <tr><td><code>not-intercepted</code></td>
             <td>No setting. The body crossed the wire, but the producer could
             not obtain it as bytes.</td></tr>
+        <tr><td><code>secret</code></td>
+            <td>No limit and no policy. The body was not a text body and held the
+            value of a hidden secret: a name in <code>secrets</code> that
+            <code>secretArchive</code> does not name, or a value treated as one
+            (see <a href="#secret-values"></a>).</td></tr>
       </tbody>
     </table>
 
@@ -994,7 +1024,7 @@
         <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>url</code></td><td>string</td><td>yes, unless <code>withheld</code> is <code>"unattributed"</code></td><td>The URL of the document, as the browser committed it; for <code>"deny"</code>, the URL whose request was denied.</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>yes, unless <code>withheld</code> is <code>"unattributed"</code></td><td>The URL of the document, as the browser committed it; for <code>"deny"</code>, the URL whose request was denied. The value of a hidden secret is replaced in it (see <a href="#secret-values"></a>).</td></tr>
         <tr><td><code>withheld</code></td><td>string</td><td>no</td><td>Why the page-derived records are not in the package. Absent when they are.</td></tr>
       </tbody>
     </table>
@@ -1093,7 +1123,7 @@
       the capture copies the document, whether it did. A snapshot is a copy of
       the document in the page's main frame as it stood at that stage, recorded
       in the WARC
-      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#snapshots">Snapshots</a>
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#snapshots">Snapshots</a>
       in [[BROWSERHIVE-WARC-PROFILE]]). The array
       <em class="rfc2119">MUST</em> hold an entry for <code>"after-load"</code>
       and, when the capture ran a behavior (when <code>behaviors</code> in
@@ -1347,11 +1377,12 @@
   <p>
     Every WARC file in <code>archive/</code> <em class="rfc2119">MUST</em>
     conform to
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/">BrowserHive WARC Profile 1.1.0</a>, and its
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/">BrowserHive WARC Profile 1.2.0</a>, and its
     <code>warcinfo</code> record <em class="rfc2119">MUST</em> name that
     version in <code>conformsTo</code> (see
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#warcinfo">The warcinfo record</a> there). That
-    specification fixes the records: their payloads, the records of bodies not
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#warcinfo">The warcinfo record</a> there). That
+    specification fixes the records: their payloads, the records in which the
+    values of hidden secrets are replaced, the records of bodies not
     kept, of withheld requests and of windows not opened, the snapshots of the
     document, the <code>warcinfo</code> record that begins each file, and that
     the records of one exchange, and those of one snapshot, share a file.
@@ -1436,7 +1467,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
         <a href="https://url.spec.whatwg.org/#concept-url-serializer">URL serializer</a> of the URL Standard writes it, without
         its fragment. That is the URL of the first request the capture made for
         the document: a URL with an empty path gains its trailing slash, as the
-        request did.</li>
+        request did. A producer refuses a request whose URL holds the value of a
+        hidden secret, and the value of a <a>kept secret</a> stays in it (see
+        <a href="#secret-values"></a>).</li>
     <li><code>ts</code> is the time the capture started.</li>
     <li>The entry <em class="rfc2119">MUST NOT</em> carry
         <code>stage</code>.</li>
@@ -1526,6 +1559,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       string: <code>*://example.com/a.js</code> does not match
       <code>https://example.com/a.js?v=2</code>.
     </p>
+    <p>
+      A capture matches a pattern against the URL before any value of a secret is
+      replaced in it (see <a href="#secret-values"></a>). In a package that names
+      a secret, a URL holding <code>***</code> can therefore match a different
+      entry from the one the capture applied, or none. A reader
+      <em class="rfc2119">MUST NOT</em> take the result of matching such a URL
+      for what the capture did.
+    </p>
     <table class="simple">
       <thead>
         <tr><th><code>action</code></th><th>Request sent</th><th>What the package holds</th></tr>
@@ -1543,14 +1584,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </table>
     <p>
       The record a <code>deny</code> or <code>no-archive</code> entry leaves is a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-withheld-requests">record of a withheld request</a>
       ([[BROWSERHIVE-WARC-PROFILE]]). Its <code>action</code> is the entry's
       <code>action</code>, and its <code>pattern</code>
       <em class="rfc2119">MUST</em> be the entry's <code>pattern</code>, spelled
       exactly as it appears here, so that a reader can find the entry. A
       <code>no-body</code> entry leaves no such record: the exchange is recorded
       as usual, and its absent body is described by a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-bodies-not-kept">record of a body not kept</a>
       whose <code>truncated</code> is <code>url-policy</code> &mdash; never as a
       body dropped at a size limit (see <a>completeness</a>).
     </p>
@@ -1637,7 +1678,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     Each time the page asked for one is recorded in the WARC as a
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#records-of-windows-not-opened">record of a window not opened</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-windows-not-opened">record of a window not opened</a>
     ([[BROWSERHIVE-WARC-PROFILE]]). No request was sent for the window's
     document, so the record is written whether or not an entry of
     <a>urlPolicies</a> matches the URL, and it is not a record of a withheld
@@ -1657,6 +1698,167 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     and it is also why those scripts cannot use an API that needs a gesture, such
     as <code>window.open</code>, the Fullscreen API or writing to the clipboard.
   </p>
+</section>
+
+<section id="secret-values">
+  <h2>Values of secrets</h2>
+  <p>
+    A request may supply values in confidence for the behaviors to read, and
+    <a>settings</a> records their names. A behavior can send such a value over
+    the network and a page can show it, so the capture meets it in what it
+    records. The <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#redacted-records">Redacted records</a> section of [[BROWSERHIVE-WARC-PROFILE]] defines the
+    terms <em>secret</em>, <em>hidden secret</em>, <em>occurrence</em>,
+    <em>redacted record</em> and <em>text body</em>, and says what a single WARC
+    file does about them. This section says which secrets of a package are
+    hidden, and what the rest of the package does about them.
+  </p>
+  <p>
+    Each name in <code>secrets</code> names a secret. One that
+    <code>secretArchive</code> names is a <dfn>kept secret</dfn>, and any other is
+    a hidden secret.
+  </p>
+
+  <section id="secret-requests">
+    <h3>Requests a producer refuses</h3>
+    <p>
+      Some requests cannot be carried out without breaking the rules of this
+      section. A producer <em class="rfc2119">MUST</em> refuse the following
+      requests, and <em class="rfc2119">MUST NOT</em> produce a package for them:
+    </p>
+    <ul>
+      <li>A request that gives a hidden secret a value shorter than eight
+          characters. Replacing so short a value reaches text that has nothing to
+          do with it. The request can ask to keep the value instead.</li>
+      <li>A request to capture a URL that holds an occurrence of the value of a
+          hidden secret. The first entry of <code>pages/pages.jsonl</code> and
+          <code>mainPageURL</code> are that URL (see <a href="#pages"></a>), and a
+          reader opens the document by it, so it cannot be replaced.</li>
+      <li>A request that has a hidden secret and would have the package carry
+          <code>storage/origins.jsonl</code>. That entry holds each value exactly as
+          the area held it, and a page can store what a behavior hands it (see
+          <a href="#storage-directory"></a>).</li>
+    </ul>
+  </section>
+
+  <section id="hidden-secret-values">
+    <h3>Hidden secrets</h3>
+    <p>
+      A package <em class="rfc2119">MUST NOT</em> hold an occurrence of the value
+      of a hidden secret in any of its files:
+      <code>datapackage.json</code>, <code>datapackage-digest.json</code>, the
+      WARC files in <code>archive/</code> once decompressed, and every other
+      entry. [[BROWSERHIVE-WARC-PROFILE]] says this of a single WARC file and has
+      no way to say it of the rest of the package.
+    </p>
+    <p>
+      Where this specification has the package record a URL, the producer
+      <em class="rfc2119">MUST</em> replace each occurrence in it with the three
+      characters <code>***</code>, and the result stays a URL, as that
+      specification has <code>WARC-Target-URI</code> stay a URI. Where replacing
+      takes away the scheme of the URL, the producer writes that scheme and a colon
+      in front of the result. Where what is left is still not a URL, as when a value
+      begins inside a port, it writes only the scheme, a colon and
+      <code>***</code>. That covers:
+    </p>
+    <ul>
+      <li><code>url</code> in <a>document</a>;</li>
+      <li>the URLs in <code>bodylessUrls</code>, <code>truncatedUrls</code> and
+          <code>uninterceptedUrls</code>, and <code>url</code> in
+          <code>crashedTargets</code> (see <a>completeness</a>);</li>
+      <li><code>url</code> on each line and each node of
+          <code>accessibility/axtree.jsonl</code>;</li>
+      <li><code>url</code> and the searchable key of each line of the CDXJ index;
+          <code>url</code> is the <code>WARC-Target-URI</code> of the record the
+          line names, and the key is made from it after replacing;</li>
+      <li><code>url</code> in <a>snapshots</a> and on the entries of
+          <code>pages/pages.jsonl</code> that list a snapshot, which are the
+          <code>WARC-Target-URI</code> of its <code>resource</code> record and have
+          the value of any secret replaced there.</li>
+    </ul>
+    <p>
+      A sorted array of these URLs is sorted as it is written, after replacing.
+      Replacing can make two URLs the same, and an array that lists a URL once then
+      lists that URL once. Nothing marks such a URL as replaced, and a reader cannot
+      tell <code>***</code> there from the same characters in a URL.
+    </p>
+    <p>
+      The producer <em class="rfc2119">MUST</em> also replace each occurrence with
+      <code>***</code> in the <code>text</code> and <code>title</code> of an entry of
+      <code>pages/pages.jsonl</code>, in the <code>title</code> of
+      <code>datapackage.json</code>, in the <code>name</code> and
+      <code>value</code> of a node of <code>accessibility/axtree.jsonl</code>, and
+      in the <code>msg</code> and <code>data</code> of a line of
+      <code>logs/capture.jsonl</code> (see <a href="#logs-lines"></a>).
+    </p>
+    <p>
+      Outside the WARC files, nothing else in a package is replaced: the
+      <code>source</code> of a behavior or a preload script,
+      <code>behaviors/runtime.js</code>, an entry of <code>variables</code> or
+      <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>, the
+      names of members. A capture that would write an occurrence in any of these
+      <em class="rfc2119">MUST NOT</em> produce a package.
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] has the producer treat the value of certain
+      cookies as that of a hidden secret from the moment the response that set the
+      cookie arrives. Such a value has no name in <code>secrets</code>. From that
+      moment the producer <em class="rfc2119">MUST</em> replace it wherever this
+      section has it replace an occurrence, and nothing more is asked of it: what the
+      producer had received or written before then may hold it, and so may what it
+      copies from the capture request, such as the first entry of
+      <code>pages/pages.jsonl</code>, and what is not replaced.
+    </p>
+  </section>
+
+  <section id="kept-secret-values">
+    <h3>Kept secrets</h3>
+    <p>
+      A request keeps a secret so that a reader can see what crossed the wire. The
+      value of a kept secret stays in the
+      <code>request</code>, <code>response</code> and <code>metadata</code> records
+      of the WARC, apart from the records of a snapshot. It stays in the URLs the
+      package records of those exchanges and of the document: <code>url</code> in
+      <a>document</a> and on each line of <code>accessibility/axtree.jsonl</code>,
+      the URLs in <a>completeness</a>, and <code>url</code> and the searchable key
+      of the CDXJ lines of responses. When the URL the capture was asked for holds
+      it, it stays in that URL: in the first entry of
+      <code>pages/pages.jsonl</code>, in <code>mainPageURL</code>, and in the
+      <code>description</code> of a <code>warcinfo</code> record and the
+      <code>title</code> of <code>datapackage.json</code> when the producer writes
+      that URL there. It also stays in what <a href="#hidden-secret-values"></a> says
+      is not replaced, and in <code>storage/origins.jsonl</code>, which holds each
+      value exactly as the area held it.
+    </p>
+    <p>
+      A package <em class="rfc2119">MUST NOT</em> hold the value of a kept secret as
+      it is, whatever its length, in any of these. The producer replaces it there
+      with <code>***</code>.
+    </p>
+    <ul>
+      <li>A snapshot, and its URL ([[BROWSERHIVE-WARC-PROFILE]]).</li>
+      <li>The <code>text</code> and <code>title</code> of an entry of
+          <code>pages/pages.jsonl</code>, and the <code>title</code> of
+          <code>datapackage.json</code> when it is read from the page.</li>
+      <li>The <code>name</code>, <code>value</code> and <code>url</code> of a node of
+          <code>accessibility/axtree.jsonl</code>.</li>
+      <li>The <code>msg</code> and <code>data</code> of a line of
+          <code>logs/capture.jsonl</code>.</li>
+    </ul>
+    <p>
+      A kept value that is, or holds, the value of a hidden secret is replaced as far
+      as that value goes: the rules for the hidden secret come first, in the records
+      of the WARC as well.
+    </p>
+    <p class="note" title="Why a kept secret is still replaced in what is read from the page">
+      Keeping a secret lets a reader see what was sent and what came back. What is
+      read from the page is a different record: it holds what a behavior typed into
+      a field, and it is what people read and search. This has a cost. The
+      <code>url</code> of a node no longer names the record of a resource whose URL
+      holds a kept secret, and a short value also replaces text that has nothing to
+      do with it: with the value <code>pro</code>, the word <code>probe</code>
+      becomes <code>***be</code>.
+    </p>
+  </section>
 </section>
 
 <section id="storage">
@@ -1852,6 +2054,11 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>true</code>. When it is absent, <code>valuesRecorded</code> MUST be
     <code>false</code>. A reader can therefore tell whether a package carries
     stored values without opening the archive body.
+  </p>
+  <p>
+    A package that has a hidden secret <em class="rfc2119">MUST NOT</em> contain
+    the entry, so its <code>valuesRecorded</code> is <code>false</code> (see
+    <a href="#secret-requests"></a>).
   </p>
   <pre class="json">
 {
@@ -2074,8 +2281,10 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       call a function the source defined, with arguments. The call and its
       arguments are not part of the source and are not recorded here. Of the
       arguments, the variables are in <code>settings.variables</code> and the
-      names of the secrets in <code>settings.secrets</code>; the values of the
-      secrets are recorded nowhere (see <a>settings</a>).
+      names of the secrets in <code>settings.secrets</code>. The values of the
+      secrets are not recorded as arguments anywhere, and the producer
+      <em class="rfc2119">MUST NOT</em> write them into the source; what becomes of
+      them once a behavior has them is set out in <a href="#secret-values"></a>.
     </p>
     <p class="note" title="Why the values are not in the source">
       This is what lets the runtime be the same bytes for every capture a
@@ -2411,10 +2620,10 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       says how many it left out and why.
     </p>
     <p>
-      As everywhere in the package (see <a>settings</a>), the value of a secret
-      <em class="rfc2119">MUST NOT</em> appear in a line &mdash; not in
-      <code>msg</code>, not in <code>data</code> at any depth, in a key as well
-      as in a value, and not in any other member, whatever the value's length.
+      <code>msg</code> and <code>data</code>, at any depth and in a key as well as
+      in a value, <em class="rfc2119">MUST NOT</em> hold an occurrence of the value
+      of a hidden secret, nor the value of a kept secret as it is, whatever its
+      length (see <a href="#secret-values"></a>).
     </p>
     <p class="note" title="Replace, then cut">
       The order matters. A producer that cut a line before replacing the values
@@ -2524,14 +2733,20 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     <a>completeness</a> asserts absence, not correctness. It reports bodies this
     package empirically does not hold. It does not assert that the bodies it
-    does hold are what the origin served.
+    does hold are what the origin served. Nor does <code>complete</code> say that
+    no body was dropped for holding the value of a hidden secret: a
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-bodies-not-kept">record of a body not kept</a>
+    whose <code>truncated</code> is <code>secret</code> says that.
   </p>
   <p>
     What a conforming package does assert about the bodies it holds is the
-    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/#payloads">Payloads</a> section of
+    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#payloads">Payloads</a> section of
     [[BROWSERHIVE-WARC-PROFILE]]: they are the bytes that crossed the wire,
     so a payload digest is a digest of what the origin sent, not of a copy the
-    producer re-encoded. Neither says that the origin was the party the URL
+    producer re-encoded. The exception is a redacted record whose
+    <code>BrowserHive-Redacted</code> field names <code>payload</code>: values in
+    its body were replaced, and its digest vouches only for the bytes the record
+    holds. Neither says that the origin was the party the URL
     names; see <a>tls</a>.
   </p>
   <p>
@@ -2557,8 +2772,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     fields except password fields ([[BROWSERHIVE-WARC-PROFILE]]). Unlike the
     tree, it is not narrower than the page, and text the page hid is in it.
     The values of the secrets in <a>settings</a> are replaced in a snapshot,
-    but only where they appear as they are or escaped as HTML escapes them; a
-    secret the page transformed, or a value nobody declared a secret, stays.
+    at least as they are and as HTML escapes them, and those of hidden secrets
+    in every spelling an occurrence can take; a secret the page transformed
+    otherwise, or a value nobody declared a secret, stays.
   </p>
   <p>
     That rule works at the level of the document. The rendered page can hold
@@ -2585,8 +2801,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     In the log, the producer replaces the value of a secret wherever it appears
     as it is &mdash; in <code>msg</code> and in <code>data</code>, in a key or a
-    value, at any depth, whatever its length. A behavior that writes a secret
-    in another form, encoded or split, puts that form in the package, and a
+    value, at any depth, whatever its length &mdash; and that of a hidden secret
+    in every spelling an occurrence can take. A behavior that writes a secret
+    in any other form, hashed or split, puts that form in the package, and a
     value nobody declared a secret stays. And the channel a behavior writes its
     lines through is in the page's main world, so the page's scripts can write
     lines that read as a behavior's (see <a href="#logs-reading"></a>).
@@ -2608,15 +2825,35 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>valuesRecorded</code> says which one this is.
   </p>
   <p>
-    <code>secrets</code> in <a>settings</a> keeps the values out of the
-    package, not out of the page. A behavior reads them from the runtime in
-    the page's main world, where the page's own scripts can read them too, and
-    a producer cannot hide them there without a separate execution context.
-    Nor does the profile follow a value past the behavior: a behavior that
-    sends it over the network &mdash; in a URL, a header or a body &mdash;
-    makes a request that is recorded like any other, and the value is then in
-    the WARC. A requester who needs a secret kept out of the archive entirely
-    has to supply a behavior that does not send it.
+    Replacing the value of a secret keeps it out of the package, not out of
+    the page. A behavior reads it from the runtime in the page's main world,
+    where the page's own scripts can read it too, and a producer cannot hide it
+    there without a separate execution context. A behavior that sends it over
+    the network &mdash; in a URL, a header or a body &mdash; hands it to the
+    origin, whatever the package then records.
+  </p>
+  <p>
+    A hidden secret is hidden only where the producer recognizes its value. What
+    the Security section of [[BROWSERHIVE-WARC-PROFILE]] lists stays in the package
+    too: what is made from the value, such as a hash, a ciphertext or a token an
+    origin issues in a body; a spelling that is not an occurrence; and the fact that
+    a value was there, which <code>***</code> shows wherever it stands. The digest of
+    a storage area is made from what the area held, before anything is replaced, so
+    it can let a reader test guesses of a value a page stored. A requester who needs
+    every trace of a secret kept out of the archive has to supply a behavior that
+    does not send it.
+  </p>
+  <p>
+    A reader holding only the package cannot check that it holds no occurrence,
+    because the package does not hold the value. A tool that reads the package can
+    check the shape of what the producer says it did, and nothing more. A producer
+    can check, since it holds the values: it can look through every file before it
+    writes the package.
+  </p>
+  <p>
+    <code>secretArchive</code> is the request's to fill in, and it decides what
+    travels. The value of a kept secret stays readable in the records of the WARC
+    and in the URLs taken from them, and whoever passes the package on passes it on.
   </p>
   <p>
     <code>variables</code>, by contrast, are recorded as values on purpose, and

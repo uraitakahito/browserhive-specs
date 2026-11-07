@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.21.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.22.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.22.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.23.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -63,9 +63,9 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/",
         publisher: "BrowserHive",
-        version: "1.1.0",
+        version: "1.2.0",
       },
     },
     lint: false,
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.21.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.22.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,13 +92,15 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.21.0 は 1.20.0 と後方互換ではありません">
-    この版は、どのパッケージにも、取り込みの間に renderer が落ちた target を
-    <a href="#completeness"></a> の <code>crashedTargets</code> に載せることを求めます。その member を
-    持たない 1.20.0 向けのパッケージは、1.21.0 に適合しません。これは
+  <p class="note" title="1.22.0 は 1.21.0 と後方互換ではありません">
+    この版は、どのパッケージにも、シークレットのどれを残したかを <a>settings</a> の
+    <code>secretArchive</code> に記録することを求め、WARC ファイルには
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/">BrowserHive WARC Profile 1.2.0</a> に適合することを求めます。その版は、
+    残さなかったシークレットの値を置き換えます。その member を持たない 1.21.0 向けのパッケージは、
+    1.22.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -128,6 +130,7 @@
     そこで本プロファイルは、パッケージが取り込みについての自身の申告を運ぶことを要求します ——
     どの本文が欠けていてそれはなぜか、どの上限が効いていたか、どのリクエストを送らず
     どのリクエストを送って保持しなかったか、記録の前にページから何を取り除いたか、
+    どのシークレットを渡され、そのどれを残したか、
     各オリジンがどの証明書を提示したか、そして取り込みが走りながら書いたログ。これらは
     [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
   </p>
@@ -184,7 +187,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -308,8 +311,14 @@
             <a href="#behaviors-runtime"></a> を参照。</td></tr>
         <tr><td><code>secrets</code></td><td>array of string</td><td>はい</td>
             <td>behavior が読むために要求が秘密として渡した値の名前を、名前順に。
-            名前だけ —— 値そのものは記録しません（下を参照）。空の配列は
+            名前だけ —— この member は値を持ちません（下を参照）。空の配列は
             「1 つも渡されなかった」と述べます。</td></tr>
+        <tr><td><code>secretArchive</code></td><td>object</td><td>はい</td>
+            <td>それらのシークレットのうち、要求が WARC のレコードに残すことを求めたもの。
+            各 member の名前は <code>secrets</code> の項目で、値は文字列
+            <code>"keep"</code>。ここに名前の無いシークレットは隠します。
+            空のオブジェクトは「1 つも残さなかった」と述べます。
+            <a href="#secret-values"></a> を参照。</td></tr>
         <tr><td><code>limits</code></td><td>object</td><td>はい</td>
             <td>この取り込みに効いていた上限。member <code>maxResponseBytes</code> と
             <code>maxTaskBytes</code>（本文の上限）、<code>maxWarcBytes</code>（新しい WARC ファイルを
@@ -337,6 +346,7 @@
   ],
   "variables": {},
   "secrets": [],
+  "secretArchive": {},
   "limits": {
     "maxResponseBytes": 20971520,
     "maxTaskBytes": 209715200,
@@ -354,8 +364,8 @@
       behavior です —— 有効化されていた
       ものの一覧ではありません。<code>userAgent</code> がブラウザ自身の値なのは、要求が指定
       しなかったからです。<code>acceptLanguage</code> は、この取り込みが設定しなかった
-      ので在りません。<code>variables</code> と <code>secrets</code> が空なのは、要求が behavior に
-      値を 1 つも渡さなかったからです。値そのものは producer が決めるもので、ここに挙げた綴りを
+      ので在りません。<code>variables</code>・<code>secrets</code>・<code>secretArchive</code> が
+      空なのは、要求が behavior に値を 1 つも渡さなかったからです。値そのものは producer が決めるもので、ここに挙げた綴りを
       このプロファイルが定めているわけではありません。
     </p>
     <p class="note" title="One vocabulary here is not the producer's">
@@ -379,7 +389,8 @@
       2 回読み込む取り込みでは、読み込んだ数だけ値が並びます。要求が <code>User-Agent</code> を
       指定した場合は送った値が現れ、<code>acceptLanguage</code> を指定した場合は、それもここに
       現れます。behavior に値を渡した
-      要求では、その値も現れます —— 変数は値ごと、シークレットは名前だけ:
+      要求では、その値も現れます —— 変数は値ごと、シークレットは名前だけで、
+      残すことを求めたものは <code>secretArchive</code> に:
     </p>
     <pre class="json">
 "settings": {
@@ -393,7 +404,8 @@
     { "id": "example.com:gallery", "origin": "custom" }
   ],
   "variables": { "query": "gallery" },
-  "secrets": ["api_token"],
+  "secrets": ["api_token", "member_id"],
+  "secretArchive": { "member_id": "keep" },
   "acceptLanguage": "ja,en;q=0.9",
   "limits": {
     "maxResponseBytes": 20971520,
@@ -425,7 +437,7 @@
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
       アーカイブが言える場所は、ここだけです ——
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
       実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
     </p>
     <p class="note">
@@ -448,8 +460,9 @@
     </p>
     <p>
       <code>variables</code> と <code>secrets</code> は、要求が behavior に読ませるために渡したものを
-      記録します（<a href="#behaviors-runtime"></a> を参照）。要求が何も渡さなかったときも、
-      どちらも存在し<em class="rfc2119">なければならない</em>（MUST）。空のオブジェクトと空の配列が、
+      記録します（<a href="#behaviors-runtime"></a> を参照）。<code>secretArchive</code> は、
+      シークレットのどれを残すことを求めたかを記録します。要求が何も渡さなかったときも、
+      3 つとも存在し<em class="rfc2119">なければならない</em>（MUST）。空のオブジェクトと空の配列が、
       書き漏らしではなく主張になるようにするためです。
     </p>
     <p>
@@ -458,16 +471,22 @@
       コードだけではそれが言えません —— 同じコードが、どの値の下でも走るからです。
     </p>
     <p>
-      <code>secrets</code> は名前だけを運びます。シークレットの値は、パッケージのどこにも
-      現れては<em class="rfc2119">ならない</em>（MUST NOT）—— この member にも、
-      <code>behaviors/runtime.js</code> にも、他のどの member やエントリにも。名前を記録するのは、
-      behavior がパッケージの持たない何かを読んだことを、読み手が分かるようにするためです。
-      behavior がその値をどうしたかは、この member の外の話です。
-      <a href="#security-and-privacy-considerations"></a> を参照してください。
+      <code>secrets</code> は名前だけを運びます。名前を記録するのは、behavior がこの member の
+      持たない何かを読んだことを、読み手が分かるようにするためです。
+      producer は、シークレットの値を <code>secrets</code> と <code>secretArchive</code> に
+      書いては<em class="rfc2119">ならない</em>（MUST NOT）。パッケージの残りが値について何を持つかは
+      <a href="#secret-values"></a> が、behavior がその値をどうするかは
+      <a href="#security-and-privacy-considerations"></a> が述べます。
+    </p>
+    <p>
+      要求が何も言わないシークレットは隠します。だから <code>secretArchive</code> は、要求が
+      残すことを求めたものだけを挙げます。<code>secretArchive</code> の名前はどれも
+      <code>secrets</code> の項目で<em class="rfc2119">なければならず</em>（MUST）、値はどれも文字列
+      <code>"keep"</code> で<em class="rfc2119">なければならない</em>（MUST）。
     </p>
     <p class="note" title="Names are the request's">
-      behavior の <code>id</code> と同じく、<code>variables</code> と <code>secrets</code> の名前は
-      値を渡した側が決めたもので、本仕様はその綴りについて何も述べません。<code>secrets</code> の
+      behavior の <code>id</code> と同じく、<code>variables</code>・<code>secrets</code>・
+      <code>secretArchive</code> の名前は値を渡した側が決めたもので、本仕様はその綴りについて何も述べません。<code>secrets</code> の
       並びだけはここで定めます —— 名前順です。同じ名前を読んだ 2 つのパッケージが、同じ並びで
       それを挙げるようにするためです。
     </p>
@@ -492,7 +511,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
             <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
             アーカイブが本文を持たない URL（[[BROWSERHIVE-WARC-PROFILE]] の
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>はい</td>
             <td>取り込みの間に renderer が落ちた、主文書以外の target
             （<a href="#completeness-crashed-targets"></a> を参照）。</td></tr>
@@ -547,9 +566,11 @@
     </p>
     <p>
       正当に本文を持たないレスポンスを列挙しては<em class="rfc2119">ならない</em> ——
-      redirect、<code>204</code>、および要求者が設定した方針で省かれた本文
-      (<a>urlPolicies</a> の <code>no-body</code>、または <a>contentTypePolicies</a> の項目)。
-      方針で省いたものを報告しても、読み手が既に決めたこと以上を何も伝えません。
+      redirect、<code>204</code>、要求者が設定した方針で省かれた本文
+      (<a>urlPolicies</a> の <code>no-body</code>、または <a>contentTypePolicies</a> の項目)、および
+      隠すシークレットの値を持つので落とした本文。最後のものは、要求者がそのシークレットを
+      残さなかったことで選んだ結果です（<a href="#secret-values"></a> を参照）。
+      これらを報告しても、読み手が既に決めたこと以上を何も伝えません。
     </p>
     <p>
       これは<strong>省いた本文の大きさに関係なく</strong>成り立ちます。方針で省いた本文は
@@ -562,13 +583,13 @@
     <p>
       WARC は、同じ本文をレコード 1 つずつで述べます。サーバが送った本文を持たずに記録した
       応答には、それぞれ
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）が付き、その <code>truncated</code> が理由を言います。
       サイズ上限で落とした本文 —— <code>too-large</code> と <code>task-cap</code> —— の URL は
       <code>truncatedUrls</code> に、バイト列として得られなかった本文 ——
       <code>not-intercepted</code> —— の URL は <code>uninterceptedUrls</code> に載ります。
-      方針で省いた本文 —— <code>url-policy</code> と <code>content-type</code> —— は、
-      どちらにも載りません。
+      方針で省いた本文 —— <code>url-policy</code> と <code>content-type</code> —— と、
+      隠すシークレットのために落とした本文 —— <code>secret</code> —— は、どちらにも載りません。
     </p>
     <p>
       [[BROWSERHIVE-WARC-PROFILE]] は、これらの値を producer の上限と方針で定め、その名前は
@@ -592,6 +613,10 @@
         <tr><td><code>not-intercepted</code></td>
             <td>設定は無い。本文は wire を渡ったが、producer がバイト列として
             得られなかった。</td></tr>
+        <tr><td><code>secret</code></td>
+            <td>上限でも方針でもない。本文が文字の本文でなく、隠すシークレットの値を持っていた。
+            隠すシークレットは、<code>secrets</code> の名前のうち <code>secretArchive</code> に
+            無いものと、それとして扱う値です（<a href="#secret-values"></a> を参照）。</td></tr>
       </tbody>
     </table>
 
@@ -911,7 +936,7 @@
         <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>url</code></td><td>string</td><td>はい（<code>withheld</code> が <code>"unattributed"</code> のときを除く）</td><td>browser が確定させた、その文書の URL。<code>"deny"</code> のときは、リクエストを断った URL。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい（<code>withheld</code> が <code>"unattributed"</code> のときを除く）</td><td>browser が確定させた、その文書の URL。<code>"deny"</code> のときは、リクエストを断った URL。隠すシークレットの値は置き換えます（<a href="#secret-values"></a> を参照）。</td></tr>
         <tr><td><code>withheld</code></td><td>string</td><td>いいえ</td><td>ページ由来の記録がパッケージに無い理由。在るときは置かない。</td></tr>
       </tbody>
     </table>
@@ -998,7 +1023,7 @@
       述べる配列の <dfn>snapshots</dfn> member を持たなければなりません
       （<em class="rfc2119">MUST</em>）。写しは、その時点のページの主フレームの文書の姿を写した
       もので、WARC に記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#snapshots">Snapshots</a>）。
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#snapshots">Snapshots</a>）。
       配列は、<code>"after-load"</code> の項目と、取り込みが behavior を走らせたとき
       （<a>settings</a> の <code>behaviors</code> が空でないとき）はその後に
       <code>"after-behaviors"</code> の項目を持たなければならず（<em class="rfc2119">MUST</em>）、
@@ -1226,11 +1251,12 @@
   </p>
   <p>
     <code>archive/</code> のどの WARC ファイルも
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/">BrowserHive WARC Profile 1.1.0</a> に適合し
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/">BrowserHive WARC Profile 1.2.0</a> に適合し
     <em class="rfc2119">なければならず</em>、その <code>warcinfo</code> レコードは
     <code>conformsTo</code> でその版を名乗ら<em class="rfc2119">なければならない</em>
-    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
-    同仕様が定めます —— ペイロード、body not kept・withheld request・window not opened の
+    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
+    同仕様が定めます —— ペイロード、隠すシークレットの値を置き換えるレコード、
+    body not kept・withheld request・window not opened の
     レコード、文書の写し、各ファイルの先頭の <code>warcinfo</code> レコード、1 つの交信の
     レコードと 1 つの写しのレコードが、それぞれ同じファイルに入ること。
   </p>
@@ -1304,7 +1330,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <li><code>url</code> が、取り込みを求められた URL を、URL Standard の
         <a href="https://url.spec.whatwg.org/#concept-url-serializer">URL serializer</a> が書くとおりに書き、fragment を除いたもので
         なければなりません（<em class="rfc2119">MUST</em>）。これは、取り込みが文書のために出した
-        最初の要求の URL です。path が空の URL には、要求と同じく末尾の <code>/</code> が付きます。</li>
+        最初の要求の URL です。path が空の URL には、要求と同じく末尾の <code>/</code> が付きます。
+        producer は URL に隠すシークレットの値を持つ要求を断り、<a>残すシークレット</a>の値は
+        URL に残ります（<a href="#secret-values"></a> を参照）。</li>
     <li><code>ts</code> は、取り込みを始めた時刻です。</li>
     <li><code>stage</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。</li>
     <li><code>id</code> が、ほかのどのエントリのものとも違わなければなりません
@@ -1386,6 +1414,13 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       <code>*://example.com/a.js</code> は <code>https://example.com/a.js?v=2</code> に
       当たりません。
     </p>
+    <p>
+      取り込みは、シークレットの値を置き換える前の URL にパターンを当てます
+      （<a href="#secret-values"></a> を参照）。そのため、シークレットの名前を持つパッケージでは、
+      <code>***</code> を持つ URL は、取り込みが適用した項目と別の項目に当たることも、
+      どの項目にも当たらないこともあります。読み手は、そのような URL に当てた結果を、
+      取り込みがしたこととして受け取ってはなりません（<em class="rfc2119">MUST NOT</em>）。
+    </p>
     <table class="simple">
       <thead>
         <tr><th><code>action</code></th><th>リクエストの送信</th><th>パッケージが持つもの</th></tr>
@@ -1403,13 +1438,13 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </table>
     <p>
       <code>deny</code> と <code>no-archive</code> の項目が残す記録は、
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）です。その <code>action</code> は項目の
       <code>action</code> で、<code>pattern</code> は、読み手が項目を見つけられるよう、項目の
       <code>pattern</code> をここに現れるとおりの綴りで書か<em class="rfc2119">なければならない</em>。
       <code>no-body</code> の項目はこの記録を残しません。交信はいつもどおり記録され、無い本文は
       <code>truncated</code> が <code>url-policy</code> の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
       サイズ上限で落とした本文としては扱いません（<a>completeness</a> を参照）。
     </p>
     <p>
@@ -1491,7 +1526,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     ページが求めた 1 回ごとに、WARC には
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
     （[[BROWSERHIVE-WARC-PROFILE]]）が残ります。ウィンドウの文書のリクエストは送られて
     いないので、このレコードは <a>urlPolicies</a> の項目が URL に当たるかどうかに関わらず
     書かれ、withheld request のレコードではありません。
@@ -1510,6 +1545,141 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     Fullscreen API・clipboard への書き込みのような gesture の要る API を使えないのも、
     同じ理由です。
   </p>
+</section>
+
+<section id="secret-values">
+  <h2>Values of secrets</h2>
+  <p>
+    要求は、behavior に読ませる値を秘密として渡すことができ、<a>settings</a> がその名前を記録します。
+    behavior はその値をネットワークへ送ることができ、ページはそれを表示できるので、
+    取り込みは記録するものの中でその値に出会います。[[BROWSERHIVE-WARC-PROFILE]] の
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
+    語を定め、1 本の WARC ファイルがそれらをどう扱うかを述べます。この節は、パッケージの
+    シークレットのどれを隠すのかと、パッケージの残りがそれらをどう扱うかを述べます。
+  </p>
+  <p>
+    <code>secrets</code> の名前はどれも、シークレットを名指します。<code>secretArchive</code> が
+    名指すものが <dfn data-lt="kept secret">残すシークレット</dfn>で、ほかは隠すシークレットです。
+  </p>
+
+  <section id="secret-requests">
+    <h3>Requests a producer refuses</h3>
+    <p>
+      要求によっては、この節の決まりを破らずには実行できません。producer は次の要求を
+      断らなければならず（<em class="rfc2119">MUST</em>）、それらのためにパッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）:
+    </p>
+    <ul>
+      <li>隠すシークレットに 8 文字より短い値を渡す要求。そんなに短い値を置き換えると、
+          無関係の文字にも届きます。要求は、代わりにその値を残すことを求められます。</li>
+      <li>隠すシークレットの値の出現を持つ URL の取り込みを求める要求。
+          <code>pages/pages.jsonl</code> の最初のエントリと <code>mainPageURL</code> はその URL で
+          （<a href="#pages"></a> を参照）、読み手はそれで文書を開くので、置き換えられません。</li>
+      <li>隠すシークレットを持ち、パッケージに <code>storage/origins.jsonl</code> を持たせることに
+          なる要求。そのエントリは area が保持していたとおりの値を持ち、ページは behavior から
+          受け取ったものを保存できます（<a href="#storage-directory"></a> を参照）。</li>
+    </ul>
+  </section>
+
+  <section id="hidden-secret-values">
+    <h3>Hidden secrets</h3>
+    <p>
+      パッケージは、隠すシークレットの値の出現を、どのファイルにも持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）: <code>datapackage.json</code>、
+      <code>datapackage-digest.json</code>、展開した後の <code>archive/</code> の WARC ファイル、
+      およびほかのどのエントリにも。[[BROWSERHIVE-WARC-PROFILE]] はこれを 1 本の WARC ファイルに
+      ついて述べ、パッケージの残りについては述べようがありません。
+    </p>
+    <p>
+      本仕様がパッケージに URL を記録させる所では、producer はその中の出現を 3 文字の
+      <code>***</code> に置き換えなければならず（<em class="rfc2119">MUST</em>）、
+      同仕様が <code>WARC-Target-URI</code> を URI のままにするように、結果は URL のままです。
+      置き換えると URL の scheme が無くなるときは、producer は結果の前に元の scheme とコロンを書きます。
+      値が port の中から始まるときなど、それでも URL にならないときは、scheme とコロンと
+      <code>***</code> だけを書きます。対象は次のものです:
+    </p>
+    <ul>
+      <li><a>document</a> の <code>url</code>。</li>
+      <li><code>bodylessUrls</code>・<code>truncatedUrls</code>・<code>uninterceptedUrls</code> の
+          URL と、<code>crashedTargets</code> の <code>url</code>（<a>completeness</a> を参照）。</li>
+      <li><code>accessibility/axtree.jsonl</code> の各行と各ノードの <code>url</code>。</li>
+      <li>CDXJ の索引の各行の <code>url</code> と searchable key。<code>url</code> は、その行が名指す
+          レコードの <code>WARC-Target-URI</code> で、key は置き換えた後のそれから作ります。</li>
+      <li><a>snapshots</a> の <code>url</code> と、写しを挙げる <code>pages/pages.jsonl</code> の
+          エントリの <code>url</code>。これらは写しの <code>resource</code> レコードの
+          <code>WARC-Target-URI</code> で、そこでシークレットの値は既に置き換えてあります。</li>
+    </ul>
+    <p>
+      これらの URL を整列する配列は、置き換えた後の、書かれたとおりの字で整列します。
+      置き換えで 2 つの URL が同じになることがあり、URL を 1 度だけ挙げる配列は、その URL を
+      1 度だけ挙げます。置き換えた URL には印が無く、読み手はそこの <code>***</code> と URL の中の
+      同じ字とを区別できません。
+    </p>
+    <p>
+      producer は、<code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
+      <code>datapackage.json</code> の <code>title</code>、
+      <code>accessibility/axtree.jsonl</code> のノードの <code>name</code> と <code>value</code>、
+      <code>logs/capture.jsonl</code> の行の <code>msg</code> と <code>data</code>
+      （<a href="#logs-lines"></a> を参照）でも、出現を <code>***</code> に
+      置き換えなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      WARC ファイルの外では、パッケージのほかのものは何も置き換えません:
+      behavior と preload のスクリプトの <code>source</code>、<code>behaviors/runtime.js</code>、
+      <code>variables</code> や <a>urlPolicies</a> の項目、<a>tls</a> の host、<a>storage</a> の origin、
+      member の名前。これらのどこかに出現を書くことになる取り込みは、パッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、ある種の cookie の値を、その cookie を設定した応答が届いた
+      瞬間から、隠すシークレットの値として producer に扱わせます。その値は <code>secrets</code> に
+      名前を持ちません。その瞬間から、producer は、この節が出現を置き換えさせる所でその値を
+      置き換えなければなりません（<em class="rfc2119">MUST</em>）。それ以上は求めません:
+      それより前に producer が受け取ったものや書いたもの、<code>pages/pages.jsonl</code> の最初の
+      エントリのように取り込みの要求から写すもの、置き換えないものは、その値を持っていることがあります。
+    </p>
+  </section>
+
+  <section id="kept-secret-values">
+    <h3>Kept secrets</h3>
+    <p>
+      要求がシークレットを残すのは、wire を渡ったものを読み手が見られるようにするためです。
+      <a>残すシークレット</a>の値は、写しのレコードを除き、WARC の <code>request</code>・
+      <code>response</code>・<code>metadata</code> のレコードに残ります。そうした交信と文書について
+      パッケージが記録する URL にも残ります: <a>document</a> の <code>url</code>、
+      <code>accessibility/axtree.jsonl</code> の各行の <code>url</code>、<a>completeness</a> の URL、
+      応答の CDXJ の行の <code>url</code> と searchable key です。取り込みを求められた URL が値を
+      持つときは、その URL に残ります: <code>pages/pages.jsonl</code> の最初のエントリ、
+      <code>mainPageURL</code>、そして producer がその URL を書くなら、<code>warcinfo</code> レコードの
+      <code>description</code> と <code>datapackage.json</code> の <code>title</code> です。
+      <a href="#hidden-secret-values"></a> が置き換えないと述べるものと、area が保持していたとおりの
+      値を持つ <code>storage/origins.jsonl</code> にも残ります。
+    </p>
+    <p>
+      パッケージは、残すシークレットの値を、そのままの形で、長さに関わらず、次のどこにも持っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。producer はそこでは値を <code>***</code> に
+      置き換えます。
+    </p>
+    <ul>
+      <li>写しと、その URL（[[BROWSERHIVE-WARC-PROFILE]]）。</li>
+      <li><code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、および
+          ページから読んだときの <code>datapackage.json</code> の <code>title</code>。</li>
+      <li><code>accessibility/axtree.jsonl</code> のノードの <code>name</code>・<code>value</code>・
+          <code>url</code>。</li>
+      <li><code>logs/capture.jsonl</code> の行の <code>msg</code> と <code>data</code>。</li>
+    </ul>
+    <p>
+      残す値が、隠すシークレットの値である、または持つときは、その値の分は置き換えます。
+      WARC のレコードでも、隠すシークレットの決まりが先です。
+    </p>
+    <p class="note" title="なぜ残すシークレットも、ページから読むものでは置き換えるのか">
+      シークレットを残すのは、何が送られ何が返ったかを読み手が見られるようにするためです。
+      ページから読むものは別の記録です。behavior が欄に打ったものを持ち、人が読み、検索する
+      ものです。これには代償があります。ノードの <code>url</code> は、URL に残すシークレットを持つ
+      資源のレコードを名指さなくなります。短い値は無関係の文字も置き換えます: 値が
+      <code>pro</code> なら、語 <code>probe</code> は <code>***be</code> になります。
+    </p>
+  </section>
 </section>
 
 <section id="storage">
@@ -1711,6 +1881,11 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>valuesRecorded</code> は <code>false</code> で<em class="rfc2119">なければならない</em>（MUST）。
     したがって読み手は、アーカイブ本体を開かずに、そのパッケージが保存されていた値を
     運んでいるかどうかを判別できます。
+  </p>
+  <p>
+    隠すシークレットを持つパッケージは、このエントリを持っては
+    <em class="rfc2119">ならない</em>（MUST NOT）。したがってその <code>valuesRecorded</code> は
+    <code>false</code> です（<a href="#secret-requests"></a> を参照）。
   </p>
   <pre class="json">
 {
@@ -1928,8 +2103,10 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       そのソースを評価した後、producer はソースが定めた関数を、引数を付けて
       呼ん<em class="rfc2119">でもよい</em>（MAY）。その呼び出しと引数はソースの一部ではなく、
       このエントリには記録されません。引数のうち、変数は <code>settings.variables</code> に、
-      シークレットの名前は <code>settings.secrets</code> に在ります。シークレットの値は
-      どこにも記録されません（<a>settings</a> を参照）。
+      シークレットの名前は <code>settings.secrets</code> に在ります。シークレットの値は、
+      引数としてはどこにも記録されず、producer はそれをソースに書いては
+      <em class="rfc2119">なりません</em>（MUST NOT）。behavior の手に渡った後の値がどうなるかは
+      <a href="#secret-values"></a> が述べます。
     </p>
     <p class="note" title="Why the values are not in the source">
       これが、producer の作るどの取り込みでも runtime を同じバイト列に保ちます。値をソースに
@@ -2240,10 +2417,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       書いて、何行をなぜ残さなかったかを述べ<em class="rfc2119">なければなりません</em>（MUST）。
     </p>
     <p>
-      パッケージのどこでもそうであるように（<a>settings</a> を参照）、シークレットの値は行に
-      現れては<em class="rfc2119">なりません</em>（MUST NOT）—— <code>msg</code> にも、
-      <code>data</code> のどの深さにも（値だけでなく鍵にも）、他のどの member にも。値の長さに
-      関わらずです。
+      <code>msg</code> と、<code>data</code> のどの深さも（値だけでなく鍵も）、隠すシークレットの
+      値の出現も、残すシークレットのそのままの値も、長さに関わらず持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）（<a href="#secret-values"></a> を参照）。
     </p>
     <p class="note" title="置き換えてから切る">
       順番が大事です。シークレットの値を置き換える前に行を切る producer は、切り口に値の頭を
@@ -2340,14 +2516,18 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     <a>completeness</a> が主張するのは不在であって、正しさではありません。このパッケージが
     実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
-    とは主張しません。
+    とは主張しません。<code>complete</code> も、隠すシークレットの値を持つので落とした本文が無い、
+    とは言いません。それを言うのは、<code>truncated</code> が <code>secret</code> の
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
   </p>
   <p>
     適合するパッケージが、保持している本文について主張するのは
-    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.1.0/ja/#payloads">Payloads</a> の節の
+    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#payloads">Payloads</a> の節の
     内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
-    digest であり、producer が符号を変えた写しのものではありません。どちらも、オリジンが URL の
-    名指す相手だったことは言いません。<a>tls</a> を参照してください。
+    digest であり、producer が符号を変えた写しのものではありません。例外は、
+    <code>BrowserHive-Redacted</code> の欄が <code>payload</code> を挙げる redacted のレコードです。
+    その本文では値を置き換えてあり、digest が保証するのはレコードが持つバイト列だけです。
+    どちらも、オリジンが URL の名指す相手だったことは言いません。<a>tls</a> を参照してください。
   </p>
   <p>
     パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を記録します。取り込んだ
@@ -2366,9 +2546,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     写しは、そのときのページの姿 —— 文字と、パスワードの欄を除く欄の値 —— を持ちます
     （[[BROWSERHIVE-WARC-PROFILE]]）。木と違ってページより狭くはなく、ページが隠した文字も
-    入ります。<a>settings</a> のシークレットの値は写しの中で置き換えられますが、そのままの形か、
-    HTML の escape の形で現れたところだけです。ページが変換したシークレットや、誰も
-    シークレットと告げなかった値は残ります。
+    入ります。<a>settings</a> のシークレットの値は写しの中で、少なくともそのままの形と HTML の
+    escape の形で置き換えられ、隠すシークレットの値は、出現の取りうるすべての綴りで置き換えられます。
+    それ以外にページが変換したシークレットや、誰もシークレットと告げなかった値は残ります。
   </p>
   <p>
     この決まりは文書の単位で働きます。描画されたページには、副資源を通って届いた中身 ——
@@ -2390,7 +2570,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <p>
     ログの中で producer がシークレットの値を置き換えるのは、値がそのままの形で現れたところ
     です —— <code>msg</code> にも <code>data</code> にも、鍵にも値にも、どの深さでも、長さに
-    関わらず。シークレットを別の形 —— 符号化したものや、分けたもの —— で書く behavior は、
+    関わらず。隠すシークレットの値は、出現の取りうるすべての綴りで置き換えます。シークレットを
+    ほかの形 —— ハッシュにしたものや、分けたもの —— で書く behavior は、
     その形をパッケージに入れ、誰もシークレットと告げなかった値も残ります。そして behavior が
     行を書く通り道はページの main world に在るので、ページのスクリプトは behavior のもののように
     読める行を書けます（<a href="#logs-reading"></a> を参照）。
@@ -2412,13 +2593,30 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     どちらであるかを判別できます。
   </p>
   <p>
-    <a>settings</a> の <code>secrets</code> が値を締め出すのはパッケージからであって、ページから
+    シークレットの値を置き換えて締め出せるのはパッケージからであって、ページから
     ではありません。behavior はページの main world に在る runtime から値を読み、そこではページ
     自身のスクリプトも同じ値を読めます。別の実行 context を使わない限り、producer はそこで値を
-    隠せません。また、このプロファイルは behavior の先まで値を追いません。値をネットワークへ
-    送る behavior —— URL・ヘッダ・本文のどれであれ —— は、他と同じく記録される要求を出し、
-    値はそのとき WARC に入ります。シークレットをアーカイブから完全に締め出したい要求者は、
-    それを送らない behavior を渡す必要があります。
+    隠せません。値をネットワークへ送る behavior —— URL・ヘッダ・本文のどれであれ —— は、
+    パッケージが何を記録するかに関わらず、値をオリジンに渡します。
+  </p>
+  <p>
+    隠すシークレットを隠せるのは、producer が値を認識できるところだけです。
+    [[BROWSERHIVE-WARC-PROFILE]] の Security の節が挙げるものは、パッケージにも残ります:
+    値から作られたもの（ハッシュ、暗号文、オリジンが本文で発行した token など）、出現でない綴り、
+    そして値がそこにあったという事実で、これは <code>***</code> がどこであれ示します。
+    storage の area の digest は、何かを置き換える前の area の中身から作るので、ページが保存した
+    値の候補を読み手に試させることがあります。シークレットの跡をアーカイブから完全に締め出したい
+    要求者は、それを送らない behavior を渡す必要があります。
+  </p>
+  <p>
+    パッケージが出現を持たないことは、パッケージだけを持つ読み手には確かめられません。パッケージが
+    値を持たないからです。パッケージを読む道具に確かめられるのは、producer がしたと述べることの
+    形だけです。確かめられるのは値を持つ producer で、パッケージを書く前に全部のファイルを探せます。
+  </p>
+  <p>
+    <code>secretArchive</code> を埋めるのは要求の側で、それが何を旅させるかを決めます。
+    <a>残すシークレット</a>の値は、WARC のレコードと、そこから取った URL の中で読めるままで、
+    パッケージを人に渡す者はそれも渡します。
   </p>
   <p>
     対照的に <code>variables</code> は、意図して値のまま記録します。個人データを変数に入れた
