@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.22.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 2026-11-07 | シークレットを WARC に載せるかを `settings.secretArchive` に記録し、隠すシークレットの値をパッケージの全部のファイルから除く |
 | [1.21.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 2026-11-07 | 取り込みの間に renderer が落ちた target を `completeness.crashedTargets` に載せる |
 | [1.20.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/) | 2026-11-06 | 取り込みが送った `User-Agent` を `settings` に記録する |
 | [1.19.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/) | 2026-11-04 | 取り込みのログをパッケージに入れる（`logs/capture.jsonl`） |
@@ -49,6 +50,46 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.22.0
+
+シークレットのどれを WARC に残すかを `settings` の必須の member にし、シークレットの値の扱いを
+パッケージの全部のファイルについて定め直した。`archive/` の WARC は BrowserHive WARC Profile 1.2.0 に適合する。
+シークレット・隠すシークレット・出現・redacted のレコード・文字の本文の語は、WARC Profile の定義を指す。
+
+- **`settings.secretArchive`（object・必須）:** 名前 → `"keep"`。無ければ `{}`。名前は `settings.secrets` の部分集合（MUST）。
+  ここに名前のあるシークレットが残すシークレットで、ほかは隠すシークレット。producer は値を `secrets` と `secretArchive` に書かない（MUST NOT）。
+- **新しい節 `secret-values`:** 断る要求（`secret-requests`）・隠すシークレット（`hidden-secret-values`）・
+  残すシークレット（`kept-secret-values`）の 3 つの子の節を持つ。
+- **断る要求（MUST）:** 隠すシークレットに 8 文字より短い値を渡す要求、取り込みの URL に隠す値の出現がある要求、
+  隠すシークレットを持ち `storage/origins.jsonl` を持たせることになる要求。隠すシークレットを持つパッケージは
+  `storage/origins.jsonl` を持たない（MUST NOT）。
+- **隠すシークレット:** パッケージのどのファイルも、値の出現を持たない（MUST NOT）。WARC Profile が言えるのは 1 本の
+  ファイルの中だけなので、ここで全部のファイルに広げた。パッケージが記録する URL（`document.url`・`completeness` の
+  URL・`axtree.jsonl` の行とノードの `url`・CDXJ の `url` と鍵・写しの URL）は値を `***` に置き換えた形で、結果は URL のまま
+  （scheme が無くなるときは元の scheme とコロンを前に書き、それでも URL にならないときは scheme とコロンと `***` だけ）。
+  ページの文字と題・ツリーの名前と値・ログの行の `msg` と `data` も置き換える。WARC の外でほかに置き換えるものは無く
+  （`source`・`behaviors/runtime.js`・`variables`・`urlPolicies`・`tls` の host・`storage` の origin・member の名前）、
+  そこに出現を書くことになる取り込みは、パッケージを作らない（MUST NOT）。
+- **Cookie:** WARC Profile が隠すシークレットの値として扱う cookie の値は、応答が届いた瞬間から、この節が置き換えさせる所で
+  置き換える（MUST）。それより前に受け取ったものや書いたもの、取り込みの要求から写すもの、置き換えないものは、その値を
+  持っていることがある。
+- **残すシークレット:** 値は写しのレコードを除く `request`・`response`・`metadata` のレコードと、交信と文書の URL に残る。
+  取り込みの URL にあれば、1 行目の `url`・`mainPageURL` と、その URL を書くときの `warcinfo` の `description`・
+  `datapackage.json` の `title` にも残る。写しとその URL・ページの文字と題・ツリーのノードの `name`・`value`・`url`・
+  ログの行の `msg` と `data` は、そのままの値を持たない（MUST NOT。長さに関わらず）。隠す値でもある分は、隠す側の決まりが先。
+- **`completeness`:** `truncated: secret` の本文は未完了に数えない（MUST NOT で列挙しない）。`truncated` の表に `secret`。
+- **方針の照合:** 値を置き換える前の URL に当てる。`***` を持つ URL に当てた結果を、取り込みがしたこととして受け取らない
+  （読み手への MUST NOT）。
+- **直した文:** `behaviors/runtime.js` の「値はどこにも記録されない」（ソースに値を書かない MUST NOT に）、ログの行の
+  「パッケージのどこでも」「他のどの member にも」（`msg` と `data` の MUST NOT に。短い残す値は `level` などの決まった字と
+  ぶつかる）、Security の「wire を渡ったバイト列」「そのとき WARC に入る」。
+
+**なぜ。** 1.21.0 までの `settings.secrets` は「値はパッケージのどこにも現れない」と書き（MUST NOT）、Security は
+「behavior が値を送れば WARC に入る」と書いていて、両立しなかった。実物は送った値を WARC に生のまま残していた。
+もう 1 つ、ページ一覧の 1 行目の URL の MUST も、要求の URL に値があると `settings.secrets` の MUST NOT と両立しなかった。
+
+`secretArchive` を持たない、1.21.0 に対して書いたパッケージは、1.22.0 に適合しない。
 
 ## 1.21.0
 
