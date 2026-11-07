@@ -586,8 +586,8 @@
       read it as bytes. A URL dropped twice still appears once.
     </p>
     <p>
-      The three arrays of URLs <em class="rfc2119">MUST</em> be sorted, so that
-      two captures of the same page produce comparable output.
+      The three arrays of URLs <em class="rfc2119">MUST</em> be sorted by code point,
+      so that two captures of the same page produce comparable output.
     </p>
     <p>
       The three are separate members because they call for different responses.
@@ -705,8 +705,8 @@
       </p>
       <p>
         The array <em class="rfc2119">MUST</em> be sorted by <code>url</code>, then
-        <code>type</code>, then <code>status</code>, with an entry without a
-        <code>url</code> ahead of those with one.
+        <code>type</code>, then <code>status</code>, each by code point, with an entry
+        without a <code>url</code> ahead of those with one.
       </p>
       <p>
         The main document does not appear here. When its renderer crashes before the
