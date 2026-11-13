@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.23.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.24.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.24.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.25.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -63,9 +63,9 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/",
         publisher: "BrowserHive",
-        version: "1.2.0",
+        version: "1.3.0",
       },
     },
     lint: false,
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.23.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.24.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,15 +92,16 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.23.0 は 1.22.0 と後方互換ではありません">
-    この版は、どのパッケージにも、その取り込みの trace —— 取り込みが始まりを見た要求と、
-    そのそれぞれがどうなったかを、要求ごとに 1 行で —— を <code>trace/events.jsonl</code> に
-    持つこと（<a href="#trace-directory"></a> を参照）と、そのエントリが何行を持つかを
-    <a>browserhive:capture</a> の <a>trace</a> で述べることを求めます。そのどちらも持たない
-    1.22.0 向けのパッケージは、1.23.0 に適合しません。これは
+  <p class="note" title="1.24.0 は 1.23.0 と後方互換ではありません">
+    この版は、どのパッケージにも、その取り込みのスクリーンショット —— 取り込みが文書を写す
+    時点に、producer が撮ってよい、取り込んだページの画像 —— がどうなったかを
+    <a>browserhive:capture</a> の <a>screenshots</a> で述べることを求め、パッケージの WARC
+    ファイルを、スクリーンショットのレコードを定める BrowserHive WARC Profile 1.3.0 に
+    適合させます（<a href="#archive-files"></a> を参照）。その member を持たず、WARC ファイルが
+    同 Profile の 1.2.0 を名乗る 1.23.0 向けのパッケージは、1.24.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -131,8 +132,9 @@
     どの本文が欠けていてそれはなぜか、どの上限が効いていたか、どのリクエストを送らず
     どのリクエストを送って保持しなかったか、記録の前にページから何を取り除いたか、
     どのシークレットを渡され、そのどれを残したか、
-    各オリジンがどの証明書を提示したか、取り込みが走りながら書いたログ、そして取り込みが
-    始まりを見た要求と、そのそれぞれがどう終わったか。これらは
+    各オリジンがどの証明書を提示したか、取り込みが走りながら書いたログ、取り込みが
+    始まりを見た要求と、そのそれぞれがどう終わったか、そして取り込んだページの画像を残したか
+    どうかと、残さなかったときはその理由。これらは
     [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
   </p>
 </section>
@@ -188,7 +190,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -419,7 +421,9 @@
     <p>
       2 つは<strong>測る対象が違います</strong>。<code>maxResponseBytes</code> は
       レスポンス 1 件の本文に掛かり、<code>maxTaskBytes</code> はこのパッケージへ書いた
-      本文の累計に掛かります。
+      本文の累計に掛かります。写しとスクリーンショットも、同じ線に照らします: 残すと、
+      取り込みが残すバイト数がその線を超えるものは、残しません（<a>snapshots</a> と
+      <a>screenshots</a> を参照）。
     </p>
     <p>
       この違いは読み手にとって実際的です。<code>maxResponseBytes</code> は 1 件ずつを量るので、
@@ -438,7 +442,7 @@
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
       アーカイブが言える場所は、ここだけです ——
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
       実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
     </p>
     <p class="note">
@@ -512,7 +516,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
             <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
             アーカイブが本文を持たない URL（[[BROWSERHIVE-WARC-PROFILE]] の
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>はい</td>
             <td>取り込みの間に renderer が落ちた、主文書以外の target
             （<a href="#completeness-crashed-targets"></a> を参照）。</td></tr>
@@ -584,7 +588,7 @@
     <p>
       WARC は、同じ本文をレコード 1 つずつで述べます。サーバが送った本文を持たずに記録した
       応答には、それぞれ
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）が付き、その <code>truncated</code> が理由を言います。
       サイズ上限で落とした本文 —— <code>too-large</code> と <code>task-cap</code> —— の URL は
       <code>truncatedUrls</code> に、バイト列として得られなかった本文 ——
@@ -924,6 +928,7 @@
     </p>
     <p>
       <strong>ページ由来の記録</strong>とは、文書の写し（<a>snapshots</a> を参照）、
+      取り込んだページのスクリーンショット（<a>screenshots</a> を参照）、
       <code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
       <code>datapackage.json</code> の <code>title</code>、
       <code>accessibility/axtree.jsonl</code>、そして <code>logs/capture.jsonl</code> の
@@ -955,7 +960,8 @@
     <p>
       ページ由来の記録は、時点ごとに読みます。ある時点の写しと、それを並べる
       <code>pages/pages.jsonl</code> のエントリ（<a href="#pages"></a> を参照）は、その時点で
-      主フレームにあった文書から読みます。<code>datapackage.json</code> の <code>title</code>
+      主フレームにあった文書から読み、ある時点のスクリーンショットには、その文書が主フレームに
+      在る間の、取り込んだページが写ります。<code>datapackage.json</code> の <code>title</code>
       と <code>accessibility/axtree.jsonl</code> は、behavior の後に、<code>document</code> が
       名指す文書から読み、<code>"after-behaviors"</code> の時点の写しと、
       <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
@@ -964,6 +970,7 @@
       <code>document</code> が名指す文書から読んだものとして扱います。下の
       <code>withheld</code> の決まりは、各時点で、その時点の文書に当てはまります: 決まりが文書を
       伏せる時点には写しが無く、<a>snapshots</a> はそれを <code>"withheld"</code> と記録します。
+      その時点のスクリーンショットも在りません（<a>screenshots</a> を参照）。
     </p>
     <p>
       <code>deny</code> の項目が主フレームの遷移を止めたとき（<a>urlPolicies</a> を参照）、
@@ -1009,7 +1016,8 @@
       <code>title</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。そのエントリは
       理由を <code>textWithheld</code> として持ってもよく（<em class="rfc2119">MAY</em>）、
       持つなら値は <code>withheld</code> と等しくなければなりません
-      （<em class="rfc2119">MUST</em>）。
+      （<em class="rfc2119">MUST</em>）。文書を伏せたパッケージは、どの時点の
+      スクリーンショットも持ちません（<a>screenshots</a> を参照）。
     </p>
     <p class="note">
       大きさの上限で落とした本文は、ページ由来の記録を伏せません。上限は取り込みの側の
@@ -1025,7 +1033,7 @@
       述べる配列の <dfn>snapshots</dfn> member を持たなければなりません
       （<em class="rfc2119">MUST</em>）。写しは、その時点のページの主フレームの文書の姿を写した
       もので、WARC に記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#snapshots">Snapshots</a>）。
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#snapshots">Snapshots</a>）。
       配列は、<code>"after-load"</code> の項目と、取り込みが behavior を走らせたとき
       （<a>settings</a> の <code>behaviors</code> が空でないとき）はその後に
       <code>"after-behaviors"</code> の項目を持たなければならず（<em class="rfc2119">MUST</em>）、
@@ -1087,7 +1095,7 @@
       <li><code>"too-large"</code> —— 写しが、producer が 1 つの写しに許す大きさを超えた。</li>
       <li><code>"task-budget"</code> —— 写しを残すと、取り込みが残すバイト数が
           <code>limits.maxTaskBytes</code>（<a>settings</a> を参照）を超えるところだった。
-          レスポンスの本文と分け合う上限です。</li>
+          レスポンスの本文やスクリーンショットと分け合う上限です。</li>
       <li><code>"failed"</code> —— producer が写しを取ろうとして、取れなかった。</li>
     </ul>
     <p>
@@ -1098,6 +1106,257 @@
       パッケージに無い写しは、伏せたのか、大きすぎたのか、失われたのかが分からず、取り込みに
       その時点がそもそも無かったのかもしれません。項目はそのどれかを述べるので、読み手は、
       取り込みが入れないと決めたページを、写し損ねたページと取り違えません。
+    </p>
+  </section>
+
+  <section id="screenshots">
+    <h3><code>screenshots</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みが文書を写す時点（<a>snapshots</a> を参照）
+      ごとに、パッケージがその時点のスクリーンショットを持つかどうかと、持たないときはその理由を
+      述べる配列の <dfn>screenshots</dfn> member を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。スクリーンショットは、その時点に browser が見せていた、
+      取り込んだページの画像で、WARC に 2 つのレコードで記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#screenshots">Screenshots</a>）:
+      画像を持つ <code>resource</code> レコード —— その <code>WARC-Target-URI</code> は
+      <code>urn:browserhive:screenshot:</code> で始まります —— と、その画像が何であるかを述べる
+      <code>metadata</code> レコードです。配列は、<code>"after-load"</code> の項目と、
+      取り込みが behavior を走らせたとき（<a>settings</a> の <code>behaviors</code> が空でない
+      とき）はその後の <code>"after-behaviors"</code> の項目だけを持たなければなりません
+      （<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      スクリーンショットに写るのは、そのときまでに取り込みが手を入れた後の、取り込んだページです。
+      取り込みが記録の前にそのページから何かを取り除いていれば、画像にはそれが無いページが写り、
+      何を取り除いたかは <a>dismissal</a> が述べます。
+    </p>
+    <p>
+      スクリーンショットを撮るかどうかは producer が選ぶことで、本プロファイルは撮ることを
+      求めません。求めるのは、スクリーンショットがどうなったかをパッケージが述べることと、
+      取り込みがパッケージに入れないよう求められたものを画像が写しうるときに、パッケージが
+      スクリーンショットを 1 枚も持たないことです（下を参照）。
+    </p>
+    <p>
+      パッケージがスクリーンショットを持つ時点の項目は、次の member を持たなければならず、
+      <code>skipped</code> は持ちません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>stage</code></td><td>string</td><td>はい</td>
+            <td>時点: <code>"after-load"</code> か <code>"after-behaviors"</code>。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい</td>
+            <td>スクリーンショットの <code>resource</code> レコードの <code>WARC-Target-URI</code>。</td></tr>
+        <tr><td><code>date</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Date</code>。タイムスタンプ。</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Record-ID</code> の URI。その欄が付ける山括弧は
+            付けません。</td></tr>
+        <tr><td><code>bytes</code></td><td>number</td><td>はい</td>
+            <td>画像の大きさ（バイト）。そのレコードの <code>Content-Length</code>。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"screenshots": [
+  {
+    "stage": "after-load",
+    "url": "urn:browserhive:screenshot:after-load:https://shop.example/",
+    "date": "2026-11-02T01:20:05.204Z",
+    "record": "urn:uuid:0b6f7c1e-5a2d-4e83-b9f0-3c4d5e6f7a8b",
+    "bytes": 9344
+  },
+  {
+    "stage": "after-behaviors",
+    "url": "urn:browserhive:screenshot:after-behaviors:https://shop.example/results",
+    "date": "2026-11-02T01:20:07.512Z",
+    "record": "urn:uuid:8f3a1c7e-52d4-4b9a-b6e0-1d7c9a4f2e35",
+    "bytes": 18764
+  }
+]</pre>
+    <p>
+      スクリーンショットに写るのは viewport —— 取り込んだページのうち browser が見せていた
+      部分 —— で、その先は写りません。取り込みの viewport は <a>settings</a> が記録するもので、
+      画像の大きさと、そのときの device pixel ratio は、スクリーンショットの
+      <code>metadata</code> レコードが述べます。
+    </p>
+    <p>
+      パッケージがスクリーンショットを持たない時点の項目は、<code>stage</code> と
+      <code>skipped</code> だけを持たなければなりません（<em class="rfc2119">MUST</em>）——
+      たとえば <code>{"stage": "after-load", "skipped": "withheld"}</code>。
+      <code>skipped</code> は次のどれかで、いくつも当てはまるときは、この並びで先に来るもので
+      なければなりません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <ul>
+      <li><code>"disabled"</code> —— producer が、スクリーンショットを撮る設定になっていなかった。</li>
+      <li><code>"secret"</code> —— 取り込みがシークレットを渡された。<a>settings</a> の
+          <code>secrets</code> が空でない。</li>
+      <li><code>"withheld"</code> —— 取り込みの方針か、文書の成り行きが、スクリーンショットを
+          外す（下を参照）: 取り込みがメディア型の方針を持っていた。<a>urlPolicies</a> の
+          <code>no-archive</code> か <code>no-body</code> の項目が、文書・画像・メディアの要求に、
+          またはパッケージが種類を示せない要求に当たった。取り込みの終わりに、またはその時点で、
+          文書が伏せられている。あるいは、その時点の画像がどの文書を写しているかを producer が
+          言えない。</li>
+      <li><code>"task-budget"</code> —— 画像を残すと、取り込みが残すバイト数が
+          <code>limits.maxTaskBytes</code>（<a>settings</a> を参照）を超えるところだった。
+          スクリーンショットが、レスポンスの本文や写しと分け合う上限です。</li>
+      <li><code>"failed"</code> —— producer がスクリーンショットを撮ろうとして、撮れなかった。
+          あるいは、先の 1 枚を諦めた後で、試さなかった（下を参照）。</li>
+    </ul>
+    <p>
+      したがって、項目が <code>"secret"</code> を持つのは <code>secrets</code> が空でない
+      パッケージだけで、そういうパッケージでは、どの項目も <code>"disabled"</code> か
+      <code>"secret"</code> を持ちます。
+    </p>
+    <p>
+      パッケージは、項目が名指すスクリーンショットをすべて持たなければならず、どの項目も
+      名指さないスクリーンショットは持ちません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      画像は、文字のようには直せません。producer は、スクリーンショットのピクセルの中から、
+      値も、方針が伏せた画像も見つけられず、そこだけを取り除いて残りを残すこともできません。
+      だから、取り込みがパッケージに入れないよう求められたものを画像に入れない手は、画像を
+      残さないことだけです。パッケージは、次のどれかが当てはまるとき、どの時点の
+      スクリーンショットも持ってはなりません（<em class="rfc2119">MUST NOT</em>）:
+    </p>
+    <ol>
+      <li><a>settings</a> の <code>secrets</code> が空でない。取り込んだページは、シークレットの
+          値を見せることがあります —— behavior が値を打った欄や、オリジンが返したものの中に。
+          これは、隠すシークレットにも残すシークレットにも当てはまります: シークレットを残すと、
+          wire を渡ったものの記録に値が残りますが、取り込んだページから読むものでは、残す値も置き換えます
+          （<a href="#kept-secret-values"></a> を参照）。画像では、それができません。</li>
+      <li><a>settings</a> の <code>contentTypePolicies</code> が空でない。メディア型の方針は、
+          応答のメディア型で応答に当たります。メディア型は応答が届いてからしか分からず、producer は、
+          取り込んだページが見せた応答の全部のメディア型を見るわけではありません —— 別サイトの
+          フレームの中の応答と、取り込みの終わりまでに届かなかった応答は見えません。
+          だから producer には、そうした方針が入れないはずだった本文を
+          どの画像も写していない、とは言えません。BrowserHive は自前のメディア型の方針を
+          持たないので、当てはまるのは、その方針を設定された取り込みだけです。</li>
+      <li><a>document</a> が <code>withheld</code> を持つ。ページ由来の記録についての
+          <a>document</a> の決まりを、もう一歩進めたものです: パッケージは、前の時点の
+          スクリーンショットも持ちません。どの文書が書いた行であれ、取り込んだページがログに
+          書いた行を持たないのと同じです。</li>
+      <li><code>archive/</code> の WARC ファイルが、<code>action</code> が
+          <code>no-archive</code> の
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-withheld-requests">withheld request のレコード</a>を持ち、
+          そのレコードの <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
+          <code>Media</code> のどれかであるか、そのレコードが <code>resourceType</code> を
+          持たない。</li>
+      <li><code>archive/</code> の WARC ファイルが、<code>truncated</code> が
+          <code>url-policy</code> の
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>を持ち、
+          そのレコードが指す <code>response</code> レコードを <code>record</code> で名指す
+          <code>trace/events.jsonl</code> の行（<a href="#trace-lines"></a> を参照）の
+          <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
+          <code>Media</code> のどれかであるか、その行が <code>resourceType</code> を持たない。
+          あるいは、その <code>response</code> レコードを名指す行が無い（producer が trace から
+          行を省いたときなど）。応答の status は問いません: body not kept のレコードが
+          リダイレクトのものであれば、それも、ほかの応答のものと同じに数えます。</li>
+    </ol>
+    <p>
+      上の 4 番目と 5 番目の条件では、<a>urlPolicies</a> の <code>no-archive</code> か
+      <code>no-body</code> の項目が、文書・画像・メディアの要求に当たっています。
+      方針は要求に当たるもので、producer は、応答がどうなるかを知る前に、要求の時点で決めます。
+      そのため、取り込んだページに見せる本文が応答に在ったかどうかは問わず、条件はリダイレクトの
+      中継にも当てはまります。これは、<a>document</a> が引く線 —— リダイレクトの中継だけに
+      当たった方針は何も伏せない —— とは別の線です: スクリーンショットは、1 つの文書に
+      ついてではなく、取り込みの全体について決めるからです。
+    </p>
+    <p>
+      <code>Document</code>・<code>Image</code>・<code>Media</code> は、レコードや行の
+      <code>resourceType</code> の値と、1 文字ずつ比べます。これらは browser の語で、
+      本プロファイルは定義しません（<a href="#trace-lines"></a> を参照）。browser がほかの語を
+      使う producer は、この 3 つが指す要求 —— 文書（フレームの文書を含む）の要求、画像の要求、
+      音声や動画の要求 —— を同じに扱います。
+    </p>
+    <p>
+      ある時点のスクリーンショットは、その時点で主フレームにあった文書を写します。パッケージは、
+      <a>document</a> の決まりが文書を伏せる時点のスクリーンショットも、撮っている間に
+      主フレームの文書が替わったために、どの文書を写しているかを producer が言えない
+      スクリーンショットも、持ってはなりません（<em class="rfc2119">MUST NOT</em>）。
+      <a>snapshots</a> が <code>"withheld"</code> と記録する時点の項目は、
+      <code>skipped</code> を持たなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      4 番目と 5 番目の条件の後ろには、producer を縛る決まりが在ります。
+      producer は、ある要求の URL に最初に当たる <a>urlPolicies</a> の項目の action が
+      <code>no-archive</code> か <code>no-body</code> で、producer が読むその要求の報告の
+      どれかで、browser がその要求を <code>Document</code>・<code>Image</code>・
+      <code>Media</code> と伝えた取り込みのスクリーンショットを、残してはなりません
+      （<em class="rfc2119">MUST NOT</em>）。browser は、1 つの要求を 2 か所以上で、同じでない語で
+      伝えることがあります: Chromium は、動画の字幕の要求を、producer が要求を止める所では
+      <code>Media</code>、記録する所では <code>TextTrack</code> と呼び、<code>object</code> や
+      <code>embed</code> の要素が読み込む画像を、<code>Other</code> と <code>Image</code> と
+      呼びます。そうした報告が 1 つ在れば足ります。
+      この決まりは、その要求がどうなったか —— 応答を本文なしで記録した、リダイレクトされた、
+      失敗した、取り込みの終わりまでに応答が届かなかった —— には関わらず、取り込んだページの
+      どこが要求を出したかにも関わりません。producer がレコードを書かない、別サイトの
+      フレームの中も入ります。
+    </p>
+    <p>
+      その 2 つの条件と、この決まりは、同じ取り込みを覆うわけではありません。2 つの条件は、
+      要求の種類をパッケージが示せないときにも当てはまります: レコードや行が
+      <code>resourceType</code> を持たないとき、producer がその行を trace から省いたときです。
+      producer は、browser が何と伝えたかに関わらず、そうした取り込みのスクリーンショットも
+      残さず、項目は <code>"withheld"</code> を持ちます。逆の向きでは、パッケージを読む道具に、
+      この決まりが届く要求の全部は見えません。producer がレコードを書かなかった要求 ——
+      別サイトのフレームの中で出された要求、<code>no-body</code> の項目が当たって応答が
+      届かなかった要求、送る本文の無い応答が返った要求（[[BROWSERHIVE-WARC-PROFILE]] は、
+      その応答にそのレコードを求めません）—— は見えません。レコードが、数えられた報告とは
+      別の語で要求を呼んでいるときも、その要求が数えられたことは見えません。そのとき項目は
+      <code>"withheld"</code> を持ち、パッケージのほかのどこも、その理由を述べません。
+    </p>
+    <p class="note" title="スクリーンショットを外さないもの">
+      <code>deny</code> の項目は外しません: 送られなかった要求は、取り込んだページに見せるものを
+      何も運んでいません。その項目が主フレームの遷移を止めたときは、文書の場所に browser の
+      誤りのページが在り、<a>document</a> が <code>withheld</code> を持ちます。大きさの上限で
+      落とした本文も外しません。理由は、ほかのページ由来の記録を伏せないのと同じです
+      （<a>document</a> を参照）: 上限は取り込みの側のもので、要求者のものではありません。
+      ほかの種類だとパッケージが示す要求 —— スクリプトやスタイルシートの要求など —— に
+      だけ当たり、その要求を、producer が読んだどの報告も文書・画像・メディアと呼ばなかった
+      <a>urlPolicies</a> の項目も外しません。それが画像に何を残すかは、
+      <a href="#security-and-privacy-considerations"></a> に書きます。
+    </p>
+    <p class="note" title="なぜ 1 枚ごとでなく、取り込みの全体を見るのか">
+      producer には、どの画像がどの応答を写しているかが分かりません。browser は、取り込んだ
+      ページが応答を見せるよりずっと前に、その応答を持っていることがあるからです。そのため、
+      条件は取り込みの全体を見ます。方針が、画像を撮った後に出された要求に当たることも
+      あります —— viewport より下の画像は、behavior がそこまで scroll して初めて要求されます。
+      だから producer は、記録を止めるまで画像を持っておき、そのときにまとめて書くか、まとめて
+      捨てることになります。先に WARC ファイルへ書いた画像は、取り出せません。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、スクリーンショットに、producer が撮り始めたときの
+      viewport の大きさ・device pixel ratio・scroll の位置のままの、取り込んだページを
+      写させます。だから producer は、画像のためにそのどれも変えません。パッケージでは、これが、
+      取り込みが画像より後に記録したものの全部について、<a>settings</a> を正しいままにします:
+      そのページは、<a>settings</a> が挙げる viewport と、device pixel ratio のどれかの下で先へ
+      進んでいます。取り込んだページが変えられたかどうかは、パッケージを読む道具には見えません。
+    </p>
+    <p>
+      main thread を手放さないページは、取り込みが待てるより長く、browser に画像を
+      渡させないことがあります。producer は、自分の決めた時間の後でスクリーンショットを
+      諦めてよく（<em class="rfc2119">MAY</em>）、1 枚を諦めた producer は、その取り込みの
+      その後のスクリーンショットを試さなくてもかまいません（<em class="rfc2119">MAY</em>）。
+      producer は、そのどれも <code>"failed"</code> と記録します。
+    </p>
+    <p>
+      スクリーンショットは、<code>pages/pages.jsonl</code> にエントリを持ちません。読み手が
+      開くページではないからです（<a href="#pages"></a> を参照）。その <code>resource</code>
+      レコードは CDXJ 索引に在り（<a href="#archive-files"></a> を参照）、読み手は、項目の
+      <code>url</code> と <code>date</code> でそれを見つけます。
+    </p>
+    <p>
+      この版に適合するパッケージが持つ項目は、上の 2 つの時点のものだけです。本プロファイルの
+      後の版は、別の種類の項目 —— 時点で撮るのではないスクリーンショットの項目 —— を
+      足すことがあり、[[BROWSERHIVE-WARC-PROFILE]] はそのための余地を残しています。
+    </p>
+    <p class="note" title="なぜスクリーンショットの無い時点も並べるのか">
+      スクリーンショットの無いパッケージは、撮らない producer のものかもしれず、画像を
+      残せなかった取り込みのものかもしれず、撮れなかった取り込みのものかもしれません。項目は
+      そのどれかを述べるので、読み手は、取り込みが残してはならなかった画像を、撮り損ねた画像と
+      取り違えず、取り込みを見せる道具は、画像が無い理由を言えます。
     </p>
   </section>
 
@@ -1291,14 +1550,15 @@
   </p>
   <p>
     <code>archive/</code> のどの WARC ファイルも
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/">BrowserHive WARC Profile 1.2.0</a> に適合し
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/">BrowserHive WARC Profile 1.3.0</a> に適合し
     <em class="rfc2119">なければならず</em>、その <code>warcinfo</code> レコードは
     <code>conformsTo</code> でその版を名乗ら<em class="rfc2119">なければならない</em>
-    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
+    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
     同仕様が定めます —— ペイロード、隠すシークレットの値を置き換えるレコード、
     body not kept・withheld request・window not opened の
-    レコード、文書の写し、各ファイルの先頭の <code>warcinfo</code> レコード、1 つの交信の
-    レコードと 1 つの写しのレコードが、それぞれ同じファイルに入ること。
+    レコード、文書の写しと取り込んだページのスクリーンショット、各ファイルの先頭の
+    <code>warcinfo</code> レコード、1 つの交信のレコード・1 つの写しのレコード・1 つの
+    スクリーンショットのレコードが、それぞれ同じファイルに入ること。
   </p>
   <p>
     <code>archive/</code> ディレクトリは、<code>data-NNN.warc.gz</code> という名前のファイルだけを
@@ -1330,13 +1590,17 @@
     要求されません。これを探す読み手は WARC を読みます。
   </p>
   <p>
-    写しの <code>resource</code> レコードは、どれも CDXJ 索引に現れなければなりません
+    写しの <code>resource</code> レコードと、スクリーンショット（<a>screenshots</a> を参照）の
+    <code>resource</code> レコードは、どれも CDXJ 索引に現れなければなりません
     （<em class="rfc2119">MUST</em>）。アーカイブしたページを配る読み手は、索引で写しを
+    見つけ、スクリーンショットを見せる読み手は、WARC ファイルを読み通さずに画像を
     見つけるからです。その行の検索の鍵は、レコードの <code>WARC-Target-URI</code> そのまま
-    —— SURT の形を持たない <code>urn:browserhive:snapshot:</code> の URI —— でなければならず
+    —— SURT の形を持たない <code>urn:browserhive:snapshot:</code> か
+    <code>urn:browserhive:screenshot:</code> の URI —— でなければならず
     （<em class="rfc2119">MUST</em>）、行の JSON は <code>status</code> を持ってはなりません
-    （<em class="rfc2119">MUST NOT</em>）。どのサーバもステータスで答えていないからです。写しの
-    <code>metadata</code> レコードは、上のレコードと同じく、現れることを要求されません。
+    （<em class="rfc2119">MUST NOT</em>）。どのサーバもステータスで答えていないからです。写しと
+    スクリーンショットの <code>metadata</code> レコードは、上のレコードと同じく、現れることを
+    要求されません。
   </p>
     <pre class="text">
 archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
@@ -1427,7 +1691,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     方針が働くのはネットワークの本文です。描画されたページから読む記録 —— ページの文字・
-    題・アクセシビリティツリー —— に方針が何をするかは、<a>document</a> で定めます。
+    題・アクセシビリティツリー —— に方針が何をするかは、<a>document</a> で定め、取り込んだ
+    ページのスクリーンショットに何をするかは、<a>screenshots</a> で定めます。
   </p>
 
   <section id="urlpolicies">
@@ -1471,21 +1736,21 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
             その URL について取り込みを行った機械から
             出たものは無く、それを通じて取り込みを知ったオリジンも在りません。</td></tr>
         <tr><td><code>no-archive</code></td><td>する</td>
-            <td>WARC の中のリクエストの記録と、trace の行。オリジンは応答しましたが、パッケージは
-            その応答を保持しません。</td></tr>
+            <td>WARC の中のリクエストの記録と、trace の行。取り込みは要求を送らせましたが、
+            パッケージは、その交信のほかの何も保持しません。</td></tr>
         <tr><td><code>no-body</code></td><td>する</td>
             <td>request / response のレコード。ただし response の本文は含みません。</td></tr>
       </tbody>
     </table>
     <p>
       <code>deny</code> と <code>no-archive</code> の項目が残す記録は、
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）です。その <code>action</code> は項目の
       <code>action</code> で、<code>pattern</code> は、読み手が項目を見つけられるよう、項目の
       <code>pattern</code> をここに現れるとおりの綴りで書か<em class="rfc2119">なければならない</em>。
       <code>no-body</code> の項目はこの記録を残しません。交信はいつもどおり記録され、無い本文は
       <code>truncated</code> が <code>url-policy</code> の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
       サイズ上限で落とした本文としては扱いません（<a>completeness</a> を参照）。
     </p>
     <p>
@@ -1546,7 +1811,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </p>
     <p>
       この配列も、空のときでも存在して <em class="rfc2119">MUST</em>。
-      理由は <a>urlPolicies</a> と同じです。
+      理由は <a>urlPolicies</a> と同じです。この配列が空でないパッケージは、
+      スクリーンショットを持ちません（<a>screenshots</a> を参照）。
     </p>
     <pre class="json">
 "contentTypePolicies": [
@@ -1567,7 +1833,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     ページが求めた 1 回ごとに、WARC には
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
     （[[BROWSERHIVE-WARC-PROFILE]]）が残ります。ウィンドウの文書のリクエストは送られて
     いないので、このレコードは <a>urlPolicies</a> の項目が URL に当たるかどうかに関わらず
     書かれ、withheld request のレコードではありません。
@@ -1594,13 +1860,20 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     要求は、behavior に読ませる値を秘密として渡すことができ、<a>settings</a> がその名前を記録します。
     behavior はその値をネットワークへ送ることができ、ページはそれを表示できるので、
     取り込みは記録するものの中でその値に出会います。[[BROWSERHIVE-WARC-PROFILE]] の
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
     語を定め、1 本の WARC ファイルがそれらをどう扱うかを述べます。この節は、パッケージの
     シークレットのどれを隠すのかと、パッケージの残りがそれらをどう扱うかを述べます。
   </p>
   <p>
     <code>secrets</code> の名前はどれも、シークレットを名指します。<code>secretArchive</code> が
     名指すものが <dfn data-lt="kept secret">残すシークレット</dfn>で、ほかは隠すシークレットです。
+  </p>
+  <p>
+    この節の決まりが値を置き換えるのは、値が文字かバイト列として在る所です。
+    スクリーンショット（<a>screenshots</a> を参照）は画像です: 取り込んだページが見せた値を
+    写しえますが、そのバイト列の中に、producer が見つけて置き換えられる出現はありません。
+    そのため、<code>secrets</code> が空でないパッケージは、シークレットを隠すか残すかに
+    関わらず、スクリーンショットを持ちません。
   </p>
 
   <section id="secret-requests">
@@ -2804,7 +3077,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       status や大きさや、掛かった時間を運んだなら、trace は、残さないはずだったものを読める
       2 つ目の場所になり、WARC については守られた方針が、パッケージについては守られないことに
       なります。そこで行は、
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       が述べること —— 取り込んだページがその URL を、どの method で、どの種類の資源として
       求めたか、producer がどう決めたか —— と、それがいつだったかのほかは、何も運びません。
       それでも、行の並びは、応答について 1 つのことを示します。<code>no-archive</code> の項目に
@@ -2885,7 +3158,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </p>
     <p class="note" title="trace と WARC のレコード">
       <code>outcome</code> が <code>"not-archived"</code> か <code>"denied"</code> の行は、WARC が
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       を持つ要求で、そのレコードの <code>action</code> は <code>no-archive</code> か
       <code>deny</code> です。<code>record</code> を持つ行は、WARC がレコードを持つ交信です。
       失敗した要求と終わっていなかった要求については、このプロファイルも
@@ -2996,11 +3269,11 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
     とは主張しません。<code>complete</code> も、隠すシークレットの値を持つので落とした本文が無い、
     とは言いません。それを言うのは、<code>truncated</code> が <code>secret</code> の
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
   </p>
   <p>
     適合するパッケージが、保持している本文について主張するのは
-    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#payloads">Payloads</a> の節の
+    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/ja/#payloads">Payloads</a> の節の
     内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
     digest であり、producer が符号を変えた写しのものではありません。例外は、
     <code>BrowserHive-Redacted</code> の欄が <code>payload</code> を挙げる redacted のレコードです。
@@ -3021,7 +3294,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <code>display: none</code> で隠されたテキストは、レスポンス本文には在っても、この木には
     現れません。方針が文書の本文を archive に入れなかったなら、そのテキストは本文に
     <strong>入っていない</strong>ので、パッケージは、木も、ページの文字と題も、その文書から
-    読んだ写しも、ページがログに書いた行も持ちません（<a>document</a> を参照）。
+    読んだ写しも、スクリーンショットも、ページがログに書いた行も持ちません（<a>document</a> を参照）。
   </p>
   <p>
     写しは、そのときのページの姿 —— 文字と、パスワードの欄を除く欄の値 —— を持ちます
@@ -3035,6 +3308,54 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     スクリプトが出した要求への応答や、frame の文書 —— が入りえます。方針がそうした本文の
     どれかを archive に入れなくても、残された文書のページ由来の記録からは、その中身は
     締め出されません。その中身を完全に締め出したい要求者は、文書ごと締め出す必要があります。
+    例外はスクリーンショットだけで、それも要求の種類によります（下を参照）。
+  </p>
+  <p>
+    スクリーンショットは、viewport が見せていたものを運びます: 取り込んだページの文字、画像、
+    再生中だった動画の 1 こま、フレームの文書（別サイトのフレームを含む）、そして、そのページと
+    behavior が欄に入れたもの。画像なので、その中の何かを探すことも、置き換えることも
+    できません。取り込みがシークレットを渡されたとき、メディア型の方針を持っていたとき、
+    <a>urlPolicies</a> の <code>no-archive</code> か <code>no-body</code> の項目が、browser が
+    文書・画像・メディアの要求と伝えた要求に当たったとき、文書が
+    伏せられたときに、パッケージが —— 何かを取り除いたスクリーンショットではなく ——
+    スクリーンショットを 1 枚も持たないのは、そのためです（<a>screenshots</a> を参照）。
+  </p>
+  <p>
+    この条件は、画像が写しうるものの全部には届きません。誰もシークレットと告げなかった値は、
+    取り込んだページが見せていれば、画像に写ります。<a>urlPolicies</a> の
+    <code>no-archive</code> か <code>no-body</code> の項目が当たった要求のうち、producer が読んだ
+    どの報告でも、browser が文書とも画像ともメディアとも伝えなかった要求への応答から、
+    そのページが描いたものも写ります:
+    スクリプトが取ってきてそのページに書き込んだ文字、スタイルシートが与えた見た目、フォントの
+    字形。決めるのは、browser がその要求を何と呼んだかです。スクリプトが自分で取ってきて自分で
+    描く画像は、browser にとってはスクリプトの要求です。スクリプトが小分けに取ってきて player に
+    渡す動画や音声も同じです: browser はそれらの要求をスクリプトの要求と伝えるので、
+    それらに当たる URL の方針は、スクリーンショットを外しません。メディア型の方針は
+    別で、その方針が 1 つでも在れば、スクリーンショットは外れます。producer に見えない要求にも、
+    この決まりは届きません。そうした中身も画像に入れたくない要求者は、文書ごと締め出すか、
+    スクリーンショットを撮らない producer に取り込ませる必要があります。
+  </p>
+  <p>
+    この条件は、画像が写すものより先にも届きます。方針が伏せる画像を 1 つでも読み込む
+    ページ —— 分析の host を伏せる方針の下の、誰にも見えない計測用の画像など —— は、どの
+    取り込みでもスクリーンショットを持ちません。producer は本文を残さないので、見えていた画像と
+    見えていなかった画像を区別できないからです。そうした方針が当たって、リダイレクトされた
+    だけの要求 —— 取り込んだページに見せるものを何も運ばなかった要求 —— も数えます。producer は
+    要求の時点で決めるからです。メディア型の方針は、応答がその方針に当たったかどうかに関わらず、
+    その下で撮ったどの取り込みからもスクリーンショットを外します。そして、画像を撮った後に
+    出された要求に当たった方針も、その画像を外します。producer には、どの画像がどの応答を
+    写しているかが分からないからです。
+  </p>
+  <p>
+    パッケージを読む道具に確かめられるのは、パッケージが持つ印です:
+    <code>secrets</code>、<code>contentTypePolicies</code>、<a>document</a> と
+    <a>snapshots</a> の <code>withheld</code>、withheld request のレコード、そして trace の行と
+    突き合わせた body not kept のレコード。これらの印は、producer を縛る決まりの全部では
+    ありません。producer がレコードを書かなかった要求 —— 別サイトのフレームの中で出された要求や、
+    応答が届かなかった要求 —— は道具に見えず、画像を撮ることが取り込んだページを変えたか
+    どうかも見えません。パッケージだけを
+    持つ者には、ピクセルが browser の見せたものであることも確かめられません: パッケージの
+    digest と、在るなら署名は、画像のバイト列を覆いますが、それがどう作られたかは何も言いません。
   </p>
   <p>
     ログは、ページが書いた文字を運びます。<code>source</code> が <code>"page"</code> の行は、
