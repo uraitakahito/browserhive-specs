@@ -17,7 +17,8 @@ WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/u
 
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | **1.22.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/) | **1.23.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 1.22.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 1.21.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/) | 1.20.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/) | 1.19.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/) |
@@ -67,4 +68,4 @@ CI（`.github/workflows/build.yml`）は公開の経路に居ない。`main` へ
 merge を止められるのはこの検査だけ —— だから赤は merge を止める。同梱した ReSpec が上流から
 離れていないかは、`.github/workflows/respec-drift.yml` が週に 1 回見る。
 
-ローカルで見るには `wacz-profile/1.22.0/index.html` をブラウザで開く。
+ローカルで見るには `wacz-profile/1.23.0/index.html` をブラウザで開く。
