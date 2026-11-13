@@ -75,9 +75,12 @@ BrowserHive WARC Profile 1.2.0 のまま。
     1 文字ずつ同じ（MUST）。2 つの行が同じ `record` を持たない（MUST NOT）。レコードの無い交信の行は `record` を
     持たない（MUST NOT）。`dropped` が 0 なら、どの `response` レコードも、いずれかの行が名指す（MUST）。
   - `outcome` が `not-archived`・`denied` の行は、`initiator`・`response`・`timing`・`durationMs`・`encodedBytes`・
-    `record` を持たない（MUST NOT）。残さないと決めた交信の応答の事実を、trace から読めるようにしないため。
+    `record` を持たない（MUST NOT）。残さないと決めた交信の応答の status・大きさ・掛かった時間を、trace から
+    読めるようにしないため。並びから読めることが 1 つ在る、とも書いた: `no-archive` に当たった要求がリダイレクトされ、
+    次の段を方針が伏せないとき、次の段の行（同じ `id`・次の `hop`）から、リダイレクトされたことと行き先が読める。
   - `error` は `failed` の行に在り（MUST）、ほかの行に無い（MUST NOT）。`endUnobservable` は `pending` の行にだけ
-    （MUST NOT）。`urlCut`・`endUnobservable`・`fromCache` は、在れば `true`（MUST）。
+    （MUST NOT）。`durationMs` は `finished`・`redirected`・`failed` の行にだけ、`encodedBytes` は `finished` の
+    行にだけ（MUST NOT）。`urlCut`・`endUnobservable`・`fromCache` は、在れば `true`（MUST）。
   - `url` は切ってよく（MAY）、切った行は `urlCut` を持つ（MUST）。`url` と `initiator` の `url` は、`data:` の URL の
     データを持たない（MUST NOT）。`data:` の URL が行の `url` のときは `urlCut` を持つ（MUST）。
   - 上限で行を残さなくてよく（MAY）、残さなかった数は `trace` の `dropped` で述べる（MUST）。
@@ -85,11 +88,16 @@ BrowserHive WARC Profile 1.2.0 のまま。
     持たない（MUST NOT）。
   - 時計が 3 つ在ること（`startedAt` は browser の壁時計、`durationMs` と `timing` は browser の単調な時計の差、
     `ms` はログの行と同じ軸）と、長さが producer の止めていた時間を含むことを書いた。
-- **`trace-reading`（新しい節）:** 読み手は行から応答を配らず、要求を組み立て直さない（MUST NOT）。`initiator` を
+- **`trace-reading`（新しい節）:** 読み手は、アーカイブされたページの一部として、行から作った応答を配らず、行から
+  組み立て直した要求を見せない（MUST NOT）。`initiator` を
   producer の申告として読まない（MUST NOT）。digest と署名が覆うのはパッケージの中の行だけで、答えや画面に出る行は
   その写しであることを書いた。
 - **`secret-values`:** 隠すシークレットの出現を置き換える所と、残すシークレットをそのままの値で持たない所に、
   trace の行の `url`・`initiator` の `url`・`error` を足した。置き換えない物に、trace の行のほかの member を足した。
+  trace の行の `url` と `initiator` の `url` は文字として置き換え、結果が URL のままとは限らないことを書いた。
+- **`urlPolicies` と `document`:** `deny`・`no-archive` の要求についてパッケージが持つ物に、trace の行を足した
+  （「リクエストの記録のみ」を、WARC の中の記録と trace の行に）。`document` の `withheld: "no-archive"` の説明も、
+  持たないのは文書を運んだ応答と本文で、withheld request のレコードと trace の行は在る、と直した。
 - **Introduction と Security and privacy considerations:** パッケージが運ぶ申告に trace を足した。trace が運ぶ URL
   （方針が伏せた要求と、応答の届かなかった要求のものを含む）、伏せた要求の行が述べる範囲、シークレットを置き換える
   範囲、`initiator` が取り込んだページの述べたことであること、写しは署名の下に無いことを書いた。

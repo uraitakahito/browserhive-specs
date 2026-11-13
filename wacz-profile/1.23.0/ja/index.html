@@ -982,7 +982,8 @@
       <li><code>"content-type"</code> —— 文書の URL に当たる <a>urlPolicies</a> の項目が無く、
           <a>contentTypePolicies</a> の項目がその media type に当たる。</li>
       <li><code>"no-archive"</code> —— 文書の URL に最初に当たる <a>urlPolicies</a> の項目の
-          action が <code>no-archive</code>。パッケージはその文書の記録を一切持たない。</li>
+          action が <code>no-archive</code>。パッケージは、その文書を運んだ応答も、その本文も持たない。
+          持つのは、その要求の withheld request のレコードと、trace の行だけ。</li>
       <li><code>"deny"</code> —— 文書の URL に最初に当たる <a>urlPolicies</a> の項目の
           action が <code>deny</code>。その文書は一度も要求されていない。その時点で読んだ
           ページ由来の記録は、文書ではなく browser の誤りのページを記述することになる。</li>
@@ -1466,10 +1467,11 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       </thead>
       <tbody>
         <tr><td><code>deny</code></td><td><strong>しない</strong></td>
-            <td>リクエストの記録のみ。その URL について取り込みを行った機械から
+            <td>WARC の中のリクエストの記録と、trace の行（<a href="#trace-lines"></a> を参照）。
+            その URL について取り込みを行った機械から
             出たものは無く、それを通じて取り込みを知ったオリジンも在りません。</td></tr>
         <tr><td><code>no-archive</code></td><td>する</td>
-            <td>リクエストの記録のみ。オリジンは応答しましたが、パッケージは
+            <td>WARC の中のリクエストの記録と、trace の行。オリジンは応答しましたが、パッケージは
             その応答を保持しません。</td></tr>
         <tr><td><code>no-body</code></td><td>する</td>
             <td>request / response のレコード。ただし response の本文は含みません。</td></tr>
@@ -1663,6 +1665,10 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       <code>url</code>・<code>initiator</code> の <code>url</code>・<code>error</code>
       （<a href="#trace-lines"></a> を参照）でも、出現を <code>***</code> に
       置き換えなければなりません（<em class="rfc2119">MUST</em>）。
+      trace の行の <code>url</code> と、その <code>initiator</code> の <code>url</code> は、
+      上に挙げた URL には入りません: producer は文字と同じように置き換え、そこに書いたものが
+      URL のままであるとは限りません。切った URL、<code>data:</code> の URL の書き方、
+      残すシークレットの置き換えは、URL の形を保たないことがあるからです。
     </p>
     <p>
       WARC ファイルの外では、パッケージのほかのものは何も置き換えません:
@@ -2625,8 +2631,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
             行の <code>ms</code> と同じ軸の上の値です（<a href="#logs-lines"></a> を参照）。
             0 以上の整数。</td></tr>
         <tr><td><code>response</code></td><td>object</td><td>いいえ</td>
-            <td>応答のヘッダが届くまでに producer が知ったこと（下を参照）。応答が届かなかった
-            ときは無い。</td></tr>
+            <td>応答のヘッダが届くまでに producer が知ったこと（下を参照）。producer に応答の
+            ヘッダが届かなかったときは無い。</td></tr>
         <tr><td><code>timing</code></td><td>object</td><td>いいえ</td>
             <td>交信の長さの内訳。ミリ秒（下を参照）。</td></tr>
         <tr><td><code>durationMs</code></td><td>number</td><td>いいえ</td>
@@ -2684,8 +2690,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
             <td>その交信を運んだ protocol を、browser 自身の語で: <code>http/1.1</code>・
             <code>h2</code> など。</td></tr>
         <tr><td><code>fromCache</code></td><td>boolean</td><td>いいえ</td>
-            <td>browser が、自分の cache から答えたと伝えたとき <code>true</code>。そうでなければ
-            無い。</td></tr>
+            <td>browser が、disk cache から答えたと伝えたとき <code>true</code>。無いことは、
+            browser が cache から答えなかったことを意味しません。</td></tr>
       </tbody>
     </table>
     <p>
@@ -2718,8 +2724,8 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       <li><code>"pending"</code> &mdash; producer が記録を止めたとき、その要求の終わりを
           まだ見ていなかった。</li>
       <li><code>"not-archived"</code> &mdash; URL に最初に当たる <a>urlPolicies</a> の項目の
-          action が <code>no-archive</code>: 要求は送られ、パッケージは、その要求が出されたという
-          事実のほかに、その交信の何も持たない。</li>
+          action が <code>no-archive</code>: 要求は送られ、パッケージは、その交信の
+          <code>request</code> レコードも <code>response</code> レコードも持たない。</li>
       <li><code>"denied"</code> &mdash; URL に最初に当たる <a>urlPolicies</a> の項目の
           action が <code>deny</code>: producer がその要求を送らせなかった。</li>
       <li><code>"evicted"</code> &mdash; producer が、同時に追う要求の数を抑えるために、
@@ -2743,9 +2749,11 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       残さない行を除いて、持た<em class="rfc2119">なければなりません</em>（MUST）。
     </p>
     <p class="note" title="なぜ並びは時刻の順ではないのか">
-      要求の始まりは、取り込んだページの複数の部分から producer に届きます —— 別サイトの
-      フレームと worker は、取り込んだページとは別に伝えます。そして producer が止めた要求の時刻は、
-      browser ではなく producer が測ります。行を何かの時刻で並べ替えると、誰もその順では
+      要求の始まりは、2 つの道のどちらかで producer に届きます。取り込んだページの側で始まった
+      要求は browser が伝え、その時刻は browser の時計です。producer が送らせなかった要求は、
+      producer 自身の決定から trace に入り、その時刻は producer の時計です。BrowserHive が作る行は
+      この 2 種類で、送らせなかった要求は、取り込んだページのどこで出されたものでも —— 別サイトの
+      フレームや worker の中のものも —— 行になります。行を何かの時刻で並べ替えると、誰もその順では
       見ていない出来事のあいだに、順番を主張することになります。順番が要る読み手は、自分で
       <code>ms</code> で並べ、そうしたことを知ったうえで読みます。
     </p>
@@ -2763,15 +2771,17 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       <code>response</code> レコードがパッケージに無い行は、<code>record</code> を持っては
       <em class="rfc2119">なりません</em>（MUST NOT）: <code>outcome</code> が
       <code>"finished"</code> で <code>record</code> の無い行は、browser が終わりまで読んだが、
-      取り込みが先に止まったので producer が書くに至らなかった応答です。<a>trace</a> の
+      producer がレコードを書かなかった応答です —— たとえば、producer が本文を受け取る前に
+      取り込みが止まったとき。<a>trace</a> の
       <code>dropped</code> が 0 のとき、<code>archive/</code> の中のどの <code>response</code>
       レコードも、いずれかの行の <code>record</code> に名指されてい
       <em class="rfc2119">なければなりません</em>（MUST）。
     </p>
     <p class="note" title="3 つの時計">
       行は 3 つの時計を読んでいて、それらを混ぜてはいけません。<code>startedAt</code> は browser の
-      壁時計です。<code>WARC-Date</code> を読むのと同じ時計で、だから行とレコードを並べて
-      読めます。ただし壁時計は取り込みの間に合わせ直されることがあるので、2 つの行の
+      壁時計です —— <code>outcome</code> が <code>"denied"</code> の行だけは producer の時計で、
+      browser はその要求を始めていません。browser の壁時計は <code>WARC-Date</code> を読むのと
+      同じ時計で、だから行とレコードを並べて読めます。ただし壁時計は取り込みの間に合わせ直されることがあるので、2 つの行の
       <code>startedAt</code> の差は時間の長さではありません。<code>durationMs</code> と
       <code>timing</code> は browser の単調な時計の差で、こちらは跳びません。<code>ms</code> は
       行を、ログの行と同じ軸の上に置きます。producer は行ごとに自分の時計を読むとは限りません:
@@ -2796,14 +2806,24 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       なります。そこで行は、
       <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       が述べること —— 取り込んだページがその URL を、どの method で、どの種類の資源として
-      求めたか、producer がどう決めたか —— と、それがいつだったかのほかは、何も述べません。
+      求めたか、producer がどう決めたか —— と、それがいつだったかのほかは、何も運びません。
+      それでも、行の並びは、応答について 1 つのことを示します。<code>no-archive</code> の項目に
+      当たった要求への応答がリダイレクトで、続く要求をどの方針も伏せないとき、続く要求は、同じ
+      <code>id</code> と次の <code>hop</code> を持つ自分の行を持ちます。そのため読み手は、伏せた
+      要求がリダイレクトされたことと、その行き先の URL を読み取れます。続く交信は、パッケージが
+      残すと決めたものなので、そのレコードはどのみち WARC に在ります。
     </p>
     <p>
       <code>outcome</code> が <code>"failed"</code> の行は <code>error</code> を持た
       <em class="rfc2119">なければならず</em>（MUST）、ほかの行は持っては
       <em class="rfc2119">なりません</em>（MUST NOT）。<code>endUnobservable</code> は、
       <code>outcome</code> が <code>"pending"</code> でない行に在っては
-      <em class="rfc2119">なりません</em>（MUST NOT）。<code>urlCut</code>・
+      <em class="rfc2119">なりません</em>（MUST NOT）。<code>durationMs</code> は、
+      <code>outcome</code> が <code>"finished"</code>・<code>"redirected"</code>・
+      <code>"failed"</code> のどれでもない行に在っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。<code>encodedBytes</code> は、<code>outcome</code> が
+      <code>"finished"</code> でない行に在っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。<code>urlCut</code>・
       <code>endUnobservable</code>・<code>fromCache</code> は、在るときは値が <code>true</code> で
       <em class="rfc2119">なければなりません</em>（MUST）。
     </p>
@@ -2843,7 +2863,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       この抜き出しでは、取り込みは <code>http://example.com/</code> を求めてリダイレクトされました:
       2 つの段は同じ <code>id</code> を持ち、それぞれが自分の交信の <code>response</code> レコードを
       名指しています。方針は、<code>www.example-analytics.com</code> への要求を、残さずに
-      送らせました。そのためその行には、<code>initiator</code> も、応答についての何も在りません。最後の要求は、producer が記録を
+      送らせました。そのためその行には、<code>initiator</code> も、応答についての member も在りません。最後の要求は、producer が記録を
       止めたとき、まだ終わっていませんでした。<code>id</code>・<code>resourceType</code>・
       <code>protocol</code> の値は browser のもの、<code>error</code> の文は browser か producer の
       もので、このプロファイルが定めているわけではありません。
@@ -2889,12 +2909,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   <section id="trace-reading">
     <h3>Reading this entry</h3>
     <p>
-      読み手は、<code>trace/events.jsonl</code> の行から応答を配ったり、要求を組み立て直したり
-      しては<em class="rfc2119">なりません</em>（MUST NOT）。行は取り込みの記録であって、
+      読み手は、アーカイブされたページの一部として、<code>trace/events.jsonl</code> の行から
+      作った応答を配ったり、行から組み立て直した要求を見せたりしては
+      <em class="rfc2119">なりません</em>（MUST NOT）。行は取り込みの記録であって、
       アーカイブされたページの一部ではありません: 行は、要求が出されたことと、それがどう
       終わったかを述べ、何のヘッダも本文も持ちません。アーカイブされたページを配る読み手は、
       WARC のレコードを配ります。行は在るがレコードの無い要求は、パッケージが持っていない
-      ものです。
+      ものです。この決まりは、道具が行をほかのことに使うこと —— たとえば、要求が失敗した URL を
+      取り直すこと —— を妨げません。取り直したものは、パッケージの一部ではありません。
     </p>
     <p>
       読み手は、<code>initiator</code> を producer の申告として読んでは
@@ -3036,9 +3058,13 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     trace は、取り込んだページがどの URL を求めたか、その中の何がそれを求めたか、各交信に
-    どれだけ掛かったかを述べます。方針が伏せた要求については、WARC が述べる以上のことを
-    述べません: URL・method・資源の種類だけで、応答については何も述べません
-    （<a href="#trace-lines"></a> を参照）。行の中で producer は、シークレットの値を、残すものも
+    どれだけ掛かったかを述べます。方針が伏せた要求については、行は、WARC と同じもの ——
+    URL・method・資源の種類 —— を運び、応答の status・大きさ・掛かった時間は運びません
+    （<a href="#trace-lines"></a> を参照）。それでも、応答について、行の並びから読めることが
+    1 つ在ります: <code>no-archive</code> の項目に当たった要求がリダイレクトされ、その先の URL を
+    どの方針も伏せないとき、次の行は同じ <code>id</code> と次の <code>hop</code> を持つので、
+    読み手は、伏せた要求がリダイレクトされたことと、その行き先を知ります。行き先の交信は、
+    パッケージが残すと決めたものなので、どのみち WARC に在ります。行の中で producer は、シークレットの値を、残すものも
     隠すものも、URL と失敗の文に現れたところで置き換えます。ほかの形にした値は残り、誰も
     シークレットと告げなかった値も残ります。<code>data:</code> の URL は、データを除いて
     書きます。<code>initiator</code> が名指すものは、取り込んだページが自分について述べたこと
