@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.24.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/) | 2026-11-14 | 取り込みの節目のスクリーンショットがどうなったかを `screenshots` に記録し、画像を残してはならない取り込みを定める（WARC Profile 1.3.0） |
 | [1.23.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/) | 2026-11-13 | 取り込みの trace（要求ごとに 1 行）をパッケージに入れる（`trace/events.jsonl`） |
 | [1.22.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 2026-11-07 | シークレットを WARC に載せるかを `settings.secretArchive` に記録し、隠すシークレットの値をパッケージの全部のファイルから除く |
 | [1.21.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 2026-11-07 | 取り込みの間に renderer が落ちた target を `completeness.crashedTargets` に載せる |
@@ -51,6 +52,82 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.24.0
+
+取り込みの節目のスクリーンショット（読み込みの後・behavior の後に、producer が撮ってよい、取り込んだページの画像）を
+扱う版。画像そのもののレコード（`resource` と、それを名指す `metadata` の 1 組）は BrowserHive WARC Profile 1.3.0 が
+定め、この版は、パッケージの側の決まりを定める: `archive/` の WARC が適合する版を 1.3.0 に上げ、スクリーンショットが
+どうなったかを `browserhive:capture` の新しい必須の member `screenshots` で述べ、画像を残してはならないパッケージを決める。
+
+- **`archive/` の WARC が適合する版:** BrowserHive WARC Profile 1.2.0 → 1.3.0（`archive-files`）。本文と参考文献が
+  WARC Profile を指すリンクも 1.3.0 に替えた。
+- **`screenshots`（`browserhive:capture` の新しい必須の member）:** `snapshots` と同じ並びの配列（MUST）。
+  `"after-load"` の項目と、behavior を走らせた取り込みではその後に `"after-behaviors"` の項目を持ち、ほかの項目は
+  持たない（MUST）。
+  - スクリーンショットを持つ時点の項目は `stage`・`url`・`date`・`record`・`bytes` を持ち、`skipped` を持たない
+    （MUST）。`url` は `resource` レコードの `WARC-Target-URI` で、索引を `url` と `date` で引ける。持たない時点の
+    項目は `stage` と `skipped` だけ（MUST）。`skipped` は `disabled`（producer が撮る設定でない）・`secret`・
+    `withheld`・`task-budget`・`failed` のどれかで、いくつも当てはまるときは、この並びで先に来るもの（MUST）。
+  - パッケージは、項目が名指すスクリーンショットを全部持ち、どの項目も名指さないスクリーンショットを持たない（MUST）。
+  - **スクリーンショットを 1 枚も持ってはならないパッケージ（MUST NOT）:** ① `settings.secrets` が空でない（隠す
+    シークレットでも、残すシークレットでも）／② `settings.contentTypePolicies` が空でない／③ `document` が
+    `withheld` を持つ／④ WARC が `action: no-archive` の withheld request のレコードを持ち、その `resourceType` が
+    `Document`・`Image`・`Media` であるか、`resourceType` が無い／⑤ WARC が `truncated: url-policy` の
+    body not kept のレコードを持ち、その `response` レコードを名指す trace の行の `resourceType` が `Document`・
+    `Image`・`Media` であるか、行に `resourceType` が無いか、名指す行が無い。④・⑤ は応答が何だったかを問わない
+    （⑤ は、body not kept のレコードがリダイレクトの中継のものでも当たる）。`document` の「中継だけに当たった
+    方針は何も伏せない」とは別の線。
+  - 3 つの語は `resourceType` の値と字のとおり比べる。ほかの語を使う browser の producer は、同じ要求を同じに扱う。
+  - ある時点のスクリーンショットは、その時点の主フレームの文書を写す。その文書が伏せられるか、どの文書を写したかを
+    producer が言えないなら、その時点のスクリーンショットを持たない（MUST NOT）。`snapshots` が `"withheld"` と
+    記録する時点の項目は、`skipped` を持つ（MUST）。
+  - producer は、browser が `Document`・`Image`・`Media` と伝えた要求に `urlPolicies` の `no-archive` か `no-body` の
+    項目が当たった取り込みのスクリーンショットを残さない（MUST NOT）。browser は同じ要求を、場所によって別の語で
+    伝えることがあるので（Chromium の字幕の要求は `Media` と `TextTrack`）、producer が読む報告のどれか 1 つが
+    そう伝えれば足りる。その要求がどうなったかにも、取り込んだページのどこが出したかにも関わらない。
+  - ④・⑤ と producer の決まりは、同じ取り込みを覆うわけではない。④・⑤ は、要求の種類をパッケージが示せないとき
+    （`resourceType` が無い・trace の行が無い）にも当たる。逆に、producer がレコードを書かなかった要求（別サイトの
+    フレームの中・応答が届かなかった `no-body` の要求・送る本文の無い応答が返った要求）と、レコードが別の語で
+    呼んでいる要求は、パッケージを読む道具に見えない。そのとき項目は `"withheld"` を持つ。
+  - 画像に写るのは viewport で、取り込みが手を入れた後のページ（何を取り除いたかは `dismissal`）。画像の大きさは
+    WARC の `metadata` レコードが述べる（この版は、大きさを `settings.viewport` と等しいとは求めない）。
+    スクリーンショットが、撮り始めたときの viewport・device pixel ratio・scroll の位置のままのページを写すことは
+    WARC Profile 1.3.0 が求め、この版は、それが `settings` を正しいままにすることと、パッケージを読む道具からは
+    見えないことを書いた。
+  - producer は、自分の決めた時間でスクリーンショットを諦めてよく、1 枚を諦めたら、その取り込みの残りを試さなくて
+    よい（MAY）。どれも `failed`。
+  - この版に適合するパッケージが持つ項目は、上の 2 つの時点のものだけ。後の版は、別の種類の項目を足しうる。
+  - スクリーンショットは `pages/pages.jsonl` にエントリを持たない。
+- **`archive-files`:** スクリーンショットの `resource` レコードは、写しのものと同じく CDXJ 索引に現れ、鍵は
+  `WARC-Target-URI` そのまま（`urn:browserhive:screenshot:` の URI）、行の JSON は `status` を持たない。
+  `metadata` レコードは、現れることを求めない。
+- **`document`:** ページ由来の記録にスクリーンショットを足した。文書を伏せる時点には、写しと同じくスクリーンショットも
+  無い。文書を伏せたパッケージは、どの時点のスクリーンショットも持たない。
+- **`urlPolicies` の表:** `no-archive` の行の「オリジンは応答した」を、応答が在ったとは言わない形（取り込みは
+  要求を送らせ、パッケージはその交信のほかの何も保持しない）に直した。
+- **`settings`・`snapshots`・`policies`・`secret-values`:** 写しとスクリーンショットも `maxTaskBytes` の線に
+  照らすこと（残すと線を超えるものは残さない）を `settings` に書き、`snapshots` の `task-budget` の説明に
+  スクリーンショットを足した。方針がスクリーンショットに何をするかは `screenshots` で定める、と書き、
+  `contentTypePolicies` が空でないパッケージはスクリーンショットを持たない、と書いた。値の置き換えは文字と
+  バイト列に働くもので、画像には出現が無いので、シークレットを渡されたパッケージはスクリーンショットを
+  持たない、と書いた。
+- **Introduction と Security and privacy considerations:** パッケージが運ぶ申告にスクリーンショットを足した。
+  スクリーンショットが写すもの、条件が届かないもの（誰もシークレットと告げなかった値・スクリプトやスタイルシートや
+  フォントの応答から描いたもの・スクリプトが小分けに取ってきて再生するメディア・producer に見えない要求）、
+  条件が届きすぎるもの（見えない計測用の画像を 1 つ伏せただけで、どの取り込みにもスクリーンショットが無い・
+  リダイレクトされただけの要求・メディア型の方針が在るだけ）、パッケージを読む道具に確かめられる範囲（パッケージが
+  持つ印まで。producer を縛る決まりの全部ではない）を書いた。
+
+**なぜ。** 画像は、文字のようには直せない。写しやログでは、シークレットの値を置き換え、伏せた文書の文字を省けるが、
+ピクセルの中の値や、方針が伏せた画像は、見つけることも、そこだけ取り除くこともできない。パッケージに入れないと
+決めたものを画像に入れない手は、画像を残さないことだけなので、残してはならない場合を決め、そのうちパッケージから
+見える印を ①〜⑤ として挙げた。producer を縛る決まりはそれより広く、パッケージに跡を残さない要求にも及ぶ。
+条件が 1 枚ごとでなく取り込みの全体を見るのは、どの画像がどの応答を写しているかを producer が言えないから。方針が
+当たったかを応答でなく要求の時点で見るのは、producer が、応答が何だったかを、取り込んだページのどこででも
+見られるわけではないから。
+
+`screenshots` を持たず、WARC が 1.2.0 を名乗る、1.23.0 に対して書いたパッケージは、1.24.0 に適合しない。
 
 ## 1.23.0
 
