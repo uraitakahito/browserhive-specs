@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.23.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/) | 2026-11-13 | 取り込みの trace（要求ごとに 1 行）をパッケージに入れる（`trace/events.jsonl`） |
 | [1.22.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 2026-11-07 | シークレットを WARC に載せるかを `settings.secretArchive` に記録し、隠すシークレットの値をパッケージの全部のファイルから除く |
 | [1.21.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 2026-11-07 | 取り込みの間に renderer が落ちた target を `completeness.crashedTargets` に載せる |
 | [1.20.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/) | 2026-11-06 | 取り込みが送った `User-Agent` を `settings` に記録する |
@@ -50,6 +51,56 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.23.0
+
+取り込みの trace を、パッケージに入れるようにした。新しいエントリ `trace/events.jsonl` は、取り込みが始まりを見た
+要求を、要求ごとに 1 行で持つ: いつ始まり、応答がどうで、どれだけ掛かり、どう終わったか。行の数と、上限で残さなかった
+行の数は、`browserhive:capture` の新しい必須の member `trace` が述べる。`archive/` の WARC が適合する版は
+BrowserHive WARC Profile 1.2.0 のまま。
+
+- **`trace`（`browserhive:capture` の新しい必須の member）:** `lines`（`trace/events.jsonl` の行の数。MUST）と
+  `dropped`（producer が作って残さなかった行の数。無ければ 0。MUST）。残さなかった行はエントリに跡を残さないので、
+  間の抜けた trace かどうかを述べる場所はここ。
+- **`trace-directory`（新しい節）:** `trace/events.jsonl` は必須（MUST）。`resources` に載せ（MUST）、JSON Lines で
+  書く（MUST）。行が 0 でも空のファイルで置く（MUST）。ZIP の中では、ほかの文字のエントリと同じく圧縮してよい（MAY）。
+- **`trace-lines`（新しい節）:** 各行は `profile`（`"browserhive:trace/1"`）・`kind`（`"request"`）・`id`・`hop`・
+  `url`・`method`・`startedAt`・`ms`・`outcome` を持ち（MUST）、`dpr`・`urlCut`・`resourceType`・`initiator`・
+  `response`・`timing`・`durationMs`・`encodedBytes`・`error`・`endUnobservable`・`record` を持ちうる。
+  `outcome` は `finished`・`redirected`・`failed`・`pending`・`not-archived`・`denied`・`evicted` のどれか（MUST）。
+  - 1 行 = 1 つの要求。リダイレクトは段ごとに別の行で、同じ `id` の行は `hop` の昇順・重なり無し（MUST・MUST NOT）。
+  - 並びは producer が行を作った順（MUST）。時刻の順は求めない。記録を止めるまでに始まりの届いた要求と、送らせなかった
+    要求の行を、上限で残さなかった行を除いて全部持つ（MUST）。
+  - `record` は `archive/` の `response` レコードを名指し（MUST）、その行の `startedAt` はそのレコードの `WARC-Date` と
+    1 文字ずつ同じ（MUST）。2 つの行が同じ `record` を持たない（MUST NOT）。レコードの無い交信の行は `record` を
+    持たない（MUST NOT）。`dropped` が 0 なら、どの `response` レコードも、いずれかの行が名指す（MUST）。
+  - `outcome` が `not-archived`・`denied` の行は、`initiator`・`response`・`timing`・`durationMs`・`encodedBytes`・
+    `record` を持たない（MUST NOT）。残さないと決めた交信の応答の事実を、trace から読めるようにしないため。
+  - `error` は `failed` の行に在り（MUST）、ほかの行に無い（MUST NOT）。`endUnobservable` は `pending` の行にだけ
+    （MUST NOT）。`urlCut`・`endUnobservable`・`fromCache` は、在れば `true`（MUST）。
+  - `url` は切ってよく（MAY）、切った行は `urlCut` を持つ（MUST）。`url` と `initiator` の `url` は、`data:` の URL の
+    データを持たない（MUST NOT）。`data:` の URL が行の `url` のときは `urlCut` を持つ（MUST）。
+  - 上限で行を残さなくてよく（MAY）、残さなかった数は `trace` の `dropped` で述べる（MUST）。
+  - `url`・`initiator` の `url`・`error` は、隠すシークレットの値の出現も、残すシークレットのそのままの値も
+    持たない（MUST NOT）。
+  - 時計が 3 つ在ること（`startedAt` は browser の壁時計、`durationMs` と `timing` は browser の単調な時計の差、
+    `ms` はログの行と同じ軸）と、長さが producer の止めていた時間を含むことを書いた。
+- **`trace-reading`（新しい節）:** 読み手は行から応答を配らず、要求を組み立て直さない（MUST NOT）。`initiator` を
+  producer の申告として読まない（MUST NOT）。digest と署名が覆うのはパッケージの中の行だけで、答えや画面に出る行は
+  その写しであることを書いた。
+- **`secret-values`:** 隠すシークレットの出現を置き換える所と、残すシークレットをそのままの値で持たない所に、
+  trace の行の `url`・`initiator` の `url`・`error` を足した。置き換えない物に、trace の行のほかの member を足した。
+- **Introduction と Security and privacy considerations:** パッケージが運ぶ申告に trace を足した。trace が運ぶ URL
+  （方針が伏せた要求と、応答の届かなかった要求のものを含む）、伏せた要求の行が述べる範囲、シークレットを置き換える
+  範囲、`initiator` が取り込んだページの述べたことであること、写しは署名の下に無いことを書いた。
+
+**なぜ。** WARC のレコードは、残した交信がいつ始まったかを述べるが、どれだけ掛かったか、取り込んだページの何がそれを求めたかは
+述べず、取り込みを止めたときにまだ応答の届いていなかった要求は持たない。アーカイブの中のページに何かが欠けているとき、
+読み手が要るのは「その要求は出されなかったのか、失敗したのか、まだ途中だったのか」で、それは BrowserHive の答えにしか
+無かった。`resources` に載せれば、行も digest（と署名）に覆われる。行は BrowserHive の答えの `trace.lines` と同じで、
+違いは各行の `profile` だけ。
+
+`trace/events.jsonl` と `trace` を持たない、1.22.0 に対して書いたパッケージは、1.23.0 に適合しない。
 
 ## 1.22.0
 

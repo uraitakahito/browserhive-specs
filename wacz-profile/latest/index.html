@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.22.0</title>
+<title>BrowserHive WACZ Profile 1.23.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.23.0 exists: this document would
+    // is what makes the row still true once 1.24.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,19 +95,19 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.22.0 is not backward compatible with 1.21.0">
-    This version requires every package to record which of its secrets were
-    kept, as <code>secretArchive</code> in <a>settings</a>, and requires its
-    WARC files to conform to
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/">BrowserHive WARC Profile 1.2.0</a>, which replaces the
-    values of the others. A package written against 1.21.0 has no such member,
-    so it does not conform to 1.22.0.
+  <p class="note" title="1.23.0 is not backward compatible with 1.22.0">
+    This version requires every package to carry the trace of its capture
+    &mdash; the requests the capture saw begin and what became of each, one
+    line for each, in <code>trace/events.jsonl</code> (see
+    <a href="#trace-directory"></a>) &mdash; and to say how many lines that
+    entry holds, as <a>trace</a> in <a>browserhive:capture</a>. A package
+    written against 1.22.0 has neither, so it does not conform to 1.23.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a> and
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -142,8 +142,9 @@
     capture: which bodies are absent and why, which limits were in force, which
     requests it declined to send and which it sent but did not keep, what it
     removed from the page before recording it, which secrets it was given and
-    which of them it kept, which certificates the origins presented, and the log
-    the capture wrote as it ran. None of these change
+    which of them it kept, which certificates the origins presented, the log
+    the capture wrote as it ran, and the requests it saw begin, with how each
+    one ended. None of these change
     what [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
@@ -203,7 +204,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -1210,6 +1211,48 @@
     </p>
   </section>
 
+  <section id="trace">
+    <h3><code>trace</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>trace</dfn> that says how many lines the trace of the capture
+      holds, and how many the producer left out of it. The trace itself is the
+      entry <code>trace/events.jsonl</code> (see
+      <a href="#trace-directory"></a>).
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>lines</code></td><td>number</td><td>yes</td>
+            <td>The number of lines in <code>trace/events.jsonl</code>: an
+            integer, 0 or more.</td></tr>
+        <tr><td><code>dropped</code></td><td>number</td><td>yes</td>
+            <td>The number of lines the producer made and then left out of that
+            entry, to keep the trace within limits of its own (see
+            <a href="#trace-lines"></a>): an integer, 0 or more.</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"trace": {
+  "lines": 44,
+  "dropped": 0
+}</pre>
+    <p>
+      <code>lines</code> <em class="rfc2119">MUST</em> be the number of lines
+      the entry holds, and <code>dropped</code> <em class="rfc2119">MUST</em> be
+      the number the producer left out: 0 when it left out none. The two
+      together are the number of lines the producer made.
+    </p>
+    <p class="note" title="Why the counts are here">
+      A line that was left out leaves no mark in the entry, so a trace with a
+      gap reads like a whole one. This member is where the package says which
+      of the two it holds, and a reader can tell from
+      <code>datapackage.json</code> alone, before it opens the entry.
+    </p>
+  </section>
+
   <section id="tls">
     <h3><code>tls</code></h3>
     <p>
@@ -1786,15 +1829,19 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       <code>***</code> in the <code>text</code> and <code>title</code> of an entry of
       <code>pages/pages.jsonl</code>, in the <code>title</code> of
       <code>datapackage.json</code>, in the <code>name</code> and
-      <code>value</code> of a node of <code>accessibility/axtree.jsonl</code>, and
+      <code>value</code> of a node of <code>accessibility/axtree.jsonl</code>,
       in the <code>msg</code> and <code>data</code> of a line of
-      <code>logs/capture.jsonl</code> (see <a href="#logs-lines"></a>).
+      <code>logs/capture.jsonl</code> (see <a href="#logs-lines"></a>), and in
+      the <code>url</code>, the <code>url</code> of <code>initiator</code> and
+      the <code>error</code> of a line of <code>trace/events.jsonl</code> (see
+      <a href="#trace-lines"></a>).
     </p>
     <p>
       Outside the WARC files, nothing else in a package is replaced: the
       <code>source</code> of a behavior or a preload script,
       <code>behaviors/runtime.js</code>, an entry of <code>variables</code> or
       <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>, the
+      other members of a line of <code>trace/events.jsonl</code>, the
       names of members. A capture that would write an occurrence in any of these
       <em class="rfc2119">MUST NOT</em> produce a package.
     </p>
@@ -1843,6 +1890,9 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
           <code>accessibility/axtree.jsonl</code>.</li>
       <li>The <code>msg</code> and <code>data</code> of a line of
           <code>logs/capture.jsonl</code>.</li>
+      <li>The <code>url</code>, the <code>url</code> of <code>initiator</code>
+          and the <code>error</code> of a line of
+          <code>trace/events.jsonl</code> (see <a href="#trace-lines"></a>).</li>
     </ul>
     <p>
       A kept value that is, or holds, the value of a hidden secret is replaced as far
@@ -2674,6 +2724,475 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </section>
 </section>
 
+<section id="trace-directory">
+  <h2>The trace directory</h2>
+  <p>
+    [[WACZ]] permits additional files and directories, provided they stay out of
+    <code>archive</code>, <code>indexes</code> and <code>pages</code>, and are
+    listed in the <code>resources</code> section of <code>datapackage.json</code>.
+    A conforming package <em class="rfc2119">MAY</em> use that allowance.
+  </p>
+  <p>
+    A conforming package <em class="rfc2119">MUST</em> contain an entry at
+    <code>trace/events.jsonl</code>, the trace of its capture: the requests the
+    capture saw begin, and what became of each. It
+    <em class="rfc2119">MUST</em> be declared in <code>resources</code> like any
+    other file, and it <em class="rfc2119">MUST</em> be
+    <a href="https://jsonlines.org/">JSON Lines</a>: one JSON object per line,
+    each object recording one request.
+  </p>
+  <p>
+    The entry <em class="rfc2119">MUST</em> be present even when the trace has
+    no lines, as an empty file, so that an empty trace is a claim rather than an
+    omission. A package without the entry does not conform to this version. In
+    a package written against an earlier version, which did not define the
+    entry, its absence says nothing about the requests the capture made.
+  </p>
+  <p>
+    This profile asks nothing of how the entry is stored in the ZIP file. Like
+    the other text entries of a package, it <em class="rfc2119">MAY</em> be
+    compressed there: a reader reads it whole, and does not seek into it by
+    offset as it does into a WARC file.
+  </p>
+  <p class="note" title="Why the trace travels with the package">
+    The records that [[BROWSERHIVE-WARC-PROFILE]] defines hold the exchanges the
+    capture kept, and say when each began. They do not say how long an exchange
+    took or what in the page asked for it, and they hold nothing of a request
+    that was still unanswered when the capture stopped. That is what a reader
+    needs when a page in the archive lacks something: whether the request was
+    never made, was made and failed, or was still on its way. Declared in
+    <code>resources</code>, the entry is covered by the package's digests, and
+    by its signature when it has one.
+  </p>
+
+  <section id="trace-lines">
+    <h3>Trace lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:trace/1",
+  "kind": "request",
+  "id": "1234.56",
+  "hop": 0,
+  "dpr": 1,
+  "url": "https://example.com/api/items?page=2",
+  "method": "GET",
+  "resourceType": "Fetch",
+  "initiator": { "type": "script", "url": "https://example.com/app.js", "line": 12 },
+  "startedAt": "2026-11-13T05:00:01.412Z",
+  "ms": 987,
+  "response": { "status": 200, "protocol": "h2" },
+  "timing": { "dnsMs": 0, "connectMs": 1, "tlsMs": 0, "sendMs": 0, "waitMs": 1539, "receiveMs": 2 },
+  "durationMs": 1543,
+  "encodedBytes": 214,
+  "outcome": "finished",
+  "record": "urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a"
+}
+    </pre>
+    <p class="note">
+      Shown across several lines for readability. In the file each object
+      occupies exactly one line.
+    </p>
+    <p>
+      Each line <em class="rfc2119">MUST</em> contain <code>profile</code>,
+      <code>kind</code>, <code>id</code>, <code>hop</code>, <code>url</code>,
+      <code>method</code>, <code>startedAt</code>, <code>ms</code> and
+      <code>outcome</code>, and <em class="rfc2119">MAY</em> contain
+      <code>dpr</code>, <code>urlCut</code>, <code>resourceType</code>,
+      <code>initiator</code>, <code>response</code>, <code>timing</code>,
+      <code>durationMs</code>, <code>encodedBytes</code>, <code>error</code>,
+      <code>endUnobservable</code> and <code>record</code>.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profile</code></td><td>string</td><td>yes</td>
+            <td>The rules the line follows. For this version of this
+            specification the value <em class="rfc2119">MUST</em> be
+            <code>"browserhive:trace/1"</code>.</td></tr>
+        <tr><td><code>kind</code></td><td>string</td><td>yes</td>
+            <td>What the line records. For this version of this specification
+            the value <em class="rfc2119">MUST</em> be
+            <code>"request"</code>.</td></tr>
+        <tr><td><code>id</code></td><td>string</td><td>yes</td>
+            <td>The browser's identifier of the request. The lines of the hops
+            of one redirect chain share it.</td></tr>
+        <tr><td><code>hop</code></td><td>number</td><td>yes</td>
+            <td>Which hop of its redirect chain the line records: 0 for the
+            request as the page first made it, and one more for each request
+            that followed a redirect. An integer, 0 or more.</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>no</td>
+            <td>The device pixel ratio of the load the request began during:
+            one of the entries of <code>devicePixelRatios</code> in
+            <a>settings</a>. Absent from a line made outside every load.</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>yes</td>
+            <td>The URL of the request, with the values of secrets replaced
+            (below). Not the whole URL when the line carries
+            <code>urlCut</code>.</td></tr>
+        <tr><td><code>urlCut</code></td><td>boolean</td><td>no</td>
+            <td><code>true</code> when <code>url</code> is not the whole URL:
+            the producer cut it, or it was a <code>data:</code> URL (below).
+            Absent otherwise.</td></tr>
+        <tr><td><code>method</code></td><td>string</td><td>yes</td>
+            <td>The request method.</td></tr>
+        <tr><td><code>resourceType</code></td><td>string</td><td>no</td>
+            <td>What the page was fetching, in the browser's own word:
+            <code>Document</code>, <code>Stylesheet</code>, <code>Image</code>,
+            <code>Fetch</code> and so on.</td></tr>
+        <tr><td><code>initiator</code></td><td>object</td><td>no</td>
+            <td>What had the request made, as the browser reported it
+            (below).</td></tr>
+        <tr><td><code>startedAt</code></td><td>string</td><td>yes</td>
+            <td>When the browser began the request, as the browser reported it:
+            a timestamp. On a line whose <code>outcome</code> is
+            <code>"denied"</code>, when the producer stopped the request.</td></tr>
+        <tr><td><code>ms</code></td><td>number</td><td>yes</td>
+            <td>Milliseconds from the start of the capture to the start of the
+            request, on the axis of the <code>ms</code> of the lines of
+            <code>logs/capture.jsonl</code> (see <a href="#logs-lines"></a>):
+            an integer, 0 or more.</td></tr>
+        <tr><td><code>response</code></td><td>object</td><td>no</td>
+            <td>What the producer learned of the response by the time its
+            header arrived (below). Absent when no response arrived.</td></tr>
+        <tr><td><code>timing</code></td><td>object</td><td>no</td>
+            <td>How the length of the exchange divides, in milliseconds
+            (below).</td></tr>
+        <tr><td><code>durationMs</code></td><td>number</td><td>no</td>
+            <td>Milliseconds from the start of the request to its end, on the
+            browser's monotonic clock: an integer, 0 or more. Present only on a
+            line whose end the producer saw: one whose <code>outcome</code> is
+            <code>"finished"</code>, <code>"redirected"</code> or
+            <code>"failed"</code>.</td></tr>
+        <tr><td><code>encodedBytes</code></td><td>number</td><td>no</td>
+            <td>The size of the whole response as it crossed the wire, in
+            bytes, its header included: an integer, 0 or more. Present only on
+            a line whose <code>outcome</code> is <code>"finished"</code>.</td></tr>
+        <tr><td><code>outcome</code></td><td>string</td><td>yes</td>
+            <td>What became of the request: one of the values below.</td></tr>
+        <tr><td><code>error</code></td><td>string</td><td>when <code>outcome</code> is <code>"failed"</code></td>
+            <td>How the request failed, in the browser's words or the
+            producer's.</td></tr>
+        <tr><td><code>endUnobservable</code></td><td>boolean</td><td>no</td>
+            <td><code>true</code> on a line whose <code>outcome</code> is
+            <code>"pending"</code> when the producer could not have seen the
+            request end (below). Absent otherwise.</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>no</td>
+            <td>The URI in the <code>WARC-Record-ID</code> of the
+            <code>response</code> record of the exchange, without the angle
+            brackets that field puts around it. Present only when the package
+            holds that record.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>initiator</code>, when present, is an object:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>type</code></td><td>string</td><td>yes</td>
+            <td>The kind of thing that had the request made, in the browser's
+            own word: <code>parser</code>, <code>script</code>,
+            <code>preload</code>, <code>other</code> and so on.</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>no</td>
+            <td>The URL of the document or script that had the request made.
+            When the browser reported a call stack, the URL of its topmost
+            frame. The values of secrets are replaced in it, and the producer
+            <em class="rfc2119">MAY</em> cut it; <code>urlCut</code> says
+            nothing of this member.</td></tr>
+        <tr><td><code>line</code></td><td>number</td><td>no</td>
+            <td>The line in that document or script, counted from 1.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>response</code>, when present, is an object:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>status</code></td><td>number</td><td>yes</td>
+            <td>The status code of the response.</td></tr>
+        <tr><td><code>protocol</code></td><td>string</td><td>no</td>
+            <td>The protocol that carried the exchange, in the browser's own
+            word: <code>http/1.1</code>, <code>h2</code> and so on.</td></tr>
+        <tr><td><code>fromCache</code></td><td>boolean</td><td>no</td>
+            <td><code>true</code> when the browser reported that it answered
+            from its cache. Absent otherwise.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>timing</code>, when present, is an object whose members are all
+      required. Each is an integer, 0 or more, in milliseconds, and is 0 for a
+      part the exchange did not have.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>dnsMs</code></td><td>Resolving the host name.</td></tr>
+        <tr><td><code>connectMs</code></td><td>Opening the connection.</td></tr>
+        <tr><td><code>tlsMs</code></td><td>The TLS handshake.</td></tr>
+        <tr><td><code>sendMs</code></td><td>Sending the request.</td></tr>
+        <tr><td><code>waitMs</code></td><td>From the end of sending to the
+            arrival of the header of the response.</td></tr>
+        <tr><td><code>receiveMs</code></td><td>From the header of the response
+            to the end of the request. 0 when the producer did not see the
+            end.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>outcome</code> <em class="rfc2119">MUST</em> be one of the
+      following.
+    </p>
+    <ul>
+      <li><code>"finished"</code> &mdash; the browser read the response to its
+          end.</li>
+      <li><code>"redirected"</code> &mdash; the response was a redirect, and
+          the browser followed it. The request that followed is the line with
+          the same <code>id</code> and the next <code>hop</code>.</li>
+      <li><code>"failed"</code> &mdash; the request failed, and
+          <code>error</code> says how.</li>
+      <li><code>"pending"</code> &mdash; the producer had not seen the request
+          end when it stopped recording.</li>
+      <li><code>"not-archived"</code> &mdash; the first entry of
+          <a>urlPolicies</a> to match the URL has the action
+          <code>no-archive</code>: the request was sent, and the package keeps
+          nothing of the exchange beyond the fact that it was made.</li>
+      <li><code>"denied"</code> &mdash; the first entry of <a>urlPolicies</a> to
+          match the URL has the action <code>deny</code>: the producer kept the
+          request from being sent.</li>
+      <li><code>"evicted"</code> &mdash; the producer stopped following the
+          request before it saw it end, to bound how many requests it follows
+          at once.</li>
+    </ul>
+    <p>
+      Each line records one request: one the browser began, or one the producer
+      kept it from sending. The producer makes the line when the request
+      begins and fills it in as the response, the end or the failure reaches
+      it, so a request that had not ended when the producer stopped recording
+      is in the trace all the same, as <code>"pending"</code>. A response that
+      redirects ends its line, as it ends its exchange in
+      [[BROWSERHIVE-WARC-PROFILE]], and the request that follows begins another
+      line. Lines that share an <code>id</code> <em class="rfc2119">MUST</em>
+      be in ascending order of <code>hop</code>, and two of them
+      <em class="rfc2119">MUST NOT</em> carry the same <code>hop</code>.
+    </p>
+    <p>
+      The lines <em class="rfc2119">MUST</em> be in the order the producer made
+      them. That is not an order of time: neither <code>startedAt</code> nor
+      <code>ms</code> is required to be at or above that of the line before.
+      The entry <em class="rfc2119">MUST</em> hold a line for every request
+      whose start reached the producer, and every request it kept from being
+      sent, before it stopped recording, except the ones it leaves out as
+      described below.
+    </p>
+    <p class="note" title="Why the order is not an order of time">
+      The starts of requests reach the producer from more than one part of the
+      page &mdash; a frame from another site and a worker report apart from the
+      page &mdash; and a request the producer denied is timed by the producer,
+      not by the browser. Sorting the lines by a time would claim an order
+      between events that nobody observed in that order. A reader that wants
+      one sorts by <code>ms</code>, and knows what it did.
+    </p>
+    <p class="note" title="The trace ends where recording stopped">
+      The producer closes the trace once, after it has stopped recording the
+      network and before it assembles the package. A request the page makes
+      after that is not in it, and a line the producer was still filling in
+      stays as it stood: its <code>outcome</code> is <code>"pending"</code>.
+    </p>
+    <p>
+      <code>record</code>, when present, <em class="rfc2119">MUST</em> name a
+      <code>response</code> record in <code>archive/</code>: the one of the
+      exchange the line records. On such a line <code>startedAt</code>
+      <em class="rfc2119">MUST</em> be the <code>WARC-Date</code> of that
+      record, character for character. Two lines
+      <em class="rfc2119">MUST NOT</em> carry the same <code>record</code>. A line
+      whose exchange has no <code>response</code> record in the package
+      <em class="rfc2119">MUST NOT</em> carry <code>record</code>: a line whose
+      <code>outcome</code> is <code>"finished"</code> and that carries none is
+      a response the browser read to its end and the producer did not get to
+      write, because the capture stopped first. When <code>dropped</code> in
+      <a>trace</a> is 0, every <code>response</code> record in
+      <code>archive/</code> <em class="rfc2119">MUST</em> be named by the
+      <code>record</code> of a line.
+    </p>
+    <p class="note" title="Three clocks">
+      A line reads three clocks, and they are not to be mixed.
+      <code>startedAt</code> is the browser's wall clock. It is the clock
+      <code>WARC-Date</code> is read from, which is what lets a line and a
+      record be laid side by side; but a wall clock can be set while a capture
+      runs, so the difference between the <code>startedAt</code> of two lines
+      is not a length of time. <code>durationMs</code> and
+      <code>timing</code> are differences of the browser's monotonic clock,
+      which does not jump. <code>ms</code> places the line on the axis the log
+      lines are on. A producer need not read its own clock for every line:
+      BrowserHive reads it once, at the first request, and from then on adds
+      what the browser's monotonic clock says has passed.
+    </p>
+    <p class="note" title="The lengths include the producer's own handling">
+      <code>durationMs</code> runs from the start of the request to its end as
+      the browser reported them, so it includes the time for which the
+      producer held the request or the response to examine it &mdash; to match
+      the URL against the policies, or to read the body &mdash; and so can the
+      parts of <code>timing</code>. A length here can be longer than the same
+      exchange takes in a browser nobody is recording.
+    </p>
+    <p>
+      A line whose <code>outcome</code> is <code>"not-archived"</code> or
+      <code>"denied"</code> <em class="rfc2119">MUST NOT</em> carry
+      <code>initiator</code>, <code>response</code>, <code>timing</code>,
+      <code>durationMs</code>, <code>encodedBytes</code> or
+      <code>record</code>.
+    </p>
+    <p class="note" title="Why a withheld request has a short line">
+      A requester withholds a request so that the package does not keep the
+      exchange. If the line carried the status of the answer, its size or how
+      long it took, the trace would be a second place to read what was to be
+      left out, and a policy that held for the WARC would not hold for the
+      package. The line therefore says no more than the
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-withheld-requests">record of a withheld request</a>
+      does &mdash; that the page asked for the URL, by which method, for what
+      kind of resource, and what the producer decided &mdash; and when.
+    </p>
+    <p>
+      A line whose <code>outcome</code> is <code>"failed"</code>
+      <em class="rfc2119">MUST</em> carry <code>error</code>, and any other line
+      <em class="rfc2119">MUST NOT</em>. <code>endUnobservable</code>
+      <em class="rfc2119">MUST NOT</em> be present on a line whose
+      <code>outcome</code> is not <code>"pending"</code>, and where
+      <code>urlCut</code>, <code>endUnobservable</code> or
+      <code>fromCache</code> is present its value <em class="rfc2119">MUST</em>
+      be <code>true</code>.
+    </p>
+    <p>
+      A producer does not listen everywhere a page can make a request, and the
+      end of a request can be reported where it does not listen: the document
+      of a frame from another site begins on the page's side and ends on the
+      frame's. A <code>"pending"</code> line that carries
+      <code>endUnobservable</code> is such a request. It says that the producer
+      could not have seen the end, not that there was none.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MAY</em> cut <code>url</code> to keep a
+      line within a size of its own. A line whose <code>url</code> it cut
+      <em class="rfc2119">MUST</em> carry <code>urlCut</code>. A
+      <code>data:</code> URL holds its content in the URL itself, and that
+      content can be a body the package was not to keep, or text of the page.
+      <code>url</code> and the <code>url</code> of <code>initiator</code>
+      <em class="rfc2119">MUST NOT</em> hold the data of a
+      <code>data:</code> URL: the producer writes such a URL no further than
+      the comma that ends its media type, the line
+      <em class="rfc2119">MUST</em> carry <code>urlCut</code> when the URL is
+      its <code>url</code>, and what the producer writes in place of the data
+      is its own to choose. BrowserHive writes the length of the URL.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MAY</em> leave lines out to keep the trace
+      within limits of its own. One that does <em class="rfc2119">MUST</em> say
+      how many in <code>dropped</code> of <a>trace</a>. Nothing in the entry
+      marks where they were. BrowserHive keeps the lines it made first and the
+      ones it made last, and leaves out lines between them: the last lines are
+      the ones a reader needs when a capture ran out of time.
+    </p>
+    <pre class="json">
+{"profile":"browserhive:trace/1","kind":"request","id":"8B877D6D","hop":0,"dpr":1,"url":"http://example.com/","method":"GET","resourceType":"Document","initiator":{"type":"other"},"startedAt":"2026-11-13T05:00:00.749Z","ms":324,"response":{"status":301,"protocol":"http/1.1"},"timing":{"dnsMs":1,"connectMs":2,"tlsMs":0,"sendMs":0,"waitMs":4,"receiveMs":0},"durationMs":8,"outcome":"redirected","record":"urn:uuid:9aa34ae9-ea68-446d-b8f9-b4c76f76ebd6"}
+{"profile":"browserhive:trace/1","kind":"request","id":"8B877D6D","hop":1,"dpr":1,"url":"https://example.com/","method":"GET","resourceType":"Document","initiator":{"type":"other"},"startedAt":"2026-11-13T05:00:00.757Z","ms":332,"response":{"status":200,"protocol":"h2"},"timing":{"dnsMs":0,"connectMs":9,"tlsMs":6,"sendMs":0,"waitMs":21,"receiveMs":3},"durationMs":41,"encodedBytes":5120,"outcome":"finished","record":"urn:uuid:4341819f-dd00-4d59-9112-da0e5fb93f75"}
+{"profile":"browserhive:trace/1","kind":"request","id":"1234.57","hop":0,"dpr":1,"url":"https://www.example-analytics.com/collect?v=2","method":"POST","resourceType":"Ping","startedAt":"2026-11-13T05:00:01.630Z","ms":1205,"outcome":"not-archived"}
+{"profile":"browserhive:trace/1","kind":"request","id":"1234.58","hop":0,"dpr":1,"url":"https://example.com/stream","method":"GET","resourceType":"Fetch","initiator":{"type":"script","url":"https://example.com/app.js","line":40},"startedAt":"2026-11-13T05:00:01.700Z","ms":1275,"outcome":"pending"}</pre>
+    <p>
+      In this excerpt the capture asked for <code>http://example.com/</code>
+      and was redirected: the two hops share an <code>id</code>, and each names
+      the <code>response</code> record of its own exchange. A policy let the
+      request to the analytics host go without keeping it, so its line has
+      neither an <code>initiator</code> nor anything of the answer. The last
+      request had not ended when the producer stopped recording. The values of
+      <code>id</code>, <code>resourceType</code> and <code>protocol</code> are
+      the browser's, and the text of <code>error</code> the browser's or the
+      producer's; this profile does not define them.
+    </p>
+    <p>
+      <code>url</code>, the <code>url</code> of <code>initiator</code> and
+      <code>error</code> <em class="rfc2119">MUST NOT</em> hold an occurrence of
+      the value of a hidden secret, nor the value of a kept secret as it is,
+      whatever its length (see <a href="#secret-values"></a>). As in a line of
+      the log, the producer replaces before it cuts.
+    </p>
+    <p class="note" title="Why a kept secret is replaced in the trace as well">
+      Keeping a secret is a decision about the records of the WARC: a reader
+      who opens them sees what crossed the wire. The trace is read apart from
+      those records. A producer reports the same lines in its answer and a
+      tool lists them on a screen, so a value left in a line would go wherever
+      the lines go, to people who were never handed the records. This has a
+      cost: the <code>url</code> of a line whose request held a kept secret is
+      not the <code>WARC-Target-URI</code> of the record the line names. The
+      URL as it was sent is in that record.
+    </p>
+    <p class="note" title="The trace and the records of the WARC">
+      A line whose <code>outcome</code> is <code>"not-archived"</code> or
+      <code>"denied"</code> is a request for which the WARC holds a
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.2.0/#records-of-withheld-requests">record of a withheld request</a>
+      whose <code>action</code> is <code>no-archive</code> or
+      <code>deny</code>, and a line that carries <code>record</code> is an
+      exchange whose records the WARC holds. For a request that failed or had
+      not ended, neither this profile nor [[BROWSERHIVE-WARC-PROFILE]] defines
+      a record: BrowserHive writes a <code>metadata</code> record of its own
+      for one, and the line is where a package says how the request ended.
+    </p>
+    <p class="note" title="Not the page's records">
+      The lines are read from the network, not from the rendered page, so they
+      are not among the page-derived records of <a>document</a>, and
+      <code>withheld</code> there takes no line out of the trace. What a policy
+      does to a line is what this section says of
+      <code>"not-archived"</code> and <code>"denied"</code>.
+    </p>
+    <p class="note" title="The same lines as the answer">
+      A producer may report the trace outside the package as well. BrowserHive
+      does, in its answer to the capture request, and the lines there are the
+      ones in this entry without <code>profile</code>, because the producer
+      closes the trace once.
+    </p>
+  </section>
+
+  <section id="trace-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> serve a response, or rebuild a
+      request, from a line of <code>trace/events.jsonl</code>. The lines are a
+      record of the capture, not part of the archived page: a line says that a
+      request was made and how it ended, and holds neither the header nor the
+      body of anything. A reader that serves the archived page serves the
+      records of the WARC, and a request that has a line and no record is one
+      the package does not hold.
+    </p>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> take <code>initiator</code> as
+      a statement of the producer. The browser reports the script it found at
+      the top of the call stack, under the URL and the line the captured page
+      gave that script, and a page can give its scripts any name it likes. The
+      producer passes on what the browser said, and the page chose the words.
+    </p>
+    <p>
+      The lines in the package are the ones its digests cover, and its
+      signature when it has one. Lines a producer reports elsewhere, or a tool
+      shows on a screen, are copies of them, and nothing binds a copy to the
+      package. A reader that relies on a line reads it from the package.
+    </p>
+    <p class="note">
+      A trace without a line for a URL does not say that the page never asked
+      for it. The producer need not listen everywhere a page can make a request
+      &mdash; in a frame from another site, or in every kind of worker, for
+      instance &mdash; and the lines it leaves out are counted, not kept. Nor
+      does a <code>"pending"</code> line say that a request never ended: it
+      says that the producer had not seen it end when it stopped recording.
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -2750,8 +3269,10 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     names; see <a>tls</a>.
   </p>
   <p>
-    A package records URLs in <a>completeness</a> and host names in
-    <a>tls</a>. Where the captured page carried personal data in URLs, those
+    A package records URLs in <a>completeness</a>, host names in
+    <a>tls</a>, and in the trace the URL of each request the capture saw
+    begin, including requests a policy withheld and requests that were never
+    answered. Where the captured page carried personal data in URLs, those
     URLs travel with the archive.
   </p>
   <p>
@@ -2807,6 +3328,19 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     value nobody declared a secret stays. And the channel a behavior writes its
     lines through is in the page's main world, so the page's scripts can write
     lines that read as a behavior's (see <a href="#logs-reading"></a>).
+  </p>
+  <p>
+    The trace says which URLs the page asked for, what in the page asked for
+    them and how long each exchange took. Of a request a policy withheld it
+    says no more than the WARC does: the URL, the method and the kind of
+    resource, and nothing of the answer (see <a href="#trace-lines"></a>). In
+    its lines the producer replaces the value of a secret, kept or hidden,
+    where it appears in a URL or in the text of a failure; a value in any other
+    form stays, and so does one nobody declared a secret. A <code>data:</code>
+    URL is written without its data. What <code>initiator</code> names is the
+    captured page's account of itself, not the producer's, and only the lines
+    inside the package are covered by its digests and its signature: the same
+    lines shown anywhere else are copies (see <a href="#trace-reading"></a>).
   </p>
   <p>
     <a>storage</a> exposes nothing the package did not already hold. It records
