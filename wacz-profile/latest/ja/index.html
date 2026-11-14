@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.25.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.26.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.26.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.27.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -76,7 +76,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.25.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.26.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,16 +92,16 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.25.0 は 1.24.0 と後方互換ではありません">
-    この版は、パッケージの WARC ファイルの名前を <code>data-NNN.warc.gz</code> から
-    <code>data-NNN.browserhive.warc.gz</code> に替え、それらを BrowserHive WARC Profile 1.4.0 に
-    適合させます（<a href="#archive-files"></a> を参照）。WARC ファイルを古い名前で持ち、それらが
-    WARC Profile 1.3.0 を名乗る 1.24.0 向けのパッケージは、1.25.0 に適合しません。この版はあわせて、
-    パッケージに <code>&hellip;.browserhive.wacz</code> という名前を勧め（<a href="#package-name"></a> を参照）、
-    読み手が名前から適合を推さないことを書きます。これは
+  <p class="note" title="1.26.0 は 1.25.0 と後方互換ではありません">
+    この版は、取り込んだページのスクリプトが乱数として受け取った値をパッケージが持つかどうかを、
+    <a>browserhive:capture</a> の <a>random</a> として述べることをすべてのパッケージに求め
+    （<a href="#random"></a> を参照）、その値と、それを記録したコードを持つエントリ
+    <code>random/values.jsonl</code> と <code>random/recorder.js</code> を定めます
+    （<a href="#random-directory"></a> を参照）。<a>random</a> を持たない 1.25.0 向けのパッケージは、
+    1.26.0 に適合しません。これは
     意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/">1.25.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -133,8 +133,9 @@
     どのリクエストを送って保持しなかったか、記録の前にページから何を取り除いたか、
     どのシークレットを渡され、そのどれを残したか、
     各オリジンがどの証明書を提示したか、取り込みが走りながら書いたログ、取り込みが
-    始まりを見た要求と、そのそれぞれがどう終わったか、そして取り込んだページの画像を残したか
-    どうかと、残さなかったときはその理由。これらは
+    始まりを見た要求と、そのそれぞれがどう終わったか、取り込んだページの画像を残したか
+    どうかと、残さなかったときはその理由、そして、記録を求められたときは、取り込んだページの
+    スクリプトが乱数として受け取った値。これらは
     [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
   </p>
 </section>
@@ -195,7 +196,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -939,8 +940,9 @@
       取り込んだページのスクリーンショット（<a>screenshots</a> を参照）、
       <code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
       <code>datapackage.json</code> の <code>title</code>、
-      <code>accessibility/axtree.jsonl</code>、そして <code>logs/capture.jsonl</code> の
-      <code>source</code> が <code>"page"</code> の行（<a href="#logs-lines"></a> を参照）です。これらは
+      <code>accessibility/axtree.jsonl</code>、<code>logs/capture.jsonl</code> の
+      <code>source</code> が <code>"page"</code> の行（<a href="#logs-lines"></a> を参照）、そして
+      <code>random/values.jsonl</code> の行（<a href="#random-lines"></a> を参照）です。これらは
       ネットワークからではなく描画されたページから読むので、WARC の本文はそれらを縛りません ——
       <strong>方針が文書の本文を archive に入れなくても、それだけではその文書の文字は
       締め出されません。</strong>
@@ -975,7 +977,8 @@
       <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
       も同じです。<code>logs/capture.jsonl</code> の <code>source</code> が
       <code>"page"</code> の行は、ある時点で読むのではなく取り込みの間ずっと書かれるもので、
-      <code>document</code> が名指す文書から読んだものとして扱います。下の
+      <code>document</code> が名指す文書から読んだものとして扱います。producer が取り込みの間ずっと、
+      記録するどの文書でも記録する <code>random/values.jsonl</code> の行も同じです。下の
       <code>withheld</code> の決まりは、各時点で、その時点の文書に当てはまります: 決まりが文書を
       伏せる時点には写しが無く、<a>snapshots</a> はそれを <code>"withheld"</code> と記録します。
       その時点のスクリーンショットも在りません（<a>screenshots</a> を参照）。
@@ -1025,7 +1028,8 @@
       理由を <code>textWithheld</code> として持ってもよく（<em class="rfc2119">MAY</em>）、
       持つなら値は <code>withheld</code> と等しくなければなりません
       （<em class="rfc2119">MUST</em>）。文書を伏せたパッケージは、どの時点の
-      スクリーンショットも持ちません（<a>screenshots</a> を参照）。
+      スクリーンショットも持たず（<a>screenshots</a> を参照）、<code>random/</code> の下のエントリも
+      どちらも持ちません（<a>random</a> を参照）。
     </p>
     <p class="note">
       大きさの上限で落とした本文は、ページ由来の記録を伏せません。上限は取り込みの側の
@@ -1403,6 +1407,91 @@
       残さなかった行は、エントリに跡を残しません。そのため、間の抜けた trace は、全部そろった
       trace と同じように読めます。パッケージがそのどちらを持つのかを述べる場所がこの member で、
       読み手は、エントリを開く前に、<code>datapackage.json</code> だけでそれを見分けられます。
+    </p>
+  </section>
+
+  <section id="random">
+    <h3><code>random</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込んだページのスクリプトが乱数として受け取った値を
+      パッケージが持つかどうかと、それを何行が持つか、持たないならその理由を述べる
+      <dfn>random</dfn> member を持たなければなりません（<em class="rfc2119">MUST</em>）。
+      値そのものは、エントリ <code>random/values.jsonl</code> に在ります
+      （<a href="#random-directory"></a> を参照）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>recorded</code></td><td>boolean</td><td>はい</td>
+            <td>パッケージが記録した値を持つとき <code>true</code>、持たないとき
+            <code>false</code>。</td></tr>
+        <tr><td><code>documents</code></td><td>number</td><td><code>recorded</code> が <code>true</code> のとき</td>
+            <td><code>random/values.jsonl</code> の、<code>kind</code> が
+            <code>"document"</code> の行の数。0 以上の整数。</td></tr>
+        <tr><td><code>draws</code></td><td>number</td><td><code>recorded</code> が <code>true</code> のとき</td>
+            <td>そのエントリの、<code>kind</code> が <code>"draw"</code> の行の数。
+            0 以上の整数。</td></tr>
+        <tr><td><code>truncated</code></td><td>boolean</td><td><code>recorded</code> が <code>true</code> のとき</td>
+            <td>producer が記録した文書の行や、見た、または送られた値の行が、エントリに欠けている
+            ことがあるかどうか（下を参照）。</td></tr>
+        <tr><td><code>skipped</code></td><td>string</td><td><code>recorded</code> が <code>false</code> のとき</td>
+            <td>パッケージが記録した値を持たない理由（下を参照）。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"random": {
+  "recorded": true,
+  "documents": 2,
+  "draws": 318,
+  "truncated": false
+}</pre>
+    <p>
+      <code>recorded</code> が <code>true</code> のとき、<code>random</code> は
+      <code>documents</code>・<code>draws</code>・<code>truncated</code> を持たなければならず
+      （<em class="rfc2119">MUST</em>）、<code>skipped</code> を持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）。<code>documents</code> は
+      <code>random/values.jsonl</code> の <code>document</code> の行の数でなければならず
+      （<em class="rfc2119">MUST</em>）、<code>draws</code> はその <code>draw</code> の行の数で
+      なければなりません（<em class="rfc2119">MUST</em>）（<a href="#random-lines"></a> を参照）。
+      <code>truncated</code> は、producer が自分の決めた上限のために、値の行をエントリに残さなかった
+      か記録を止めたとき、<a>document</a> の <code>withheld</code> の決まりが伏せる文書の行や、
+      <a>snapshots</a> が <code>"withheld"</code> と記録するために文書の行を残さなかったとき
+      （<a href="#random-lines"></a> を参照）、または、ページの中の recorder が
+      送った値が全部届いたことを確かめられないときに <code>true</code> で、そうでなければ
+      <code>false</code> でなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      <code>recorded</code> が <code>false</code> のとき、<code>random</code> は
+      <code>skipped</code> を持たなければならず（<em class="rfc2119">MUST</em>）、
+      <code>documents</code>・<code>draws</code>・<code>truncated</code> を持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）—— たとえば
+      <code>{"recorded": false, "skipped": "not-requested"}</code>。
+      <code>skipped</code> は次のどれかで、いくつも当てはまるときは、この並びで先に来るもので
+      なければなりません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <ul>
+      <li><code>"not-requested"</code> —— 取り込みは、値の記録を求められていなかった。</li>
+      <li><code>"withheld"</code> —— 文書が伏せられた: <a>document</a> が <code>withheld</code> を
+          持つ。<code>random/values.jsonl</code> の行はページ由来の記録で、文書を伏せたパッケージは
+          それを持ちません。</li>
+      <li><code>"failed"</code> —— 取り込みは値の記録を求められたが、producer は記録できなかった。</li>
+    </ul>
+    <p class="note" title="なぜ要約をここに置くのか">
+      <code>random/</code> の下にエントリを持たないパッケージは、取り込みが記録を求められなかった
+      のか、文書が伏せられたのか、記録に失敗したのかを問わず、同じに読めます。間の抜けたエントリも、
+      全部そろったエントリと同じように読めます。パッケージがそのどれなのかを述べる場所がこの
+      member で、読み手は、どのエントリを開く前にも、<code>datapackage.json</code> だけで、
+      パッケージが記録した値を持つかどうかを見分けられます。
+    </p>
+    <p class="note" title="値は何のためか">
+      BrowserHive は、取り込みの要求がその欄 <code>recordRandom</code> で求めたときに値を記録します。
+      その recorder は、取り込んだページのスクリプトが <code>Math.random</code>・
+      <code>crypto.getRandomValues</code>・<code>crypto.randomUUID</code> から受け取る値を、
+      変えずに、呼んだスクリプトと共に書き留めます。ページを replay する読み手は、同じ値を同じ
+      スクリプトに返せます。そうすれば、見せるものを乱数で選ぶページは、取り込みのときに選んだ
+      ものを選びます（<a href="#random-reading"></a> を参照）。
     </p>
   </section>
 
@@ -1955,6 +2044,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <li><a>snapshots</a> の <code>url</code> と、写しを挙げる <code>pages/pages.jsonl</code> の
           エントリの <code>url</code>。これらは写しの <code>resource</code> レコードの
           <code>WARC-Target-URI</code> で、そこでシークレットの値は既に置き換えてあります。</li>
+      <li><code>random/values.jsonl</code> の各文書の行の <code>url</code> と、各値の行の
+          <code>caller</code>（<a href="#random-lines"></a> を参照）。</li>
     </ul>
     <p>
       これらの URL を整列する配列は、置き換えた後の、書かれたとおりの字で整列します。
@@ -1979,10 +2070,12 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p>
       WARC ファイルの外では、パッケージのほかのものは何も置き換えません:
       behavior と preload のスクリプトの <code>source</code>、<code>behaviors/runtime.js</code>、
+      <code>random/recorder.js</code>、
       <code>variables</code> や <a>urlPolicies</a> の項目、<a>tls</a> の host、<a>storage</a> の origin、
-      <code>trace/events.jsonl</code> の行のほかの member、
-      member の名前。これらのどこかに出現を書くことになる取り込みは、パッケージを作っては
-      なりません（<em class="rfc2119">MUST NOT</em>）。
+      <code>trace/events.jsonl</code> と <code>random/values.jsonl</code> の行の（後者では
+      <code>value</code> を除く）ほかの member、member の名前。これらのどこかに出現を書くことになる
+      取り込みは、パッケージを作ってはなりません（<em class="rfc2119">MUST NOT</em>）。値の行の
+      <code>value</code> も置き換えません: producer はそれを除きます（<a href="#random-lines"></a> を参照）。
     </p>
     <p>
       [[BROWSERHIVE-WARC-PROFILE]] は、ある種の cookie の値を、その cookie を設定した応答が届いた
@@ -2023,6 +2116,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <li><code>logs/capture.jsonl</code> の行の <code>msg</code> と <code>data</code>。</li>
       <li><code>trace/events.jsonl</code> の行の <code>url</code>・<code>initiator</code> の
           <code>url</code>・<code>error</code>（<a href="#trace-lines"></a> を参照）。</li>
+      <li><code>random/values.jsonl</code> の文書の行の <code>url</code> と、値の行の
+          <code>caller</code>（<a href="#random-lines"></a> を参照）。</li>
     </ul>
     <p>
       残す値が、隠すシークレットの値である、または持つときは、その値の分は置き換えます。
@@ -2547,8 +2642,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       求めるものは何もありません。
     </p>
     <p class="note">
-      これを明記するのは、適合するパッケージの中で中身が実行可能なエントリが
-      これだけであることと、パッケージを replay する読み手は既に実行の context を
+      これを明記するのは、これらのエントリが、preload のスクリプトや
+      <code>random/recorder.js</code> と並んで、適合するパッケージの中で中身が実行可能な
+      エントリであることと、パッケージを replay する読み手は既に実行の context を
       開いているためです。
     </p>
   </section>
@@ -3246,6 +3342,332 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   </section>
 </section>
 
+<section id="random-directory">
+  <h2>The random directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    <a>random</a> の <code>recorded</code> が <code>true</code> のとき、適合するパッケージは、
+    取り込んだページのスクリプトが乱数として受け取った値である <code>random/values.jsonl</code> と、
+    それを記録したコードである <code>random/recorder.js</code> というエントリを持た
+    <em class="rfc2119">なければならず</em>（MUST）、その両方を他のファイルと同様に
+    <code>resources</code> で宣言し<em class="rfc2119">なければなりません</em>（MUST）。
+    <code>recorded</code> が <code>false</code> のとき、パッケージはそのどちらも持っては
+    <em class="rfc2119">なりません</em>（MUST NOT）。これらのエントリを定めていなかった以前の版に
+    向けて書かれたパッケージでは、その不在は、取り込んだページのスクリプトが受け取った値について
+    何も述べません。
+  </p>
+  <p>
+    <code>random/values.jsonl</code> は <a href="https://jsonlines.org/">JSON Lines</a>
+    で<em class="rfc2119">なければなりません</em>（MUST） —— 1 行に 1 つの JSON オブジェクトで、
+    各オブジェクトは、producer が記録した文書 1 つか、スクリプトが受け取った値 1 つを述べます。
+    このエントリは、<code>draw</code> の行を 1 つも持たないときも在ら
+    <em class="rfc2119">なければなりません</em>（MUST）: 記録して値を 1 つも見なかった取り込みも、
+    その文書の行は書きます。値の行の無いエントリは、書き漏らしではなく主張です。
+  </p>
+  <p>
+    <code>random/recorder.js</code> は、producer が値を記録するためにページの中で評価した
+    ソースを、<strong>バイト単位でそのまま</strong>持た<em class="rfc2119">なければなりません</em>
+    （MUST）。behavior にとっての <code>behaviors/runtime.js</code> と同じです
+    （<a href="#behaviors-runtime"></a> を参照）。producer が、取り込みの値を書き込んだソースを
+    評価するなら、エントリはその文字を持ちます。
+  </p>
+  <p>
+    このプロファイルは、エントリを ZIP ファイルの中にどう収めるかについて何も求めません。
+    パッケージのほかの文字のエントリと同じく、そこで圧縮し<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p class="note" title="なぜ recorder が値と共に旅をするのか">
+    recorder は、取り込んだページのスクリプトと、それが受け取る値の間に立ちます。値を、あるいは
+    producer が値を変えなかったという主張を吟味する読み手には、記録をしたコードが要り、そのコードは、
+    書き留めなければ取り込みが終わると失われます。<code>resources</code> で宣言したエントリは、
+    パッケージの digest に覆われ、署名があれば署名にも覆われます。
+  </p>
+
+  <section id="random-lines">
+    <h3>Random lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:random/1",
+  "kind": "draw",
+  "document": 0,
+  "seq": 3,
+  "api": "Math.random",
+  "caller": "https://shop.example/assets/hero.js",
+  "value": 0.7135472816238291
+}
+    </pre>
+    <p class="note">
+      読みやすさのために複数行で示しています。ファイルの中では、各オブジェクトはちょうど
+      1 行を占めます。
+    </p>
+    <p>
+      どの行も、<code>profile</code> と <code>kind</code> を持つ JSON オブジェクトで
+      <em class="rfc2119">なければなりません</em>（MUST）。<code>profile</code> は行が従う決まりで、
+      本仕様のこの版では値は <code>"browserhive:random/1"</code> で
+      <em class="rfc2119">なければなりません</em>（MUST）。<code>kind</code> は行が述べるもので、
+      <code>"document"</code> か <code>"draw"</code> で<em class="rfc2119">なければなりません</em>
+      （MUST）。
+    </p>
+    <p>
+      <code>kind</code> が <code>"document"</code> の行（<strong>文書の行</strong>）は、producer が
+      記録した文書 1 つを述べます。その行は <code>document</code>・<code>url</code>・
+      <code>frame</code>・<code>dpr</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>document</code></td><td>number</td><td>はい</td>
+            <td>その文書の値の行が文書を名指す番号。0 以上の整数。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい</td>
+            <td>browser が確定させた、その文書の URL から fragment を除いたもの。シークレットの値は
+            置き換えてあります（下を参照）。</td></tr>
+        <tr><td><code>frame</code></td><td>string</td><td>はい</td>
+            <td>取り込みの主フレームの文書なら <code>"main"</code>、フレームの中の文書なら
+            <code>"frame"</code>。</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>はい</td>
+            <td>その文書を読み込んだ読み込みの device pixel ratio。<a>settings</a> の
+            <code>devicePixelRatios</code> の要素のどれか。</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>いいえ</td>
+            <td>その文書を運んだ HTTP か HTTPS の交信の <code>response</code> レコードの
+            <code>WARC-Record-ID</code> の URI。その欄が付ける山括弧は付けません。</td></tr>
+        <tr><td><code>date</code></td><td>string</td><td>いいえ</td>
+            <td>そのレコードの <code>WARC-Date</code>。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      2 つの文書の行が同じ <code>document</code> を持っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。文書の行は <code>document</code> の昇順で並ば
+      <em class="rfc2119">なければなりません</em>（MUST）。<code>frame</code> は
+      <code>"main"</code> か <code>"frame"</code> で<em class="rfc2119">なければなりません</em>
+      （MUST）。文書を運んだ HTTP か HTTPS の交信の <code>response</code> レコードをパッケージが
+      持つとき、行は、<code>archive/</code> の中のそのレコードを名指さ
+      <em class="rfc2119">なければならない</em>（MUST）<code>record</code> と、そのレコードの
+      <code>WARC-Date</code> と 1 文字ずつ同じで<em class="rfc2119">なければならない</em>（MUST）
+      <code>date</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。そうでなければ、
+      行はそのどちらも持っては<em class="rfc2119">なりません</em>（MUST NOT）。<code>record</code> が
+      名指すレコードの <code>WARC-Target-URI</code> は、<code>url</code> で残すシークレットの値を
+      置き換えたことを除いて、<code>url</code> で<em class="rfc2119">なければなりません</em>（MUST）。
+      2 つの文書の行が同じ <code>record</code> を持っ<em class="rfc2119">てもよい</em>（MAY）。
+      文書の URL が <code>data:</code> URL のとき、<code>url</code> はそのデータを持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。producer はその URL を最初のコンマまで
+      （コンマを含めて）書き、その後には何も書きません。
+    </p>
+    <p>
+      <code>kind</code> が <code>"draw"</code> の行（<strong>値の行</strong>）は、取り込んだページの
+      スクリプトが受け取った値 1 つを述べます。その行は <code>document</code>・<code>seq</code>・
+      <code>api</code>・<code>caller</code> を持た<em class="rfc2119">なければならず</em>（MUST）、
+      <code>value</code> を持っ<em class="rfc2119">てもよい</em>（MAY）。<code>api</code> が
+      <code>"crypto.getRandomValues"</code> の値の行は <code>bytes</code> も持た
+      <em class="rfc2119">なければならず</em>（MUST）、ほかの値の行は持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>document</code></td><td>number</td><td>はい</td>
+            <td>スクリプトが呼び出しをした文書の、文書の行の <code>document</code>。</td></tr>
+        <tr><td><code>seq</code></td><td>number</td><td>はい</td>
+            <td>その行が、同じ文書の値の行の中で何番目か: 最初が 0 で、続く行ごとに 1 つ増えます。
+            0 以上の整数。</td></tr>
+        <tr><td><code>api</code></td><td>string</td><td>はい</td>
+            <td>スクリプトが呼んだ関数: <code>"Math.random"</code>・
+            <code>"crypto.getRandomValues"</code>・<code>"crypto.randomUUID"</code>。</td></tr>
+        <tr><td><code>caller</code></td><td>string</td><td>はい</td>
+            <td>呼び出しをしたスクリプトの、browser が call stack で伝えた URL から fragment を
+            除いたもの。シークレットの値は置き換えてあります（下を参照）。stack がそうした URL を
+            名指さないときは空の文字列。</td></tr>
+        <tr><td><code>bytes</code></td><td>number</td><td><code>api</code> が <code>"crypto.getRandomValues"</code> のとき</td>
+            <td>スクリプトが渡した typed array の <code>byteLength</code>。0 以上の整数。</td></tr>
+        <tr><td><code>value</code></td><td>number か string</td><td>いいえ</td>
+            <td>スクリプトが受け取った値（下を参照）。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      値の行の <code>document</code> は、エントリの中でそれより前に在る文書の行の
+      <code>document</code> と等しく<em class="rfc2119">なければなりません</em>（MUST）。
+      <code>seq</code> は、文書の最初の値の行で 0 で<em class="rfc2119">なければならず</em>（MUST）、
+      ほかのどの値の行でも、同じ文書のその前の値の行より 1 つ多く
+      <em class="rfc2119">なければなりません</em>（MUST）。1 つの文書の中では、値の行は recorder が
+      呼び出しを見た順に並ば<em class="rfc2119">なければなりません</em>（MUST）。producer は、
+      例外を投げた呼び出しについて値の行を書いては<em class="rfc2119">なりません</em>（MUST NOT）:
+      スクリプトはそこから値を受け取っていません。別々の文書の行は混ざって
+      並ん<em class="rfc2119">でもよい</em>（MAY）: ある文書の行が、別の文書の 2 つの行の間に
+      在ることがあります。
+    </p>
+    <p>
+      <code>api</code> は <code>"Math.random"</code>・<code>"crypto.getRandomValues"</code>・
+      <code>"crypto.randomUUID"</code> のどれかで<em class="rfc2119">なければなりません</em>
+      （MUST）。<code>caller</code> は、呼び出しをしたスクリプトの、browser が call stack で伝えた
+      URL から fragment を除いたもので<em class="rfc2119">なければなりません</em>（MUST）:
+      recorder 自身の frame を数えずに、
+      stack の中で HTTP か HTTPS の URL を持ついちばん内側の frame —— 呼び出しにいちばん近い
+      frame —— のものです。そうした frame が無いとき、<code>caller</code> は空の文字列で
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      <code>value</code> は、在るときは、スクリプトが受け取った値を変えずに、次のように書いたもので
+      <em class="rfc2119">なければなりません</em>（MUST）:
+    </p>
+    <ul>
+      <li><code>"Math.random"</code> では、0 以上 1 未満の number で、読み戻すと同じ IEEE 754 の
+          double になるように書いたもの。</li>
+      <li><code>"crypto.randomUUID"</code> では string: 正準形の UUID。小文字の 16 進数字 32 個を、
+          8・4・4・4・12 個の組に分けてハイフンでつないだもの。</li>
+      <li><code>"crypto.getRandomValues"</code> では string: スクリプトが渡した typed array の、
+          呼び出しが埋めたとおりのバイト列を、ちょうど <code>bytes</code> 個、
+          <a href="https://www.rfc-editor.org/rfc/rfc4648#section-4">RFC 4648 の 4 節</a>の base64 で、
+          標準のアルファベットと padding を使って符号にしたもの。</li>
+    </ul>
+    <p>
+      producer は、取り込んだページのスクリプトが受け取る値を変えては
+      <em class="rfc2119">なりません</em>（MUST NOT）。producer は、値を残さないと決めたとき、
+      値の行から <code>value</code> を除い<em class="rfc2119">てもよい</em>（MAY）。たとえば、
+      シークレットを渡された取り込みでの <code>crypto</code> の関数の値や、自分の決めた上限より長い
+      <code>crypto.getRandomValues</code> の配列のバイト列です。そのとき行は、呼び出しがあったことと、
+      どのスクリプトがしたかと、文書の呼び出しの中で何番目かを、なお記録します。producer は、
+      書くとおりの値が隠すシークレットの値の出現を持つとき、値の行から <code>value</code> を除か
+      <em class="rfc2119">なければなりません</em>（MUST）。<code>value</code>
+      の無い行は、残さなかった行ではなく、<code>truncated</code> はそれについて何も述べません。
+    </p>
+    <pre class="json">
+{"profile":"browserhive:random/1","kind":"document","document":0,"url":"https://shop.example/","frame":"main","dpr":1,"record":"urn:uuid:b2e4c6a8-1d3f-4a5b-8c7d-9e0f1a2b3c4d","date":"2026-11-14T02:10:00.757Z"}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":0,"api":"Math.random","caller":"https://shop.example/assets/hero.js","value":0.25390625}
+{"profile":"browserhive:random/1","kind":"document","document":1,"url":"https://shop.example/widgets/recommend","frame":"frame","dpr":1,"record":"urn:uuid:7d0e5a3c-6b1f-4f2e-8a9d-2c3b4e5f6a7b","date":"2026-11-14T02:10:01.204Z"}
+{"profile":"browserhive:random/1","kind":"draw","document":1,"seq":0,"api":"crypto.randomUUID","caller":"https://shop.example/widgets/recommend.js","value":"3f2a9c1e-7b4d-4e8a-9f6c-0d1e2b3c4a5f"}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":1,"api":"crypto.getRandomValues","caller":"https://shop.example/assets/hero.js","bytes":4,"value":"q83vEg=="}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":2,"api":"Math.random","caller":"","value":0.8125}</pre>
+    <p>
+      この抜き出しでは、producer は 2 つの文書で記録しました: 取り込んだページそのものと、同じサイトの
+      フレームの中の文書で、後者の行はページの行と混ざって並んでいます。スクリプト
+      <code>hero.js</code> は数を 1 つ、続いて 4 バイトを受け取り、最後の値は、browser が stack に
+      HTTP の URL も HTTPS の URL も伝えなかったコードが受け取りました。
+    </p>
+    <p>
+      producer は、エントリを自分の決めた上限に収めるために、値の行を残さなかったり、記録を
+      止めたりし<em class="rfc2119">てもよい</em>（MAY）。このプロファイルは、その上限の数を
+      定めません。そうする producer は、<a>random</a> の <code>truncated</code> を
+      <code>true</code> にし<em class="rfc2119">なければなりません</em>（MUST）。値の行を残さない
+      producer、または recorder が送った値が届かなかったと知った producer は、同じ文書の、同じ
+      <code>caller</code> と同じ <code>api</code> を持つ、それより後の値の行をすべて残さずにおか
+      <em class="rfc2119">なければなりません</em>（MUST）。そうすれば、ある caller と関数の
+      n 番目の行は、recorder が見たその n 回目の呼び出しです。エントリの中には、どこで行を
+      残さなかったかの印はありません。
+    </p>
+    <p>
+      <a>document</a> が <code>withheld</code> を持たないとき、producer は、<a>document</a> が
+      名指す文書であったなら <code>withheld</code> の決まりがその記録を伏せる主フレームの文書の行と、
+      そのフレームの中の文書の行を残さなく<em class="rfc2119">てもよく</em>（MAY）、
+      <a>snapshots</a> が、どの文書か分からないためにある時点を <code>"withheld"</code> と記録した
+      ときは、<a>document</a> が名指す文書を除く主フレームのすべての文書の行を残さなく
+      <em class="rfc2119">てもよい</em>（MAY）。どちらかの理由で行を残さない producer は、
+      <a>random</a> の <code>truncated</code> を <code>true</code> にし
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      文書の行の <code>url</code> と値の行の <code>caller</code> は、隠すシークレットの値の出現も、
+      残すシークレットのそのままの値も、長さに関わらず持っては<em class="rfc2119">なりません</em>
+      （MUST NOT）（<a href="#secret-values"></a> を参照）。producer は、
+      <a href="#hidden-secret-values"></a> が挙げる URL と同じように置き換えるので、
+      <code>WARC-Target-URI</code> が URI のままであるように、書いたものは URL のままです:
+      読み手は、<code>caller</code> を、アーカイブしたレコードの URL の中から引けます。
+    </p>
+    <p class="note" title="なぜ残すシークレットも、ここで置き換えるのか">
+      trace と同じく、行は WARC のレコードとは別に読まれ、行に残した値は、行の行く先のどこへでも
+      付いて行きます。これには代償があります。URL が残すシークレットを持っていたスクリプトの
+      <code>caller</code> は、そのスクリプトのレコードの <code>WARC-Target-URI</code> と同じでは
+      なく、そうした文書の <code>url</code> も、その <code>record</code> が名指すレコードのものと
+      同じではありません。送られたとおりの URL は、そのレコードに在ります。
+    </p>
+    <p class="note" title="ページ由来の記録">
+      行は取り込んだページから来ます。recorder はページのスクリプトの間で走り、スクリプトが
+      受け取ったものと、呼び出しをした stack を producer に渡します。そのため行は
+      <a>document</a> のページ由来の記録に入ります: 文書を伏せたパッケージは行を 1 つも持たず、
+      <a>random</a> がそれを述べます。
+    </p>
+  </section>
+
+  <section id="random-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      読み手は <code>random/recorder.js</code> を実行しては<em class="rfc2119">なりません</em>
+      （MUST NOT）。<a>behaviors</a> や <a>preload</a> と同じく、producer が走らせたものの
+      記録であって、アーカイブされたページの一部ではありません。
+    </p>
+    <p>
+      文書を replay する読み手は、記録した値をページのスクリプトに返し
+      <em class="rfc2119">てもよい</em>（MAY）。そうする読み手は、文書の行 D が述べる、replay した
+      文書の中で、スクリプト S が関数 A を呼んだ n 回目（1 から数える）の呼び出しに、
+      <code>caller</code> が S で <code>api</code> が A の、D の n 番目の値の行の
+      <code>value</code> を返す<em class="rfc2119">べきです</em>（SHOULD）。読み手は S を、producer
+      が <code>caller</code> を求めたのと同じく求めます: 自分の frame を数えずに、stack の中で
+      HTTP か HTTPS の URL を持ついちばん内側の frame の、取り込んだページがそのスクリプトに付けた
+      URL（アーカイブしたレコードから出したスクリプトなら、そのレコードの URL）から fragment を
+      除いたもので、そうした frame が無ければ空の文字列です。URL が残すシークレットを持っていた
+      スクリプトはどの <code>caller</code> にも当たらず、読み手はその呼び出しには自分の値を
+      返します。例外を投げた呼び出しは数えず、producer は
+      それについて値の行を書きません。そうした行が無いとき、行が <code>value</code> を持たない
+      とき、あるいは値が呼び出しに合わないとき —— たとえば <code>bytes</code> と別の長さの配列での
+      <code>crypto.getRandomValues</code> の呼び出し —— 読み手は自分の値を返し
+      <em class="rfc2119">てもよく</em>（MAY）、それを利用者にもほかにも、記録した値として
+      伝えては<em class="rfc2119">なりません</em>（MUST NOT）。
+    </p>
+    <p class="note" title="どの文書の行か">
+      replay した文書をどの文書の行が述べるかは、読み手が決めます。そのために行が差し出すのは、
+      <code>url</code>・<code>frame</code>・<code>dpr</code> と、在るときは <code>record</code> と
+      <code>date</code> です。<code>url</code> は fragment を持ちません。<a>document</a> の
+      <code>url</code> や、replay した文書の URL は持つことがあります。2 度以上読み込んだページは、
+      読み込みごとに文書の行を持ちます。<a>random</a> の <code>truncated</code> が
+      <code>true</code> のときは、ある caller と関数の行が呼び出しより先に尽きることがあり、文書が
+      行を 1 つも持たないこともあり、また、値が全部届いたと producer が確かめられなかったときは、
+      行が、その位置が言うより後の呼び出しを記録していることもあります
+      （<a href="#random-lines"></a> を参照）。
+    </p>
+    <p class="note" title="producer 自身のコード">
+      ページの中の producer 自身のコード —— <a>behaviors</a> と <a>preload</a> のスクリプト ——
+      は、ページのコードと同じように値を引き、その呼び出しは、stack が与えるとおりの
+      <code>caller</code> で記録されます。そのコードは replay では走らないので、その caller に
+      ついて読み手が数える呼び出しは、行より遅れることがあり、そうなるとその後の呼び出しは、
+      別の呼び出しのために記録した値を受け取ります。
+    </p>
+    <p class="note" title="エントリが述べないこと">
+      ある文書の行を持たないエントリや、<code>truncated</code> が false のエントリは、ページが
+      ほかに値を引かなかったとは述べません。producer は、スクリプトが値を引きうるすべての場所 ——
+      たとえば別サイトのフレームや worker —— で記録するとは限らず、読み手はそこでは自分の値を
+      返します。
+    </p>
+    <p>
+      読み手は、<code>caller</code> を producer の申告として読んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。browser が伝えるのは、call stack に
+      見つけたスクリプトで、その URL は、取り込んだページがそのスクリプトに与えたものです。
+      取り込んだページは、自分のスクリプトに好きな名前を付けられます。producer は browser が
+      述べたことを取り次ぐだけで、言葉を選んだのは取り込んだページです。
+    </p>
+    <p>
+      パッケージの digest が覆い、署名があれば署名が覆うのは、パッケージの中の行です。ほかの
+      どこかで見せたり伝えたりする同じ行は、その写しで、写しをパッケージに結び付けるものは
+      何もありません。行を頼りにする読み手は、パッケージから読みます。
+    </p>
+    <p class="note" title="ページへ値を渡す">
+      これは、読み手が、アーカイブしたレコード以外のもの —— 通信を通ったものではなく、ページが
+      受け取るのを producer が見たもの —— を、取り込んだページのスクリプトへ渡すことを認める、
+      本仕様で最初の節です。<a href="#behaviors-reading">behaviors</a> と
+      <a href="#preload-reading">preload</a> の節は、パッケージが持つコードを読み手が走らせることを
+      禁じ、この節も recorder を走らせることを禁じます。この節が認めるのはもっと狭いもので、
+      値です —— ページ自身のスクリプトが乱数を求めたところに、読み手がそうでなければ自分で作る値の
+      代わりに返すもの。そうする replay は、取り込みが選んだものを選び、そうしない replay も、
+      選び直しながら、パッケージをなお replay します。
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -3327,7 +3749,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <code>display: none</code> で隠されたテキストは、レスポンス本文には在っても、この木には
     現れません。方針が文書の本文を archive に入れなかったなら、そのテキストは本文に
     <strong>入っていない</strong>ので、パッケージは、木も、ページの文字と題も、その文書から
-    読んだ写しも、スクリーンショットも、ページがログに書いた行も持ちません（<a>document</a> を参照）。
+    読んだ写しも、スクリーンショットも、ページがログに書いた行も、そのスクリプトが乱数として
+    受け取った値も持ちません（<a>document</a> を参照）。
   </p>
   <p>
     写しは、そのときのページの姿 —— 文字と、パスワードの欄を除く欄の値 —— を持ちます
@@ -3425,6 +3848,24 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     であって、producer の申告ではありません。そして、パッケージの digest と署名が覆うのは
     パッケージの中の行だけです: ほかのどこかに出る同じ行は、写しです
     （<a href="#trace-reading"></a> を参照）。
+  </p>
+  <p>
+    取り込みが記録を求められたとき、<code>random/values.jsonl</code> は、取り込んだページの
+    スクリプトが <code>Math.random</code>・<code>crypto.getRandomValues</code>・
+    <code>crypto.randomUUID</code> から受け取った値を運びます。ページがそうした値を引くのは、
+    何を見せるかを決めるためでもあり、安全のためでもあります: セッションや端末の識別子、nonce、
+    ページの中で作る鍵。producer はその使い道を見分けられず、パッケージを持つ者は誰でも、
+    残した値を全部読めます。そのため、シークレットを渡された producer は、<code>crypto</code> の
+    関数の値を残すのを避けるべきです。<code>value</code> の無い行も、呼び出しは記録します
+    （<a href="#random-lines"></a> を参照）。recorder は、ページのスクリプトがこれらの関数を呼ぶ
+    ところに立つので、記録するのはそのスクリプトが recorder に見せたものであり、行の
+    <code>caller</code> は、取り込んだページが自分のスクリプトに付けた名前です
+    （<a href="#random-reading"></a> を参照）。ログと同じく、<a>document</a> の決まりが見るのは
+    <a>document</a> が名指す文書です: ページが伏せられた文書から残された文書へ移ったときは、
+    はじめの文書の行が残ります。ただし、<a>document</a> が名指す文書であったならその決まりが
+    伏せる文書の行や、どの文書か分からないために <a>snapshots</a> がある時点を
+    <code>"withheld"</code> と記録したときの行は、producer が残さなくてもよく、そうした producer は
+    <code>truncated</code> を <code>true</code> にします（<a href="#random-lines"></a> を参照）。
   </p>
   <p>
     <a>storage</a> は、パッケージが既に保持している以上のものを晒しません。
