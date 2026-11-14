@@ -63,10 +63,17 @@ Profile の版どうしは**後方互換ではない**。BrowserHive は最新�
 を相対パスで読む。同一オリジンのファイルが読めないのは「無い」か「パスが違う」ときだけで、
 CI の assets job がブラウザを使わずにその 2 つを確かめる。
 
-CI（`.github/workflows/build.yml`）は公開の経路に居ない。`main` への push と PR で
-[`w3c/spec-prod`](https://github.com/w3c/spec-prod) が各版を描いて markup を、linkcheck の job が
-リンクを検査するだけで、描いたものは公開しない。公開が CI を通らないので、壊れた原稿の
-merge を止められるのはこの検査だけ —— だから赤は merge を止める。同梱した ReSpec が上流から
+CI（`.github/workflows/build.yml`）は公開の経路に居らず、`main` への push と PR で検査だけをする。
+描いたものは公開しない:
+
+- 各版を [`w3c/spec-prod`](https://github.com/w3c/spec-prod) で描けること（markup の検査を含む）
+- 同梱の ReSpec が各原稿から解決すること
+- 最新の版（`latest/`）の節が、原稿に id を持つこと
+- 例の WARC レコードの `Content-Length` が、本文のバイト数と合うこと
+- 日本語訳の冒頭の版が、置き場の版と合うこと
+- 著者が書いたリンクが 200 を返すこと
+
+公開が CI を通らないので、壊れた原稿の merge を止められるのはこの検査だけ —— だから赤は merge を止める。同梱した ReSpec が上流から
 離れていないかは、`.github/workflows/respec-drift.yml` が週に 1 回見る。
 
 ローカルで見るには `wacz-profile/1.24.0/index.html` をブラウザで開く。
