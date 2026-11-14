@@ -85,7 +85,7 @@ BrowserHive WACZ Profile の版ごとの変更。
   （MUST）、値の行が 0 でも在る（MUST）。`random/recorder.js` は、producer がページの中で評価したソースをバイト単位で
   そのまま（MUST。`behaviors/runtime.js` と同じ。取り込みの値を書き込んで評価したなら、その文字）。ZIP の中では圧縮してよい（MAY）。
 - **`random-lines`（新しい節）:** 各行は `profile`（`"browserhive:random/1"`）と `kind`（`"document"` か `"draw"`）を持つ（MUST）。
-  - 文書の行: `document`（番号。重なり無し・昇順）・`url`・`frame`（`"main"` か `"frame"`）・`dpr` を持つ（MUST）。
+  - 文書の行: `document`（番号。重なり無し・昇順）・`url`（fragment を除く）・`frame`（`"main"` か `"frame"`）・`dpr` を持つ（MUST）。
     文書を運んだ交信の `response` レコードをパッケージが持つときは、それを名指す `record` と、その `WARC-Date` と
     1 文字ずつ同じ `date` を持ち、そうでなければどちらも持たない（MUST・MUST NOT）。そのレコードの `WARC-Target-URI` は、
     `url` で残すシークレットの値を置き換えたことを除いて `url`（MUST）。2 つの文書の行が同じ `record` を持ってよい（MAY）。
