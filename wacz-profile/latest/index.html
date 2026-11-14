@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.26.0</title>
+<title>BrowserHive WACZ Profile 1.27.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.27.0 exists: this document would
+    // is what makes the row still true once 1.28.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -69,9 +69,9 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/",
         publisher: "BrowserHive",
-        version: "1.4.0",
+        version: "1.5.0",
       },
     },
     lint: false,
@@ -95,20 +95,22 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.26.0 is not backward compatible with 1.25.0">
-    This version requires every package to say whether it holds the values
-    that the scripts of the captured page received at random, as
-    <a>random</a> in <a>browserhive:capture</a> (see <a href="#random"></a>),
-    and defines the entries <code>random/values.jsonl</code> and
-    <code>random/recorder.js</code> that hold those values and the code that
-    recorded them (see <a href="#random-directory"></a>). A package written
-    against 1.25.0 has no <a>random</a>, so it does not conform to 1.26.0.
+  <p class="note" title="1.27.0 is not backward compatible with 1.26.0">
+    This version has the WARC files of a package conform to BrowserHive WARC
+    Profile 1.5.0, which adds frame snapshots: copies of the documents of the
+    page's frames of the same origin, taken with each snapshot (see
+    <a href="#archive-files"></a>). It requires each entry of
+    <a>snapshots</a> that names a snapshot to say which frames the producer
+    copied with it, as <code>frames</code> and <code>frameCounts</code> (see
+    <a href="#snapshot-frames"></a>). A package written against 1.26.0 has
+    neither member, and its WARC files name WARC Profile 1.4.0, so it does
+    not conform to 1.27.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a>,
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/">1.25.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/">1.25.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/">1.26.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -212,7 +214,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -466,9 +468,10 @@
       The two <strong>measure different things</strong>.
       <code>maxResponseBytes</code> applies to the body of a single response;
       <code>maxTaskBytes</code> applies to the running total of the bodies
-      written into this package. A snapshot or a screenshot is weighed against
-      the same line: one that would take the bytes the capture keeps past it
-      is left out (see <a>snapshots</a> and <a>screenshots</a>).
+      written into this package. A snapshot, a frame snapshot or a screenshot
+      is weighed against the same line: one that would take the bytes the
+      capture keeps past it is left out (see <a>snapshots</a> and
+      <a>screenshots</a>).
     </p>
     <p>
       The difference matters to a reader. <code>maxResponseBytes</code> weighs
@@ -489,7 +492,7 @@
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
       <em>which line</em> a truncated body crossed &mdash; a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-bodies-not-kept">record of a body not kept</a>
       carries the fact and the actual size, but whether that size was too much
       is only legible next to the line.
     </p>
@@ -576,7 +579,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>yes</td>
             <td>URLs whose body crossed the wire but the producer could not
             obtain as bytes, so the archive holds none (see
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#response-payloads">Response payloads</a> in
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#response-payloads">Response payloads</a> in
             [[BROWSERHIVE-WARC-PROFILE]]).</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>yes</td>
             <td>Targets other than the main document whose renderer crashed during
@@ -655,7 +658,7 @@
     <p>
       The WARC describes the same bodies one record at a time: each response
       recorded without the body the server sent carries a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-bodies-not-kept">record of a body not kept</a>
       ([[BROWSERHIVE-WARC-PROFILE]]), whose <code>truncated</code> says why. The
       URLs of bodies dropped at a size limit &mdash; <code>too-large</code> and
       <code>task-cap</code> &mdash; are listed in <code>truncatedUrls</code>,
@@ -1024,7 +1027,8 @@
     </p>
     <p>
       The <strong>page-derived records</strong> are the snapshots of the
-      document (see <a>snapshots</a>), the screenshots of the page (see
+      document and the frame snapshots taken with them (see
+      <a>snapshots</a>), the screenshots of the page (see
       <a>screenshots</a>), the <code>text</code> and
       <code>title</code> of the entries in <code>pages/pages.jsonl</code>, the
       <code>title</code> of <code>datapackage.json</code>,
@@ -1061,7 +1065,8 @@
       The page-derived records are read stage by stage.
       The snapshot of a stage, and the entry of <code>pages/pages.jsonl</code>
       that lists it (see <a href="#pages"></a>), are read from the document in
-      the main frame at that stage, and the screenshot of a stage shows the
+      the main frame at that stage, the frame snapshots of a stage from the
+      documents of its frames at that stage, and the screenshot of a stage shows the
       page while that document is in its main frame. The <code>title</code> and <code>text</code> of
       the entry of the document in <code>pages/pages.jsonl</code>, the
       <code>title</code> of <code>datapackage.json</code> and
@@ -1076,7 +1081,7 @@
       The rules below on <code>withheld</code> apply at each stage to the
       document at that stage: a stage whose document they withhold has no
       snapshot, and <a>snapshots</a> records it as <code>"withheld"</code>.
-      Nor has it a screenshot (see <a>screenshots</a>).
+      Nor has it a frame snapshot or a screenshot (see <a>screenshots</a>).
     </p>
     <p>
       When a <code>deny</code> entry keeps the main frame from navigating (see
@@ -1121,7 +1126,7 @@
     <p>
       When <code>withheld</code> is present, the package
       <em class="rfc2119">MUST NOT</em> carry the page-derived records read from
-      that document. The <code>title</code> of <code>datapackage.json</code>
+      that document, the frame snapshots taken with its snapshots included. The <code>title</code> of <code>datapackage.json</code>
       <em class="rfc2119">MUST NOT</em> be read from the page, and the package
       <em class="rfc2119">MUST NOT</em> contain
       <code>accessibility/axtree.jsonl</code>. The entry of the document in
@@ -1149,8 +1154,12 @@
       the capture copies the document, whether it did. A snapshot is a copy of
       the document in the page's main frame as it stood at that stage, recorded
       in the WARC
-      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#snapshots">Snapshots</a>
-      in [[BROWSERHIVE-WARC-PROFILE]]). The array
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#snapshots">Snapshots</a>
+      in [[BROWSERHIVE-WARC-PROFILE]]). With the snapshot of a stage, the
+      producer copies the documents of the page's frames that it can read,
+      as frame snapshots
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#frame-snapshots">Frame snapshots</a>
+      there), and the entry of the stage says which. The array
       <em class="rfc2119">MUST</em> hold an entry for <code>"after-load"</code>
       and, when the capture ran a behavior (when <code>behaviors</code> in
       <a>settings</a> is not empty), an entry for
@@ -1183,6 +1192,12 @@
             <td>How many times the producer replaced the value of a secret in
             the copy: the <code>secrets-replaced</code> of the snapshot's
             <code>metadata</code> record.</td></tr>
+        <tr><td><code>frames</code></td><td>array</td><td>yes</td>
+            <td>What became of each numbered frame of the stage (see
+            <a href="#snapshot-frames"></a>).</td></tr>
+        <tr><td><code>frameCounts</code></td><td>object</td><td>yes</td>
+            <td>How many frames the producer read, could not read and
+            withheld at the stage (see <a href="#snapshot-frames"></a>).</td></tr>
       </tbody>
     </table>
     <pre class="json">
@@ -1193,7 +1208,20 @@
     "date": "2026-11-02T01:20:05.118Z",
     "record": "urn:uuid:5e0f6a3c-2d7b-4f1e-9a8c-1b2d3e4f5a6b",
     "bytes": 7255,
-    "secretsReplaced": 0
+    "secretsReplaced": 0,
+    "frames": [
+      {
+        "frame": 1,
+        "parent": 0,
+        "url": "urn:browserhive:frame-snapshot:after-load:1:https://example.com/menu.html",
+        "date": "2026-11-02T01:20:05.118Z",
+        "record": "urn:uuid:7c3d9e2f-1a4b-4c6d-8e0f-2b3a4c5d6e7f",
+        "bytes": 2210,
+        "secretsReplaced": 0
+      },
+      { "frame": 2, "parent": 1, "skipped": "withheld" }
+    ],
+    "frameCounts": { "read": 1, "unreadable": 1, "withheld": 1 }
   },
   {
     "stage": "after-behaviors",
@@ -1201,14 +1229,18 @@
     "date": "2026-11-02T01:20:07.415Z",
     "record": "urn:uuid:d6874c5c-9710-40d4-9fb8-ceb24bb0dfc8",
     "bytes": 26444,
-    "secretsReplaced": 0
+    "secretsReplaced": 0,
+    "frames": [],
+    "frameCounts": { "read": 0, "unreadable": 0, "withheld": 0 }
   }
 ]</pre>
     <p>
       The entry for a stage at which the producer took none
       <em class="rfc2119">MUST</em> carry <code>stage</code> and
       <code>skipped</code>, and nothing else &mdash; for instance
-      <code>{"stage": "after-behaviors", "skipped": "too-large"}</code>.
+      <code>{"stage": "after-behaviors", "skipped": "too-large"}</code>. It
+      carries neither <code>frames</code> nor <code>frameCounts</code>: at a
+      stage without a snapshot, the producer copies no frame either.
       <code>skipped</code> <em class="rfc2119">MUST</em> be one of:
     </p>
     <ul>
@@ -1226,7 +1258,13 @@
     </ul>
     <p>
       The package <em class="rfc2119">MUST</em> hold a snapshot for every entry
-      that names one, and no snapshot that no entry names.
+      that names one, and no snapshot that no entry names. Likewise it
+      <em class="rfc2119">MUST</em> hold a frame snapshot for every item of
+      <code>frames</code> that names one, and no frame snapshot that no item
+      names: each <code>resource</code> record whose
+      <code>WARC-Target-URI</code> begins with
+      <code>urn:browserhive:frame-snapshot:</code> is named by the
+      <code>url</code> of one item.
     </p>
     <p class="note" title="Why a stage without a snapshot is listed">
       A snapshot that is absent from a package could have been withheld, too
@@ -1234,6 +1272,112 @@
       entry says which, so that a reader does not take a page the capture chose
       to leave out for one it failed to copy.
     </p>
+
+    <section id="snapshot-frames">
+      <h4>Frames</h4>
+      <p>
+        <code>frames</code> and <code>frameCounts</code> say what became of
+        the page's frames at the stage of the entry. [[BROWSERHIVE-WARC-PROFILE]]
+        says which frames are
+        <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#dfn-numbered-frame">numbered frames</a>,
+        how they are numbered, and how a frame snapshot is recorded.
+      </p>
+      <p>
+        <code>frames</code> <em class="rfc2119">MUST</em> hold one item for
+        each numbered frame of the stage, in the order of their numbers, and no
+        other item. It is empty when the stage has no numbered frame. The item
+        of a frame of which the producer took a frame snapshot
+        <em class="rfc2119">MUST</em> carry:
+      </p>
+      <table class="simple">
+        <thead>
+          <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>frame</code></td><td>number</td><td>yes</td>
+              <td>The number of the frame: the <code>frame</code> of the frame
+              snapshot's <code>metadata</code> record.</td></tr>
+          <tr><td><code>parent</code></td><td>number</td><td>yes</td>
+              <td>The number of the frame whose document holds the frame's
+              element, <code>0</code> for the document in the main frame: the
+              <code>parent</code> of that record.</td></tr>
+          <tr><td><code>url</code></td><td>string</td><td>yes</td>
+              <td>The <code>WARC-Target-URI</code> of the frame snapshot's
+              <code>resource</code> record.</td></tr>
+          <tr><td><code>date</code></td><td>string</td><td>yes</td>
+              <td>The <code>WARC-Date</code> of that record, a timestamp.</td></tr>
+          <tr><td><code>record</code></td><td>string</td><td>yes</td>
+              <td>The URI in the <code>WARC-Record-ID</code> of that record,
+              without the angle brackets that field puts around it.</td></tr>
+          <tr><td><code>bytes</code></td><td>number</td><td>yes</td>
+              <td>The size of the copy, in bytes: the
+              <code>Content-Length</code> of that record.</td></tr>
+          <tr><td><code>secretsReplaced</code></td><td>number</td><td>yes</td>
+              <td>The <code>secrets-replaced</code> of the frame snapshot's
+              <code>metadata</code> record.</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The item of a numbered frame of which the producer took none
+        <em class="rfc2119">MUST</em> carry <code>frame</code>,
+        <code>parent</code> and <code>skipped</code>, and nothing else &mdash;
+        for instance <code>{"frame": 2, "parent": 1, "skipped": "withheld"}</code>.
+        <code>skipped</code> <em class="rfc2119">MUST</em> be one of:
+      </p>
+      <ul>
+        <li><code>"withheld"</code> &mdash; the rules of <a>document</a> on
+            <code>withheld</code> would withhold the frame's document, by its
+            URL and its media type, were it the document that <a>document</a>
+            names, or they would so withhold the document of a numbered frame
+            that holds the frame, nearer the main frame. The producer
+            <em class="rfc2119">MUST</em> skip such a frame.</li>
+        <li><code>"too-large"</code> &mdash; the copy was larger than the
+            producer allows for a single snapshot, the same limit as for the
+            snapshot of the stage.</li>
+        <li><code>"task-budget"</code> &mdash; keeping the copy would have
+            taken the bytes the capture keeps past
+            <code>limits.maxTaskBytes</code> (see <a>settings</a>).</li>
+        <li><code>"failed"</code> &mdash; the producer tried to take the frame
+            snapshot and could not.</li>
+      </ul>
+      <p>
+        <code>frameCounts</code> <em class="rfc2119">MUST</em> be an object
+        with these three members, each a number. They count the
+        <code>frame</code> and <code>iframe</code> elements that hold a
+        document in the documents the producer went through: the document in
+        the main frame and those of the numbered frames, apart from the
+        documents of the frames it withheld.
+      </p>
+      <ul>
+        <li><code>read</code> &mdash; the frames whose document the producer
+            could read and did not withhold: the numbered frames, copied or
+            not, and the frames whose document has a URL other than
+            <code>http</code> or <code>https</code>, which have no item.</li>
+        <li><code>unreadable</code> &mdash; the frames whose document the
+            producer could not read, such as a document of another
+            origin.</li>
+        <li><code>withheld</code> &mdash; the items of <code>frames</code>
+            whose <code>skipped</code> is <code>"withheld"</code>. Their
+            documents are not gone through, so the frames in them are counted
+            nowhere else.</li>
+      </ul>
+      <p>
+        So <code>withheld</code> is the number of items whose
+        <code>skipped</code> is <code>"withheld"</code>, and <code>read</code>
+        is at least the number of the other items. In the example above, the
+        document at <code>https://example.com/</code> holds a frame of another
+        origin and a frame whose document is <code>menu.html</code>, which the
+        producer copied, and that document holds a frame whose document a
+        policy withholds.
+      </p>
+      <p class="note" title="Why the frames that were not copied are counted">
+        A frame of another origin is out of the producer's reach, and a
+        reader of a snapshot sees its element and nothing that says why there
+        is no copy of it. The counts tell such a reader that the frames it was
+        shown are all the producer could read, or that a policy kept some of
+        them out.
+      </p>
+    </section>
   </section>
 
   <section id="screenshots">
@@ -1245,7 +1389,7 @@
       the package holds a screenshot of that stage, and why when it holds
       none. A screenshot is a picture of the page as the browser showed it at
       that stage, recorded in the WARC
-      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#screenshots">Screenshots</a>
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#screenshots">Screenshots</a>
       in [[BROWSERHIVE-WARC-PROFILE]]) as two records: a <code>resource</code>
       record that holds the picture, under a <code>WARC-Target-URI</code> that
       begins <code>urn:browserhive:screenshot:</code>, and a
@@ -1388,13 +1532,13 @@
           either, as it holds no line the page wrote to the log, whichever
           document wrote it.</li>
       <li>A WARC file in <code>archive/</code> holds a
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-withheld-requests">record of a withheld request</a>
           whose <code>action</code> is <code>no-archive</code>, and that
           record either carries the <code>resourceType</code>
           <code>Document</code>, <code>Image</code> or <code>Media</code>, or
           carries no <code>resourceType</code>.</li>
       <li>A WARC file in <code>archive/</code> holds a
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-bodies-not-kept">record of a body not kept</a>
           whose <code>truncated</code> is <code>url-policy</code>, and the
           line of <code>trace/events.jsonl</code> whose <code>record</code>
           names the <code>response</code> record that record refers to (see
@@ -1868,16 +2012,17 @@
   <p>
     Every WARC file in <code>archive/</code> <em class="rfc2119">MUST</em>
     conform to
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/">BrowserHive WARC Profile 1.4.0</a>, and its
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/">BrowserHive WARC Profile 1.5.0</a>, and its
     <code>warcinfo</code> record <em class="rfc2119">MUST</em> name that
     version in <code>conformsTo</code> (see
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#warcinfo">The warcinfo record</a> there). That
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#warcinfo">The warcinfo record</a> there). That
     specification fixes the records: their payloads, the records in which the
     values of hidden secrets are replaced, the records of bodies not
     kept, of withheld requests and of windows not opened, the snapshots of the
-    document and the screenshots of the page, the <code>warcinfo</code> record
-    that begins each file, and that the records of one exchange, those of one
-    snapshot and those of one screenshot share a file.
+    document and of its frames and the screenshots of the page, the
+    <code>warcinfo</code> record that begins each file, and that the records
+    of one exchange, those of one snapshot, those of one frame snapshot and
+    those of one screenshot share a file.
   </p>
   <p>
     The <code>archive/</code> directory <em class="rfc2119">MUST</em> contain
@@ -1925,19 +2070,21 @@
     reader looking for them reads the WARC.
   </p>
   <p>
-    The <code>resource</code> record of each snapshot, and that of each
-    screenshot (see <a>screenshots</a>),
+    The <code>resource</code> record of each snapshot, that of each frame
+    snapshot, and that of each screenshot (see <a>screenshots</a>),
     <em class="rfc2119">MUST</em> appear in the CDXJ index: a reader that serves
-    archived pages finds a snapshot through it, and a reader that shows a
-    screenshot finds the picture without reading the WARC files through. The
-    searchable key of its line
+    archived pages finds a snapshot through it, a reader that shows a frame
+    snapshot in its frame finds the copy by the URI its parent names, and a
+    reader that shows a screenshot finds the picture without reading the WARC
+    files through. The searchable key of its line
     <em class="rfc2119">MUST</em> be the record's <code>WARC-Target-URI</code>
-    as it is &mdash; a <code>urn:browserhive:snapshot:</code> or
+    as it is &mdash; a <code>urn:browserhive:snapshot:</code>,
+    <code>urn:browserhive:frame-snapshot:</code> or
     <code>urn:browserhive:screenshot:</code> URI, which has no
     SURT form &mdash; and its JSON <em class="rfc2119">MUST NOT</em> carry
     <code>status</code>, because no server answered with one. The
-    <code>metadata</code> record of a snapshot or of a screenshot, like the
-    records above, is not required to appear.
+    <code>metadata</code> record of a snapshot, of a frame snapshot or of a
+    screenshot, like the records above, is not required to appear.
   </p>
     <pre class="text">
 archive/data-000.browserhive.warc.gz    warcinfo (WARC-Filename: data-000.browserhive.warc.gz), exchanges &hellip;
@@ -1967,7 +2114,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     The first entry of <code>pages/pages.jsonl</code>
     <em class="rfc2119">MUST</em> be the entry of the document. After it, the
     file <em class="rfc2119">MUST</em> have one entry for each snapshot, in the
-    order of <a>snapshots</a>, and no other entry. The entry of the document:
+    order of <a>snapshots</a>, and no other entry. A frame snapshot
+    <em class="rfc2119">MUST NOT</em> have an entry: it is a part of the page
+    whose copy names it, not a page of its own. The entry of the document:
   </p>
   <ul>
     <li><code>url</code> <em class="rfc2119">MUST</em> be the URL the capture
@@ -2017,6 +2166,15 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     running, as the page was first shown. When the document was archived, the
     URL the capture was asked for names a record: the response that served the
     document, or the redirect that led to it, which a reader follows.
+  </p>
+  <p class="note" title="The frames of a snapshot">
+    A reader that opens the entry of a snapshot shows, in each of its frames,
+    what the capture recorded at the URL in the frame's <code>src</code>,
+    which is the document as the server sent it. A reader that reads the
+    <code>data-browserhive-snapshot</code> attribute of the frame's element
+    may show the frame snapshot that the attribute names instead
+    (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#frame-snapshot-references">Naming a frame snapshot from its parent</a>
+    in [[BROWSERHIVE-WARC-PROFILE]]), and finds it through the CDXJ index.
   </p>
   <p class="note" title="Which entry a reader opens first">
     Readers differ in where they start. One may open <code>mainPageURL</code>;
@@ -2095,14 +2253,14 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     </table>
     <p>
       The record a <code>deny</code> or <code>no-archive</code> entry leaves is a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-withheld-requests">record of a withheld request</a>
       ([[BROWSERHIVE-WARC-PROFILE]]). Its <code>action</code> is the entry's
       <code>action</code>, and its <code>pattern</code>
       <em class="rfc2119">MUST</em> be the entry's <code>pattern</code>, spelled
       exactly as it appears here, so that a reader can find the entry. A
       <code>no-body</code> entry leaves no such record: the exchange is recorded
       as usual, and its absent body is described by a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-bodies-not-kept">record of a body not kept</a>
       whose <code>truncated</code> is <code>url-policy</code> &mdash; never as a
       body dropped at a size limit (see <a>completeness</a>).
     </p>
@@ -2190,7 +2348,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   </p>
   <p>
     Each time the page asked for one is recorded in the WARC as a
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-windows-not-opened">record of a window not opened</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-windows-not-opened">record of a window not opened</a>
     ([[BROWSERHIVE-WARC-PROFILE]]). No request was sent for the window's
     document, so the record is written whether or not an entry of
     <a>urlPolicies</a> matches the URL, and it is not a record of a withheld
@@ -2218,7 +2376,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     A request may supply values in confidence for the behaviors to read, and
     <a>settings</a> records their names. A behavior can send such a value over
     the network and a page can show it, so the capture meets it in what it
-    records. The <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#redacted-records">Redacted records</a> section of [[BROWSERHIVE-WARC-PROFILE]] defines the
+    records. The <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#redacted-records">Redacted records</a> section of [[BROWSERHIVE-WARC-PROFILE]] defines the
     terms <em>secret</em>, <em>hidden secret</em>, <em>occurrence</em>,
     <em>redacted record</em> and <em>text body</em>, and says what a single WARC
     file does about them. This section says which secrets of a package are
@@ -2290,9 +2448,10 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <li><code>url</code> and the searchable key of each line of the CDXJ index;
           <code>url</code> is the <code>WARC-Target-URI</code> of the record the
           line names, and the key is made from it after replacing;</li>
-      <li><code>url</code> in <a>snapshots</a> and on the entries of
+      <li><code>url</code> in <a>snapshots</a>, in the items of their
+          <code>frames</code>, and on the entries of
           <code>pages/pages.jsonl</code> that list a snapshot, which are the
-          <code>WARC-Target-URI</code> of its <code>resource</code> record and have
+          <code>WARC-Target-URI</code> of a <code>resource</code> record and have
           the value of any secret replaced there;</li>
       <li><code>url</code> on each document line and <code>caller</code> on
           each draw line of <code>random/values.jsonl</code> (see
@@ -2371,7 +2530,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       with <code>***</code>.
     </p>
     <ul>
-      <li>A snapshot, and its URL ([[BROWSERHIVE-WARC-PROFILE]]).</li>
+      <li>A snapshot or a frame snapshot, and its URL
+          ([[BROWSERHIVE-WARC-PROFILE]]).</li>
       <li>The <code>text</code> and <code>title</code> of an entry of
           <code>pages/pages.jsonl</code>, and the <code>title</code> of
           <code>datapackage.json</code> when it is read from the page.</li>
@@ -2929,8 +3089,10 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     other file.
   </p>
   <p class="note" title="Why this is a second directory and not more behaviors">
-    Code under <a>behaviors</a> runs once, on the main frame, after the page has
-    loaded, and can report what it decided. Code under <a>preload</a> runs
+    Code under <a>behaviors</a> runs on the main frame only, after the page has
+    loaded, once on each load of the page (once for each entry of
+    <code>devicePixelRatios</code> in <a>settings</a>), and can report what it
+    decided. Code under <a>preload</a> runs
     before any of the page's own scripts, in every frame including subframes,
     again on every navigation, and has no way to report anything. A reader
     asking &ldquo;what could this code have observed, and how many times&rdquo;
@@ -3558,7 +3720,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       long it took, the trace would be a second place to read what was to be
       left out, and a policy that held for the WARC would not hold for the
       package. The line therefore carries no more than the
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-withheld-requests">record of a withheld request</a>
       does &mdash; that the page asked for the URL, by which method, for what
       kind of resource, and what the producer decided &mdash; and when. The
       order of the lines still shows one thing about the response. When the
@@ -3650,7 +3812,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p class="note" title="The trace and the records of the WARC">
       A line whose <code>outcome</code> is <code>"not-archived"</code> or
       <code>"denied"</code> is a request for which the WARC holds a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-withheld-requests">record of a withheld request</a>
       whose <code>action</code> is <code>no-archive</code> or
       <code>deny</code>, and a line that carries <code>record</code> is an
       exchange whose records the WARC holds. For a request that failed or had
@@ -4154,12 +4316,12 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     package empirically does not hold. It does not assert that the bodies it
     does hold are what the origin served. Nor does <code>complete</code> say that
     no body was dropped for holding the value of a hidden secret: a
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#records-of-bodies-not-kept">record of a body not kept</a>
     whose <code>truncated</code> is <code>secret</code> says that.
   </p>
   <p>
     What a conforming package does assert about the bodies it holds is the
-    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#payloads">Payloads</a> section of
+    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.5.0/#payloads">Payloads</a> section of
     [[BROWSERHIVE-WARC-PROFILE]]: they are the bytes that crossed the wire,
     so a payload digest is a digest of what the origin sent, not of a copy the
     producer re-encoded. The exception is a redacted record whose
@@ -4195,7 +4357,11 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     The values of the secrets in <a>settings</a> are replaced in a snapshot,
     at least as they are and as HTML escapes them, and those of hidden secrets
     in every spelling an occurrence can take; a secret the page transformed
-    otherwise, or a value nobody declared a secret, stays.
+    otherwise, or a value nobody declared a secret, stays. A frame snapshot
+    carries as much of the document of a frame of the page's origin, with the
+    values of secrets replaced in the same way. A frame whose document the
+    rules of <a>document</a> would withhold is not copied, nor is any frame in
+    it (see <a href="#snapshot-frames"></a>).
   </p>
   <p>
     That rule works at the level of the document. The rendered page can hold
