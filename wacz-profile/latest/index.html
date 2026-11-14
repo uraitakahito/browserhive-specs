@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.25.0 exists: this document would
+    // is what makes the row still true once 1.26.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -384,6 +384,7 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "autofetch", "origin": "builtin" }
   ],
+  "preload": [],
   "variables": {},
   "secrets": [],
   "secretArchive": {},
@@ -449,6 +450,7 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "example.com:gallery", "origin": "custom" }
   ],
+  "preload": [],
   "variables": { "query": "gallery" },
   "secrets": ["api_token", "member_id"],
   "secretArchive": { "member_id": "keep" },

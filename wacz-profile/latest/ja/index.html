@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.25.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.26.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -353,6 +353,7 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "autofetch", "origin": "builtin" }
   ],
+  "preload": [],
   "variables": {},
   "secrets": [],
   "secretArchive": {},
@@ -412,6 +413,7 @@
     { "id": "autoscroll", "origin": "builtin" },
     { "id": "example.com:gallery", "origin": "custom" }
   ],
+  "preload": [],
   "variables": { "query": "gallery" },
   "secrets": ["api_token", "member_id"],
   "secretArchive": { "member_id": "keep" },
