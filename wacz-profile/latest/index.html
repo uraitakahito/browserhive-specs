@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.25.0</title>
+<title>BrowserHive WACZ Profile 1.26.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.26.0 exists: this document would
+    // is what makes the row still true once 1.27.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -95,22 +95,20 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.25.0 is not backward compatible with 1.24.0">
-    This version names the WARC files of a package
-    <code>data-NNN.browserhive.warc.gz</code> instead of
-    <code>data-NNN.warc.gz</code>, and it has them conform to BrowserHive WARC
-    Profile 1.4.0 (see <a href="#archive-files"></a>). A package written
-    against 1.24.0 names its WARC files the old way, and they name WARC Profile
-    1.3.0, so it does not conform to 1.25.0. This version also recommends
-    that a package be named <code>&hellip;.browserhive.wacz</code> (see
-    <a href="#package-name"></a>), and says that a reader does not infer
-    conformance from a name.
+  <p class="note" title="1.26.0 is not backward compatible with 1.25.0">
+    This version requires every package to say whether it holds the values
+    that the scripts of the captured page received at random, as
+    <a>random</a> in <a>browserhive:capture</a> (see <a href="#random"></a>),
+    and defines the entries <code>random/values.jsonl</code> and
+    <code>random/recorder.js</code> that hold those values and the code that
+    recorded them (see <a href="#random-directory"></a>). A package written
+    against 1.25.0 has no <a>random</a>, so it does not conform to 1.26.0.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a>,
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/">1.25.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -147,8 +145,9 @@
     removed from the page before recording it, which secrets it was given and
     which of them it kept, which certificates the origins presented, the log
     the capture wrote as it ran, the requests it saw begin, with how each
-    one ended, and whether it kept pictures of the page, with the reason when
-    it kept none. None of these change
+    one ended, whether it kept pictures of the page, with the reason when
+    it kept none, and, when it was asked to record them, the values the
+    page's scripts received at random. None of these change
     what [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
@@ -213,7 +212,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -1029,9 +1028,10 @@
       <a>screenshots</a>), the <code>text</code> and
       <code>title</code> of the entries in <code>pages/pages.jsonl</code>, the
       <code>title</code> of <code>datapackage.json</code>,
-      <code>accessibility/axtree.jsonl</code>, and the lines of
+      <code>accessibility/axtree.jsonl</code>, the lines of
       <code>logs/capture.jsonl</code> whose <code>source</code> is
-      <code>"page"</code> (see <a href="#logs-lines"></a>). They are read from
+      <code>"page"</code> (see <a href="#logs-lines"></a>), and the lines of
+      <code>random/values.jsonl</code> (see <a href="#random-lines"></a>). They are read from
       the rendered page rather than from the network, so nothing in the WARC
       payload bounds them: <strong>a policy that keeps a document's body out of
       the archive does not by itself keep that document's text out.</strong>
@@ -1070,7 +1070,9 @@
       The lines of <code>logs/capture.jsonl</code> whose <code>source</code> is
       <code>"page"</code> are written all through the capture rather than read
       at a stage, and they count as read from the document that
-      <code>document</code> names.
+      <code>document</code> names. So do the lines of
+      <code>random/values.jsonl</code>, which the producer records all through
+      the capture and in every document in which it records.
       The rules below on <code>withheld</code> apply at each stage to the
       document at that stage: a stage whose document they withhold has no
       snapshot, and <a>snapshots</a> records it as <code>"withheld"</code>.
@@ -1129,7 +1131,8 @@
       the reason as <code>textWithheld</code>; if it does, the value
       <em class="rfc2119">MUST</em> equal <code>withheld</code>. A package
       whose document is withheld holds no screenshot of any stage either (see
-      <a>screenshots</a>).
+      <a>screenshots</a>), and neither of the entries under
+      <code>random/</code> (see <a>random</a>).
     </p>
     <p class="note">
       A body dropped at a size limit does not withhold the page-derived records.
@@ -1576,6 +1579,100 @@
       gap reads like a whole one. This member is where the package says which
       of the two it holds, and a reader can tell from
       <code>datapackage.json</code> alone, before it opens the entry.
+    </p>
+  </section>
+
+  <section id="random">
+    <h3><code>random</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MUST</em> contain a
+      member <dfn>random</dfn> that says whether the package holds the values
+      that the scripts of the captured page received at random, and how many
+      lines hold them, or why it holds none. The values themselves are in the
+      entry <code>random/values.jsonl</code> (see
+      <a href="#random-directory"></a>).
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>recorded</code></td><td>boolean</td><td>yes</td>
+            <td><code>true</code> when the package holds the recorded values,
+            <code>false</code> when it holds none.</td></tr>
+        <tr><td><code>documents</code></td><td>number</td><td>when <code>recorded</code> is <code>true</code></td>
+            <td>The number of lines of <code>random/values.jsonl</code> whose
+            <code>kind</code> is <code>"document"</code>: an integer, 0 or
+            more.</td></tr>
+        <tr><td><code>draws</code></td><td>number</td><td>when <code>recorded</code> is <code>true</code></td>
+            <td>The number of lines of that entry whose <code>kind</code> is
+            <code>"draw"</code>: an integer, 0 or more.</td></tr>
+        <tr><td><code>truncated</code></td><td>boolean</td><td>when <code>recorded</code> is <code>true</code></td>
+            <td>Whether the entry may lack draws the producer saw or was sent
+            (below).</td></tr>
+        <tr><td><code>skipped</code></td><td>string</td><td>when <code>recorded</code> is <code>false</code></td>
+            <td>Why the package holds no recorded values (below).</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"random": {
+  "recorded": true,
+  "documents": 2,
+  "draws": 318,
+  "truncated": false
+}</pre>
+    <p>
+      When <code>recorded</code> is <code>true</code>, <code>random</code>
+      <em class="rfc2119">MUST</em> carry <code>documents</code>,
+      <code>draws</code> and <code>truncated</code>, and
+      <em class="rfc2119">MUST NOT</em> carry <code>skipped</code>.
+      <code>documents</code> <em class="rfc2119">MUST</em> be the number of
+      <code>document</code> lines in <code>random/values.jsonl</code>, and
+      <code>draws</code> <em class="rfc2119">MUST</em> be the number of
+      <code>draw</code> lines in it (see <a href="#random-lines"></a>).
+      <code>truncated</code> <em class="rfc2119">MUST</em> be
+      <code>true</code> when the producer left draw lines out of the entry, or
+      stopped recording, because of limits of its own, or when it cannot
+      confirm that every draw the recorder in the page sent it arrived; and
+      <code>false</code> otherwise.
+    </p>
+    <p>
+      When <code>recorded</code> is <code>false</code>, <code>random</code>
+      <em class="rfc2119">MUST</em> carry <code>skipped</code>, and
+      <em class="rfc2119">MUST NOT</em> carry <code>documents</code>,
+      <code>draws</code> or <code>truncated</code> &mdash; for instance
+      <code>{"recorded": false, "skipped": "not-requested"}</code>.
+      <code>skipped</code> <em class="rfc2119">MUST</em> be one of the
+      following, and where more than one of them holds, the one that comes
+      first in this list:
+    </p>
+    <ul>
+      <li><code>"not-requested"</code> &mdash; the capture was not asked to
+          record the values.</li>
+      <li><code>"withheld"</code> &mdash; the document is withheld:
+          <a>document</a> carries <code>withheld</code>. The lines of
+          <code>random/values.jsonl</code> are page-derived records, which a
+          package whose document is withheld does not carry.</li>
+      <li><code>"failed"</code> &mdash; the capture was asked to record the
+          values, and the producer could not.</li>
+    </ul>
+    <p class="note" title="Why the summary is here">
+      A package that holds no entry under <code>random/</code> reads the same
+      whether the capture was not asked to record, the document was withheld
+      or the recording failed, and an entry with a gap reads like a whole
+      one. This member is where the package says which of these it is, and a
+      reader can tell from <code>datapackage.json</code> alone whether the
+      package holds recorded values, before it opens any entry.
+    </p>
+    <p class="note" title="What the values are for">
+      BrowserHive records the values when the capture request asks it to, in
+      its field <code>recordRandom</code>. Its recorder notes each value that
+      the page's scripts receive from <code>Math.random</code>,
+      <code>crypto.getRandomValues</code> and <code>crypto.randomUUID</code>,
+      without changing it, together with the script that made the call. A
+      reader that replays the page can hand the same values back to the same
+      scripts, so that a page that picks what to show at random picks what it
+      picked at capture (see <a href="#random-reading"></a>).
     </p>
   </section>
 
@@ -2191,7 +2288,10 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <li><code>url</code> in <a>snapshots</a> and on the entries of
           <code>pages/pages.jsonl</code> that list a snapshot, which are the
           <code>WARC-Target-URI</code> of its <code>resource</code> record and have
-          the value of any secret replaced there.</li>
+          the value of any secret replaced there;</li>
+      <li><code>url</code> on each document line and <code>caller</code> on
+          each draw line of <code>random/values.jsonl</code> (see
+          <a href="#random-lines"></a>).</li>
     </ul>
     <p>
       A sorted array of these URLs is sorted as it is written, after replacing.
@@ -2219,10 +2319,12 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p>
       Outside the WARC files, nothing else in a package is replaced: the
       <code>source</code> of a behavior or a preload script,
-      <code>behaviors/runtime.js</code>, an entry of <code>variables</code> or
+      <code>behaviors/runtime.js</code>, <code>random/recorder.js</code>, an
+      entry of <code>variables</code> or
       <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>, the
-      other members of a line of <code>trace/events.jsonl</code>, the
-      names of members. A capture that would write an occurrence in any of these
+      other members of a line of <code>trace/events.jsonl</code> or of
+      <code>random/values.jsonl</code>, the names of members. A capture that
+      would write an occurrence in any of these
       <em class="rfc2119">MUST NOT</em> produce a package.
     </p>
     <p>
@@ -2273,6 +2375,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <li>The <code>url</code>, the <code>url</code> of <code>initiator</code>
           and the <code>error</code> of a line of
           <code>trace/events.jsonl</code> (see <a href="#trace-lines"></a>).</li>
+      <li>The <code>url</code> of a document line and the <code>caller</code>
+          of a draw line of <code>random/values.jsonl</code> (see
+          <a href="#random-lines"></a>).</li>
     </ul>
     <p>
       A kept value that is, or holds, the value of a hidden secret is replaced as far
@@ -3598,6 +3703,325 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   </section>
 </section>
 
+<section id="random-directory">
+  <h2>The random directory</h2>
+  <p>
+    [[WACZ]] permits additional files and directories, provided they stay out of
+    <code>archive</code>, <code>indexes</code> and <code>pages</code>, and are
+    listed in the <code>resources</code> section of <code>datapackage.json</code>.
+    A conforming package <em class="rfc2119">MAY</em> use that allowance.
+  </p>
+  <p>
+    When <code>recorded</code> in <a>random</a> is <code>true</code>, a
+    conforming package <em class="rfc2119">MUST</em> contain the entries
+    <code>random/values.jsonl</code>, the values that the scripts of the
+    captured page received at random, and <code>random/recorder.js</code>, the
+    code that recorded them, and it <em class="rfc2119">MUST</em> declare both
+    in <code>resources</code> like any other file. When <code>recorded</code>
+    is <code>false</code>, the package <em class="rfc2119">MUST NOT</em>
+    contain either. In a package written against an earlier version, which did
+    not define these entries, their absence says nothing about the values the
+    page's scripts received.
+  </p>
+  <p>
+    <code>random/values.jsonl</code> <em class="rfc2119">MUST</em> be
+    <a href="https://jsonlines.org/">JSON Lines</a>: one JSON object per line,
+    each object describing either a document in which the producer recorded or
+    one value that a script received. It <em class="rfc2119">MUST</em> be
+    present even when it holds no <code>draw</code> line: a capture that
+    recorded and saw no draw still writes the lines of its documents, and an
+    entry without draws is a claim rather than an omission.
+  </p>
+  <p>
+    <code>random/recorder.js</code> <em class="rfc2119">MUST</em> be the
+    source the producer evaluated in the page to record the values, byte for
+    byte, as <code>behaviors/runtime.js</code> is for the behaviors (see
+    <a href="#behaviors-runtime"></a>).
+  </p>
+  <p>
+    This profile asks nothing of how the entries are stored in the ZIP file.
+    Like the other text entries of a package, they
+    <em class="rfc2119">MAY</em> be compressed there.
+  </p>
+  <p class="note" title="Why the recorder travels with the values">
+    The recorder stands between the page's scripts and the values they
+    receive. A reader weighing the values, or the claim that the producer did
+    not change them, needs the code that did the recording, and that code is
+    gone once the capture is over unless it is written down. Declared in
+    <code>resources</code>, the entries are covered by the package's digests,
+    and by its signature when it has one.
+  </p>
+
+  <section id="random-lines">
+    <h3>Random lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:random/1",
+  "kind": "draw",
+  "document": 0,
+  "seq": 3,
+  "api": "Math.random",
+  "caller": "https://shop.example/assets/hero.js",
+  "value": 0.7135472816238291
+}
+    </pre>
+    <p class="note">
+      Shown across several lines for readability. In the file each object
+      occupies exactly one line.
+    </p>
+    <p>
+      Every line <em class="rfc2119">MUST</em> be a JSON object that contains
+      <code>profile</code> and <code>kind</code>. <code>profile</code> is the
+      rules the line follows: for this version of this specification the value
+      <em class="rfc2119">MUST</em> be <code>"browserhive:random/1"</code>.
+      <code>kind</code> is what the line describes, and
+      <em class="rfc2119">MUST</em> be <code>"document"</code> or
+      <code>"draw"</code>.
+    </p>
+    <p>
+      A line whose <code>kind</code> is <code>"document"</code>, a
+      <strong>document line</strong>, describes one document in which the
+      producer recorded. It <em class="rfc2119">MUST</em> contain
+      <code>document</code>, <code>url</code>, <code>frame</code> and
+      <code>dpr</code>.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>document</code></td><td>number</td><td>yes</td>
+            <td>The number by which the draw lines of the document name it: an
+            integer, 0 or more.</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>yes</td>
+            <td>The URL of the document, as the browser committed it, with the
+            values of secrets replaced (below).</td></tr>
+        <tr><td><code>frame</code></td><td>string</td><td>yes</td>
+            <td><code>"main"</code> for a document in the main frame of the
+            capture, <code>"frame"</code> for a document in a frame.</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>yes</td>
+            <td>The device pixel ratio of the load during which the document
+            was loaded: one of the entries of <code>devicePixelRatios</code>
+            in <a>settings</a>.</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>no</td>
+            <td>The URI in the <code>WARC-Record-ID</code> of the
+            <code>response</code> record of the HTTP or HTTPS exchange that
+            carried the document, without the angle brackets that field puts
+            around it.</td></tr>
+        <tr><td><code>date</code></td><td>string</td><td>no</td>
+            <td>The <code>WARC-Date</code> of that record.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Two document lines <em class="rfc2119">MUST NOT</em> carry the same
+      <code>document</code>, and the document lines
+      <em class="rfc2119">MUST</em> be in ascending order of
+      <code>document</code>. <code>frame</code>
+      <em class="rfc2119">MUST</em> be <code>"main"</code> or
+      <code>"frame"</code>. When the package holds the <code>response</code>
+      record of the HTTP or HTTPS exchange that carried the document, the line
+      <em class="rfc2119">MUST</em> carry <code>record</code>, which
+      <em class="rfc2119">MUST</em> name that record in <code>archive/</code>,
+      and <code>date</code>, which <em class="rfc2119">MUST</em> be the
+      <code>WARC-Date</code> of that record, character for character.
+      Otherwise the line <em class="rfc2119">MUST NOT</em> carry either.
+    </p>
+    <p>
+      A line whose <code>kind</code> is <code>"draw"</code>, a <strong>draw
+      line</strong>, describes one value that a script of the page received. It
+      <em class="rfc2119">MUST</em> contain <code>document</code>,
+      <code>seq</code>, <code>api</code> and <code>caller</code>, and
+      <em class="rfc2119">MAY</em> contain <code>value</code>; a draw line whose
+      <code>api</code> is <code>"crypto.getRandomValues"</code>
+      <em class="rfc2119">MUST</em> also contain <code>bytes</code>, and any
+      other <em class="rfc2119">MUST NOT</em>.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>document</code></td><td>number</td><td>yes</td>
+            <td>The <code>document</code> of the document line of the document
+            in which the script made the call.</td></tr>
+        <tr><td><code>seq</code></td><td>number</td><td>yes</td>
+            <td>Where the line stands among the draw lines of its document: 0
+            for the first, and one more for each that follows. An integer, 0
+            or more.</td></tr>
+        <tr><td><code>api</code></td><td>string</td><td>yes</td>
+            <td>The function the script called: <code>"Math.random"</code>,
+            <code>"crypto.getRandomValues"</code> or
+            <code>"crypto.randomUUID"</code>.</td></tr>
+        <tr><td><code>caller</code></td><td>string</td><td>yes</td>
+            <td>The URL of the script that made the call, as the browser
+            reported it in the call stack, with the values of secrets replaced
+            (below); the empty string when the stack names no such
+            URL.</td></tr>
+        <tr><td><code>bytes</code></td><td>number</td><td>when <code>api</code> is <code>"crypto.getRandomValues"</code></td>
+            <td>The <code>byteLength</code> of the typed array the script
+            passed: an integer, 0 or more.</td></tr>
+        <tr><td><code>value</code></td><td>number or string</td><td>no</td>
+            <td>The value the script received (below).</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The <code>document</code> of a draw line <em class="rfc2119">MUST</em>
+      equal the <code>document</code> of a document line that appears earlier
+      in the entry. <code>seq</code> <em class="rfc2119">MUST</em> be 0 on the
+      first draw line of a document, and <em class="rfc2119">MUST</em> be one
+      more than on the draw line of the same document before it on every
+      other. Within one document the draw lines
+      <em class="rfc2119">MUST</em> be in the order in which the recorder saw
+      the calls. Lines of different documents <em class="rfc2119">MAY</em>
+      interleave: a line of one document can stand between two lines of
+      another.
+    </p>
+    <p>
+      <code>api</code> <em class="rfc2119">MUST</em> be one of
+      <code>"Math.random"</code>, <code>"crypto.getRandomValues"</code> and
+      <code>"crypto.randomUUID"</code>. <code>caller</code>
+      <em class="rfc2119">MUST</em> be the URL of the script that made the
+      call as the browser reported it in the call stack: that of the innermost
+      frame of the stack, the one nearest the call, that has an HTTP or HTTPS
+      URL, not counting the frames of the recorder itself. When no frame has
+      one, <code>caller</code> <em class="rfc2119">MUST</em> be the empty
+      string.
+    </p>
+    <p>
+      <code>value</code>, when present, <em class="rfc2119">MUST</em> be the
+      value the script received, unchanged, written as follows:
+    </p>
+    <ul>
+      <li>For <code>"Math.random"</code>, a number, at least 0 and less than
+          1.</li>
+      <li>For <code>"crypto.randomUUID"</code>, a string: the UUID in its
+          canonical form, 32 lowercase hexadecimal digits in groups of 8, 4,
+          4, 4 and 12 separated by hyphens.</li>
+      <li>For <code>"crypto.getRandomValues"</code>, a string: the bytes of
+          the typed array the script passed, as the call filled it, exactly
+          <code>bytes</code> of them, in the base64 encoding of
+          <a href="https://www.rfc-editor.org/rfc/rfc4648#section-4">RFC 4648, section 4</a>,
+          with its standard alphabet and padding.</li>
+    </ul>
+    <p>
+      The producer <em class="rfc2119">MUST NOT</em> change the values that the
+      page's scripts receive. A producer <em class="rfc2119">MAY</em> leave
+      <code>value</code> out of a draw line when it chooses not to keep the
+      value: for example the values of the <code>crypto</code> functions in a
+      capture that was given secrets, or the bytes of a
+      <code>crypto.getRandomValues</code> array longer than a limit of its
+      own. The line then still records that the call was made, by which
+      script, and where it stands among the calls of its document. A line
+      without <code>value</code> is not a line left out, and
+      <code>truncated</code> says nothing of it.
+    </p>
+    <pre class="json">
+{"profile":"browserhive:random/1","kind":"document","document":0,"url":"https://shop.example/","frame":"main","dpr":1,"record":"urn:uuid:b2e4c6a8-1d3f-4a5b-8c7d-9e0f1a2b3c4d","date":"2026-11-14T02:10:00.757Z"}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":0,"api":"Math.random","caller":"https://shop.example/assets/hero.js","value":0.25390625}
+{"profile":"browserhive:random/1","kind":"document","document":1,"url":"https://ads.example/slot","frame":"frame","dpr":1,"record":"urn:uuid:7d0e5a3c-6b1f-4f2e-8a9d-2c3b4e5f6a7b","date":"2026-11-14T02:10:01.204Z"}
+{"profile":"browserhive:random/1","kind":"draw","document":1,"seq":0,"api":"crypto.randomUUID","caller":"https://ads.example/slot.js","value":"3f2a9c1e-7b4d-4e8a-9f6c-0d1e2b3c4a5f"}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":1,"api":"crypto.getRandomValues","caller":"https://shop.example/assets/hero.js","bytes":4,"value":"q83vEg=="}
+{"profile":"browserhive:random/1","kind":"draw","document":0,"seq":2,"api":"Math.random","caller":"","value":0.8125}</pre>
+    <p>
+      In this excerpt the producer recorded in two documents: the page itself,
+      and a document in a frame from another site, whose lines interleave with
+      the page's. The script <code>hero.js</code> drew a number and then four
+      bytes, and the last value was drawn by code for which the browser
+      reported no HTTP or HTTPS URL in the stack.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MAY</em> leave draw lines out, or stop
+      recording, to keep the entry within limits of its own. This profile sets
+      no number for those limits. One that does
+      <em class="rfc2119">MUST</em> set <code>truncated</code> in
+      <a>random</a> to <code>true</code>. Nothing in the entry marks where lines
+      were left out.
+    </p>
+    <p>
+      The <code>url</code> of a document line and the <code>caller</code> of a
+      draw line <em class="rfc2119">MUST NOT</em> hold an occurrence of the
+      value of a hidden secret, nor the value of a kept secret as it is,
+      whatever its length (see <a href="#secret-values"></a>). The producer
+      replaces in them as it does in the URLs that
+      <a href="#hidden-secret-values"></a> lists, so that what it writes stays
+      a URL, as <code>WARC-Target-URI</code> stays a URI: a reader can look a
+      caller up among the URLs of the archived records.
+    </p>
+    <p class="note" title="Why a kept secret is replaced here as well">
+      As with the trace, the lines are read apart from the records of the WARC,
+      and a value left in them would go wherever they go. This has a cost: the
+      <code>caller</code> of a script whose URL held a kept secret is not the
+      <code>WARC-Target-URI</code> of the record of that script, nor is the
+      <code>url</code> of such a document that of the record its
+      <code>record</code> names. The URL as it was sent is in that record.
+    </p>
+    <p class="note" title="Page-derived records">
+      The lines come from the page. The recorder runs among the page's scripts
+      and hands the producer what they received and the stack they called
+      from, so the lines are among the page-derived records of
+      <a>document</a>: a package whose document is withheld holds none of them,
+      and <a>random</a> says so.
+    </p>
+  </section>
+
+  <section id="random-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> execute
+      <code>random/recorder.js</code>. As with <a>behaviors</a> and
+      <a>preload</a>, it is a record of what the producer ran, not part of the
+      archived page.
+    </p>
+    <p>
+      A reader that replays a document <em class="rfc2119">MAY</em> return
+      recorded values to the page's scripts. One that does
+      <em class="rfc2119">SHOULD</em>, for the n-th call (counting from 1)
+      that a script whose URL is S makes to the function A in a replayed
+      document that the document line D describes, return the
+      <code>value</code> of the n-th draw line of D whose <code>caller</code> is
+      S and whose <code>api</code> is A. When there is no such line, when the
+      line has no <code>value</code>, or when the value does not fit the call
+      &mdash; a <code>crypto.getRandomValues</code> call with an array of
+      another length than <code>bytes</code>, for instance &mdash; the reader
+      <em class="rfc2119">MUST NOT</em> present a value of its own as a
+      recorded value.
+    </p>
+    <p class="note" title="Which document line">
+      Which document line describes a replayed document is the reader's to
+      decide; <code>url</code>, <code>frame</code>, <code>dpr</code> and, when
+      present, <code>record</code> and <code>date</code> are what a line
+      offers for it. A page loaded more than once has a document line for each
+      load. When <code>truncated</code> in <a>random</a> is <code>true</code>,
+      a line left out moves the lines after it, and the n-th line need not
+      record the n-th call.
+    </p>
+    <p>
+      A reader <em class="rfc2119">MUST NOT</em> take <code>caller</code> as a
+      statement of the producer. The browser reports the script it found in
+      the call stack under the URL the captured page gave that script, and a
+      page can give its scripts any name it likes. The producer passes on what
+      the browser said, and the page chose the words.
+    </p>
+    <p>
+      The lines in the package are the ones its digests cover, and its
+      signature when it has one. The same lines shown or reported anywhere else
+      are copies of them, and nothing binds a copy to the package. A reader
+      that relies on a line reads it from the package.
+    </p>
+    <p class="note" title="Values into the page">
+      This is the first section of this specification that permits a reader
+      to pass something from a package into the page's scripts. The sections
+      on <a href="#behaviors-reading">behaviors</a> and
+      <a href="#preload-reading">preload</a> forbid a reader to run the code a
+      package holds, and this one forbids it to run the recorder. What it
+      permits is narrower: values, handed back where the page's own scripts
+      ask for random ones, in place of values the reader would otherwise make
+      up. A replay that does so picks what the capture picked; one that does
+      not still replays the package, picking afresh.
+    </p>
+  </section>
+</section>
+
 <section id="replay-constraints">
   <h2>Constraints inherited from replay</h2>
   <p>
@@ -3813,6 +4237,24 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     captured page's account of itself, not the producer's, and only the lines
     inside the package are covered by its digests and its signature: the same
     lines shown anywhere else are copies (see <a href="#trace-reading"></a>).
+  </p>
+  <p>
+    When a capture was asked to record them, <code>random/values.jsonl</code>
+    carries the values the page's scripts received from
+    <code>Math.random</code>, <code>crypto.getRandomValues</code> and
+    <code>crypto.randomUUID</code>. A page draws such values to decide what
+    to show, and also for its security: identifiers of a session or a device,
+    nonces, keys it makes in the page. The producer cannot tell one use from
+    another, and anyone holding the package can read every value it kept. A
+    producer that is given secrets should therefore avoid keeping the values
+    of the <code>crypto</code> functions; a line without <code>value</code>
+    still records the call (see <a href="#random-lines"></a>). The recorder
+    stands where the page's scripts call these functions, so what it records
+    is what those scripts let it see, and the <code>caller</code> of a line is
+    the name the page gave its script (see <a href="#random-reading"></a>).
+    As with the log, the rule of <a>document</a> looks at the document that
+    <a>document</a> names: when the page moved on from a withheld document to
+    one that was kept, the lines of the first document stay.
   </p>
   <p>
     <a>storage</a> exposes nothing the package did not already hold. It records
