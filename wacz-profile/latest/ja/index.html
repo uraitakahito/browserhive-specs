@@ -1434,8 +1434,8 @@
             <td>そのエントリの、<code>kind</code> が <code>"draw"</code> の行の数。
             0 以上の整数。</td></tr>
         <tr><td><code>truncated</code></td><td>boolean</td><td><code>recorded</code> が <code>true</code> のとき</td>
-            <td>producer が見た、または送られた値の行が、エントリに欠けていることがあるかどうか
-            （下を参照）。</td></tr>
+            <td>producer が記録した文書の行や、見た、または送られた値の行が、エントリに欠けている
+            ことがあるかどうか（下を参照）。</td></tr>
         <tr><td><code>skipped</code></td><td>string</td><td><code>recorded</code> が <code>false</code> のとき</td>
             <td>パッケージが記録した値を持たない理由（下を参照）。</td></tr>
       </tbody>
@@ -1456,8 +1456,9 @@
       （<em class="rfc2119">MUST</em>）、<code>draws</code> はその <code>draw</code> の行の数で
       なければなりません（<em class="rfc2119">MUST</em>）（<a href="#random-lines"></a> を参照）。
       <code>truncated</code> は、producer が自分の決めた上限のために、値の行をエントリに残さなかった
-      か記録を止めたとき、<a>snapshots</a> が <code>"withheld"</code> と記録する時点の文書の行を
-      残さなかったとき（<a href="#random-lines"></a> を参照）、または、ページの中の recorder が
+      か記録を止めたとき、<a>document</a> の <code>withheld</code> の決まりが伏せる文書の行や、
+      <a>snapshots</a> が <code>"withheld"</code> と記録するために文書の行を残さなかったとき
+      （<a href="#random-lines"></a> を参照）、または、ページの中の recorder が
       送った値が全部届いたことを確かめられないときに <code>true</code> で、そうでなければ
       <code>false</code> でなければなりません（<em class="rfc2119">MUST</em>）。
     </p>
@@ -3424,7 +3425,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
         <tr><td><code>document</code></td><td>number</td><td>はい</td>
             <td>その文書の値の行が文書を名指す番号。0 以上の整数。</td></tr>
         <tr><td><code>url</code></td><td>string</td><td>はい</td>
-            <td>browser が確定させた、その文書の URL から fragment を除いた物。シークレットの値は
+            <td>browser が確定させた、その文書の URL から fragment を除いたもの。シークレットの値は
             置き換えてあります（下を参照）。</td></tr>
         <tr><td><code>frame</code></td><td>string</td><td>はい</td>
             <td>取り込みの主フレームの文書なら <code>"main"</code>、フレームの中の文書なら
@@ -3454,8 +3455,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       置き換えたことを除いて、<code>url</code> で<em class="rfc2119">なければなりません</em>（MUST）。
       2 つの文書の行が同じ <code>record</code> を持っ<em class="rfc2119">てもよい</em>（MAY）。
       文書の URL が <code>data:</code> URL のとき、<code>url</code> はそのデータを持っては
-      <em class="rfc2119">なりません</em>（MUST NOT）。producer は、その URL をメディア型を終える
-      コンマまでしか書きません。
+      <em class="rfc2119">なりません</em>（MUST NOT）。producer はその URL を最初のコンマまで
+      （コンマを含めて）書き、その後には何も書きません。
     </p>
     <p>
       <code>kind</code> が <code>"draw"</code> の行（<strong>値の行</strong>）は、取り込んだページの
@@ -3480,9 +3481,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
             <td>スクリプトが呼んだ関数: <code>"Math.random"</code>・
             <code>"crypto.getRandomValues"</code>・<code>"crypto.randomUUID"</code>。</td></tr>
         <tr><td><code>caller</code></td><td>string</td><td>はい</td>
-            <td>呼び出しをしたスクリプトの URL。browser が call stack で伝えたとおりで、
-            シークレットの値は置き換えてあります（下を参照）。stack がそうした URL を名指さない
-            ときは空の文字列。</td></tr>
+            <td>呼び出しをしたスクリプトの、browser が call stack で伝えた URL から fragment を
+            除いたもの。シークレットの値は置き換えてあります（下を参照）。stack がそうした URL を
+            名指さないときは空の文字列。</td></tr>
         <tr><td><code>bytes</code></td><td>number</td><td><code>api</code> が <code>"crypto.getRandomValues"</code> のとき</td>
             <td>スクリプトが渡した typed array の <code>byteLength</code>。0 以上の整数。</td></tr>
         <tr><td><code>value</code></td><td>number か string</td><td>いいえ</td>
@@ -3505,7 +3506,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <code>api</code> は <code>"Math.random"</code>・<code>"crypto.getRandomValues"</code>・
       <code>"crypto.randomUUID"</code> のどれかで<em class="rfc2119">なければなりません</em>
       （MUST）。<code>caller</code> は、呼び出しをしたスクリプトの、browser が call stack で伝えた
-      URL で<em class="rfc2119">なければなりません</em>（MUST）: recorder 自身の frame を数えずに、
+      URL から fragment を除いたもので<em class="rfc2119">なければなりません</em>（MUST）:
+      recorder 自身の frame を数えずに、
       stack の中で HTTP か HTTPS の URL を持ついちばん内側の frame —— 呼び出しにいちばん近い
       frame —— のものです。そうした frame が無いとき、<code>caller</code> は空の文字列で
       <em class="rfc2119">なければなりません</em>（MUST）。
@@ -3553,16 +3555,21 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       止めたりし<em class="rfc2119">てもよい</em>（MAY）。このプロファイルは、その上限の数を
       定めません。そうする producer は、<a>random</a> の <code>truncated</code> を
       <code>true</code> にし<em class="rfc2119">なければなりません</em>（MUST）。値の行を残さない
-      producer は、同じ文書の、同じ <code>caller</code> と同じ <code>api</code> を持つ、それより後の
-      値の行をすべて残さずにおか<em class="rfc2119">なければなりません</em>（MUST）。そうすれば、
-      ある caller と関数の n 番目の行は、いつも、producer が見た n 回目の呼び出しです。エントリの
-      中には、どこで行を残さなかったかの印はありません。
+      producer、または recorder が送った値が届かなかったと知った producer は、同じ文書の、同じ
+      <code>caller</code> と同じ <code>api</code> を持つ、それより後の値の行をすべて残さずにおか
+      <em class="rfc2119">なければなりません</em>（MUST）。そうすれば、ある caller と関数の
+      n 番目の行は、recorder が見たその n 回目の呼び出しです。エントリの中には、どこで行を
+      残さなかったかの印はありません。
     </p>
     <p>
-      <a>snapshots</a> がある時点を <code>"withheld"</code> と記録し、<a>document</a> が
-      <code>withheld</code> を持たないとき、producer はその時点の主フレームの文書の行を残さなく
-      <em class="rfc2119">てもよく</em>（MAY）、そうする producer は <a>random</a> の
-      <code>truncated</code> を <code>true</code> にし<em class="rfc2119">なければなりません</em>（MUST）。
+      <a>document</a> が <code>withheld</code> を持たないとき、producer は、<a>document</a> が
+      名指す文書であったなら <code>withheld</code> の決まりがその記録を伏せる主フレームの文書の行と、
+      そのフレームの中の文書の行を残さなく<em class="rfc2119">てもよく</em>（MAY）、
+      <a>snapshots</a> が、どの文書か分からないためにある時点を <code>"withheld"</code> と記録した
+      ときは、<a>document</a> が名指す文書を除く主フレームのすべての文書の行を残さなく
+      <em class="rfc2119">てもよい</em>（MAY）。どちらかの理由で行を残さない producer は、
+      <a>random</a> の <code>truncated</code> を <code>true</code> にし
+      <em class="rfc2119">なければなりません</em>（MUST）。
     </p>
     <p>
       文書の行の <code>url</code> と値の行の <code>caller</code> は、隠すシークレットの値の出現も、
@@ -3597,11 +3604,15 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p>
       文書を replay する読み手は、記録した値をページのスクリプトに返し
       <em class="rfc2119">てもよい</em>（MAY）。そうする読み手は、文書の行 D が述べる、replay した
-      文書の中での関数 A への呼び出しのうち、スクリプト S を <code>caller</code> と同じ決まりで ——
-      パッケージがそのスクリプトを持つ URL で、それを持ついちばん内側の frame のもの、無ければ
-      空の文字列 —— 求めたものの n 回目（1 から数える）に、<code>caller</code> が S で
-      <code>api</code> が A の、D の n 番目の値の行の <code>value</code> を返す
-      <em class="rfc2119">べきです</em>（SHOULD）。例外を投げた呼び出しは数えず、producer は
+      文書の中で、スクリプト S が関数 A を呼んだ n 回目（1 から数える）の呼び出しに、
+      <code>caller</code> が S で <code>api</code> が A の、D の n 番目の値の行の
+      <code>value</code> を返す<em class="rfc2119">べきです</em>（SHOULD）。読み手は S を、producer
+      が <code>caller</code> を求めたのと同じく求めます: 自分の frame を数えずに、stack の中で
+      HTTP か HTTPS の URL を持ついちばん内側の frame の、取り込んだページがそのスクリプトに付けた
+      URL（アーカイブしたレコードから出したスクリプトなら、そのレコードの URL）から fragment を
+      除いたもので、そうした frame が無ければ空の文字列です。URL が残すシークレットを持っていた
+      スクリプトはどの <code>caller</code> にも当たらず、読み手はその呼び出しには自分の値を
+      返します。例外を投げた呼び出しは数えず、producer は
       それについて値の行を書きません。そうした行が無いとき、行が <code>value</code> を持たない
       とき、あるいは値が呼び出しに合わないとき —— たとえば <code>bytes</code> と別の長さの配列での
       <code>crypto.getRandomValues</code> の呼び出し —— 読み手は自分の値を返し
@@ -3611,16 +3622,20 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p class="note" title="どの文書の行か">
       replay した文書をどの文書の行が述べるかは、読み手が決めます。そのために行が差し出すのは、
       <code>url</code>・<code>frame</code>・<code>dpr</code> と、在るときは <code>record</code> と
-      <code>date</code> です。2 度以上読み込んだページは、読み込みごとに文書の行を持ちます。
-      <a>random</a> の <code>truncated</code> が <code>true</code> のときは、ある caller と関数の
-      行が呼び出しより先に尽きることがあり、文書が行を 1 つも持たないこともあります
+      <code>date</code> です。<code>url</code> は fragment を持ちません。<a>document</a> の
+      <code>url</code> や、replay した文書の URL は持つことがあります。2 度以上読み込んだページは、
+      読み込みごとに文書の行を持ちます。<a>random</a> の <code>truncated</code> が
+      <code>true</code> のときは、ある caller と関数の行が呼び出しより先に尽きることがあり、文書が
+      行を 1 つも持たないこともあり、また、値が全部届いたと producer が確かめられなかったときは、
+      行が、その位置が言うより後の呼び出しを記録していることもあります
       （<a href="#random-lines"></a> を参照）。
     </p>
     <p class="note" title="producer 自身のコード">
       ページの中の producer 自身のコード —— <a>behaviors</a> と <a>preload</a> のスクリプト ——
       は、ページのコードと同じように値を引き、その呼び出しは、stack が与えるとおりの
       <code>caller</code> で記録されます。そのコードは replay では走らないので、その caller に
-      ついて読み手が数える呼び出しは、行より遅れることがあります。
+      ついて読み手が数える呼び出しは、行より遅れることがあり、そうなるとその後の呼び出しは、
+      別の呼び出しのために記録した値を受け取ります。
     </p>
     <p class="note" title="エントリが述べないこと">
       ある文書の行を持たないエントリや、<code>truncated</code> が false のエントリは、ページが
@@ -3847,8 +3862,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <code>caller</code> は、取り込んだページが自分のスクリプトに付けた名前です
     （<a href="#random-reading"></a> を参照）。ログと同じく、<a>document</a> の決まりが見るのは
     <a>document</a> が名指す文書です: ページが伏せられた文書から残された文書へ移ったときは、
-    はじめの文書の行が残ります。ただし、<a>snapshots</a> がある時点を <code>"withheld"</code> と
-    記録したときはいつでも producer はその行を残さなくてもよく、そうした producer は
+    はじめの文書の行が残ります。ただし、<a>document</a> が名指す文書であったならその決まりが
+    伏せる文書の行や、どの文書か分からないために <a>snapshots</a> がある時点を
+    <code>"withheld"</code> と記録したときの行は、producer が残さなくてもよく、そうした producer は
     <code>truncated</code> を <code>true</code> にします（<a href="#random-lines"></a> を参照）。
   </p>
   <p>

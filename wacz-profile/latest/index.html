@@ -1608,8 +1608,8 @@
             <td>The number of lines of that entry whose <code>kind</code> is
             <code>"draw"</code>: an integer, 0 or more.</td></tr>
         <tr><td><code>truncated</code></td><td>boolean</td><td>when <code>recorded</code> is <code>true</code></td>
-            <td>Whether the entry may lack draws the producer saw or was sent
-            (below).</td></tr>
+            <td>Whether the entry may lack lines of documents the producer
+            recorded in, or draws it saw or was sent (below).</td></tr>
         <tr><td><code>skipped</code></td><td>string</td><td>when <code>recorded</code> is <code>false</code></td>
             <td>Why the package holds no recorded values (below).</td></tr>
       </tbody>
@@ -1633,8 +1633,10 @@
       <code>truncated</code> <em class="rfc2119">MUST</em> be
       <code>true</code> when the producer left draw lines out of the entry, or
       stopped recording, because of limits of its own, when it left out the
-      lines of a document at a stage that <a>snapshots</a> records as
-      <code>"withheld"</code> (see <a href="#random-lines"></a>), or when it
+      lines of documents that the rules of <a>document</a> on
+      <code>withheld</code> would withhold, or because <a>snapshots</a>
+      records a stage as <code>"withheld"</code> (see
+      <a href="#random-lines"></a>), or when it
       cannot confirm that every draw the recorder in the page sent it arrived;
       and
       <code>false</code> otherwise.
@@ -3838,7 +3840,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <em class="rfc2119">MAY</em> carry the same <code>record</code>. When the
       document's URL is a <code>data:</code> URL, <code>url</code>
       <em class="rfc2119">MUST NOT</em> hold its data: the producer writes it
-      no further than the comma that ends its media type.
+      up to and including its first comma, and nothing after it.
     </p>
     <p>
       A line whose <code>kind</code> is <code>"draw"</code>, a <strong>draw
@@ -3868,9 +3870,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
             <code>"crypto.randomUUID"</code>.</td></tr>
         <tr><td><code>caller</code></td><td>string</td><td>yes</td>
             <td>The URL of the script that made the call, as the browser
-            reported it in the call stack, with the values of secrets replaced
-            (below); the empty string when the stack names no such
-            URL.</td></tr>
+            reported it in the call stack, without its fragment, and with the
+            values of secrets replaced (below); the empty string when the stack
+            names no such URL.</td></tr>
         <tr><td><code>bytes</code></td><td>number</td><td>when <code>api</code> is <code>"crypto.getRandomValues"</code></td>
             <td>The <code>byteLength</code> of the typed array the script
             passed: an integer, 0 or more.</td></tr>
@@ -3897,7 +3899,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <code>"Math.random"</code>, <code>"crypto.getRandomValues"</code> and
       <code>"crypto.randomUUID"</code>. <code>caller</code>
       <em class="rfc2119">MUST</em> be the URL of the script that made the
-      call as the browser reported it in the call stack: that of the innermost
+      call as the browser reported it in the call stack, without its
+      fragment: that of the innermost
       frame of the stack, the one nearest the call, that has an HTTP or HTTPS
       URL, not counting the frames of the recorder itself. When no frame has
       one, <code>caller</code> <em class="rfc2119">MUST</em> be the empty
@@ -3954,17 +3957,23 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       no number for those limits. One that does
       <em class="rfc2119">MUST</em> set <code>truncated</code> in
       <a>random</a> to <code>true</code>. A producer that leaves a draw line
-      out <em class="rfc2119">MUST</em> leave out every later draw line of the
+      out, or learns that a draw the recorder sent did not arrive,
+      <em class="rfc2119">MUST</em> leave out every later draw line of the
       same document that has the same <code>caller</code> and the same
-      <code>api</code>, so that the n-th line of a caller and a function is
-      always the n-th call it saw. Nothing in the entry marks where lines were
-      left out.
+      <code>api</code>, so that the n-th line of a caller and a function
+      records the n-th such call the recorder saw. Nothing in the entry marks
+      where lines were left out.
     </p>
     <p>
-      When <a>snapshots</a> records a stage as <code>"withheld"</code> and
-      <a>document</a> carries no <code>withheld</code>, the producer
-      <em class="rfc2119">MAY</em> leave out the lines of the document in the
-      main frame at that stage, and one that does
+      When <a>document</a> carries no <code>withheld</code>, the producer
+      <em class="rfc2119">MAY</em> leave out the lines of a document in the
+      main frame that the rules of <a>document</a> on <code>withheld</code>
+      would withhold were it the document <a>document</a> names, and the lines
+      of the documents in its frames; when <a>snapshots</a> records a stage as
+      <code>"withheld"</code> because the producer cannot tell which document
+      it was, it <em class="rfc2119">MAY</em> leave out the lines of every
+      document in the main frame other than the one <a>document</a> names.
+      One that leaves lines out for either reason
       <em class="rfc2119">MUST</em> set <code>truncated</code> in
       <a>random</a> to <code>true</code>.
     </p>
@@ -4006,13 +4015,18 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p>
       A reader that replays a document <em class="rfc2119">MAY</em> return
       recorded values to the page's scripts. One that does
-      <em class="rfc2119">SHOULD</em>, for the n-th call (counting from 1) to
-      the function A in a replayed document that the document line D
-      describes, among the calls whose script S is found as
-      <code>caller</code> is &mdash; the URL under which the package holds the
-      script, of the innermost frame that has one, or the empty string &mdash;
-      return the <code>value</code> of the n-th draw line of D whose
-      <code>caller</code> is S and whose <code>api</code> is A. A call that
+      <em class="rfc2119">SHOULD</em>, for the n-th call (counting from 1)
+      that the script S makes to the function A in a replayed document that
+      the document line D describes, return the <code>value</code> of the
+      n-th draw line of D whose <code>caller</code> is S and whose
+      <code>api</code> is A. The reader finds S as the producer found
+      <code>caller</code>: the innermost frame of the stack, not counting the
+      reader's own frames, that has an HTTP or HTTPS URL, taken as the URL the
+      captured page gave the script (for a script the reader served from an
+      archived record, that record's URL), without its fragment, or the empty
+      string when no frame has one. A script whose URL held a kept secret
+      matches no <code>caller</code>, and the reader returns its own values
+      for its calls. A call that
       throws is not counted, and the producer writes no draw line for one.
       When there is no such line, when the line has no <code>value</code>, or
       when the value does not fit the call &mdash; a
@@ -4026,17 +4040,22 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       Which document line describes a replayed document is the reader's to
       decide; <code>url</code>, <code>frame</code>, <code>dpr</code> and, when
       present, <code>record</code> and <code>date</code> are what a line
-      offers for it. A page loaded more than once has a document line for each
-      load. When <code>truncated</code> in <a>random</a> is <code>true</code>,
-      the lines of a caller and a function can end before the calls do, and a
-      document can have no lines at all (see <a href="#random-lines"></a>).
+      offers for it. <code>url</code> has no fragment, though <code>url</code>
+      in <a>document</a> and the URL of a replayed document can have one. A
+      page loaded more than once has a document line for each load. When
+      <code>truncated</code> in <a>random</a> is <code>true</code>, the lines
+      of a caller and a function can end before the calls do, a document can
+      have no lines at all, and, when the producer could not confirm that
+      every draw arrived, a line can record a later call than its place says
+      (see <a href="#random-lines"></a>).
     </p>
     <p class="note" title="The producer's own code">
       The producer's own code in the page &mdash; the <a>behaviors</a> and the
       scripts of <a>preload</a> &mdash; draws like the page's, and its calls
       are recorded with whatever <code>caller</code> the stack gives. That code
       does not run in a replay, so a reader's count of calls for that caller
-      can fall behind the lines.
+      can fall behind the lines, and its later calls then receive values
+      recorded for other calls.
     </p>
     <p class="note" title="What an entry does not say">
       An entry without lines of a document, or with <code>truncated</code>
@@ -4307,10 +4326,11 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     As with the log, the rule of <a>document</a> looks at the document that
     <a>document</a> names: when the page moved on from a withheld document to
     one that was kept, the lines of the first document stay, unless the
-    producer leaves them out, as it may whenever <a>snapshots</a> records a
-    stage as <code>"withheld"</code>; one that does sets
-    <code>truncated</code> to <code>true</code> (see
-    <a href="#random-lines"></a>).
+    producer leaves them out, as it may for a document that the rule would
+    withhold were it the one <a>document</a> names, or when <a>snapshots</a>
+    records a stage as <code>"withheld"</code> because the producer cannot
+    tell which document it was; one that does sets <code>truncated</code> to
+    <code>true</code> (see <a href="#random-lines"></a>).
   </p>
   <p>
     <a>storage</a> exposes nothing the package did not already hold. It records

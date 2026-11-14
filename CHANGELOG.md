@@ -75,8 +75,9 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 - **`random`（`browserhive:capture` の新しい必須の member）:** `recorded`（MUST）。`true` なら `documents`（文書の行の数）・
   `draws`（値の行の数）・`truncated` を持ち、`skipped` を持たない（MUST・MUST NOT）。`truncated` は、producer が
-  自分の上限で値の行を残さなかったか記録を止めたとき、`snapshots` が `"withheld"` と記録する時点の文書の行を残さなかった
-  とき、またはページの中の recorder が送った値が全部届いたと確かめられないときに `true`（MUST）。`false` なら `skipped`
+  自分の上限で値の行を残さなかったか記録を止めたとき、`document` の `withheld` の決まりが伏せる文書の行や、`snapshots` が
+  `"withheld"` と記録するために文書の行を残さなかったとき、またはページの中の recorder が送った値が全部届いたと確かめられない
+  ときに `true`（MUST）。表の説明も、文書の行が欠けうることを含めた。`false` なら `skipped`
   だけを持つ（MUST・MUST NOT）。`skipped` は `not-requested`・`withheld`（文書が伏せられた）・`failed` のどれかで、
   いくつも当てはまるときは、この並びで先に来るもの（MUST）。
   `datapackage.json` だけで、パッケージが記録した値を持つかどうかを見分けられる。
@@ -89,10 +90,11 @@ BrowserHive WACZ Profile の版ごとの変更。
     文書を運んだ交信の `response` レコードをパッケージが持つときは、それを名指す `record` と、その `WARC-Date` と
     1 文字ずつ同じ `date` を持ち、そうでなければどちらも持たない（MUST・MUST NOT）。そのレコードの `WARC-Target-URI` は、
     `url` で残すシークレットの値を置き換えたことを除いて `url`（MUST）。2 つの文書の行が同じ `record` を持ってよい（MAY）。
-    `data:` URL の `url` はデータを持たず、メディア型を終えるコンマまで（MUST NOT）。
+    `data:` URL の `url` はデータを持たない（MUST NOT）。最初のコンマまで（コンマを含めて）書き、その後は書かない。
   - 値の行: `document`（それより前の文書の行のもの）・`seq`（文書ごとに 0 から 1 ずつ）・`api`（`"Math.random"`・
     `"crypto.getRandomValues"`・`"crypto.randomUUID"`）・`caller` を持つ（MUST）。`caller` は call stack の中で
-    HTTP か HTTPS の URL を持ついちばん内側の frame の URL（recorder 自身の frame を除く）で、無ければ空の文字列（MUST）。
+    HTTP か HTTPS の URL を持ついちばん内側の frame の URL（recorder 自身の frame を除く）から fragment を除いたもので、
+    無ければ空の文字列（MUST）。
     `crypto.getRandomValues` の行だけが `bytes`（typed array の `byteLength`）を持つ（MUST・MUST NOT）。
   - `value` は、在るなら、スクリプトが受け取った値を変えずに（MUST）: `Math.random` は 0 以上 1 未満の number（読み戻すと同じ
     IEEE 754 の double）、
@@ -102,23 +104,30 @@ BrowserHive WACZ Profile の版ごとの変更。
   - producer は、ページのスクリプトが受け取る値を変えない（MUST NOT）。1 つの文書の値の行は recorder が呼び出しを見た順
     （MUST）。例外を投げた呼び出しには値の行を書かない（MUST NOT）。別々の文書の行は混ざってよい（MAY）。
   - 上限で値の行を残さなくても、記録を止めてもよく（MAY。数は定めない）、そうしたら `truncated` を `true` に（MUST）。
-    値の行を残さないなら、同じ文書の、同じ `caller` と `api` の後の値の行も全部残さない（MUST）。ある caller と関数の
-    n 番目の行は、いつも n 回目の呼び出し。
-  - `snapshots` がある時点を `"withheld"` と記録し、`document` が `withheld` を持たないとき、その時点の主フレームの
-    文書の行を残さなくてもよく（MAY）、そうしたら `truncated` を `true` に（MUST）。
+    値の行を残さないか、recorder が送った値が届かなかったと知ったなら、同じ文書の、同じ `caller` と `api` の後の値の行も
+    全部残さない（MUST）。ある caller と関数の n 番目の行は、recorder が見たその n 回目の呼び出し。
+  - `document` が `withheld` を持たないとき、`document` が名指す文書であったなら `withheld` の決まりが伏せる主フレームの
+    文書の行と、そのフレームの中の文書の行を残さなくてもよく（MAY）、`snapshots` が、どの文書か分からないためにある時点を
+    `"withheld"` と記録したときは、`document` が名指す文書を除く主フレームのすべての文書の行を残さなくてもよい（MAY）。
+    どちらかの理由で残さなかったら `truncated` を `true` に（MUST）。
   - `url` と `caller` は、隠すシークレットの値の出現も、残すシークレットのそのままの値も持たない（MUST NOT）。
     置き換えは URL として（`WARC-Target-URI` と同じく URL のまま）で、`caller` をアーカイブしたレコードの URL から引ける。
   - 行はページ由来の記録である、と書いた。
 - **`random-reading`（新しい節）:** 読み手は `random/recorder.js` を実行しない（MUST NOT）。replay する読み手は、記録した
-  値をページのスクリプトに返してよく（MAY）、返すなら、文書 D の中での関数 A への呼び出しのうち、スクリプト S を
-  `caller` と同じ決まりで（パッケージがそのスクリプトを持つ URL で）求めたものの n 回目に、`caller` が S・`api` が A の、
-  D の n 番目の値の行の `value` を返す（SHOULD）。例外を投げた呼び出しは数えない。そうした行・値が無いか、呼び出しに
+  値をページのスクリプトに返してよく（MAY）、返すなら、文書 D の中でスクリプト S が関数 A を呼んだ n 回目の呼び出しに、
+  `caller` が S・`api` が A の、D の n 番目の値の行の `value` を返す（SHOULD）。S は producer が `caller` を求めたのと
+  同じく求める（自分の frame を除く、HTTP か HTTPS の URL を持ついちばん内側の frame の、取り込んだページがスクリプトに
+  付けた URL。アーカイブしたレコードから出したスクリプトならそのレコードの URL。fragment を除き、無ければ空の文字列）。
+  URL が残すシークレットを持っていたスクリプトはどの `caller` にも当たらず、読み手は自分の値を返す。
+  例外を投げた呼び出しは数えない。そうした行・値が無いか、呼び出しに
   合わないときは、自分の値を返してよく（MAY）、それを記録した値として伝えない（MUST NOT）。`caller` を producer の申告
   として読まない（MUST NOT）。digest と署名が覆うのはパッケージの中の行だけ。アーカイブしたレコード以外のもの（ページが
   受け取るのを producer が見たもの）を読み手がページのスクリプトへ渡すことを認める、最初の節であることを書いた
   （behaviors・preload の節は実行を禁じる）。注記に、producer 自身のコード（behavior・preload）の呼び出しも記録され、
-  replay では走らないので数えがずれうること、行の無いことや `truncated` が false であることは、ページがほかに値を
-  引かなかったとは述べないこと（別サイトのフレームや worker）を書いた。
+  replay では走らないので数えが遅れ、その後の呼び出しが別の呼び出しのために記録した値を受け取りうること、行の無いことや
+  `truncated` が false であることは、ページがほかに値を引かなかったとは述べないこと（別サイトのフレームや worker）を
+  書いた。注記「どの文書の行か」に、`url` は fragment を持たないが `document` の `url` や replay した文書の URL は
+  持ちうること、値が全部届いたと確かめられなかったときは、行がその位置より後の呼び出しを記録していることがあることを書いた。
 - **`document`:** ページ由来の記録に `random/values.jsonl` の行を足した（`document` が名指す文書から読んだものとして扱う）。
   文書を伏せたパッケージは `random/` の下のエントリを持たない。
 - **`secret-values`:** 隠すシークレットの出現を URL として置き換える所に、`random/values.jsonl` の文書の行の `url` と
@@ -127,7 +136,8 @@ BrowserHive WACZ Profile の版ごとの変更。
   `caller` を足した。
 - **Introduction と Security and privacy considerations:** パッケージが運ぶ申告に乱数の値を足した。値はページが安全の
   ために使うもの（識別子・鍵）を含みうること、シークレットを渡された producer は `crypto` の値を残すのを避けるべきこと、
-  パッケージを持つ者は誰でも値を読めることを書いた。文書を伏せたパッケージが持たない物に乱数の値を足した。
+  パッケージを持つ者は誰でも値を読めることを書いた。文書を伏せたパッケージが持たない物に乱数の値を足した。伏せられた
+  文書から残された文書へ移ったときの行を producer が残さなくてもよい場合を、`random-lines` の 2 つの理由に合わせた。
 - **`behaviors-reading`:** 注記の「中身が実行可能なエントリはこれだけ」を、preload のスクリプトと `random/recorder.js` と
   並ぶものの 1 つ、に直した。
 
