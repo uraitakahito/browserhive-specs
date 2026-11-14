@@ -1632,8 +1632,11 @@
       <code>draw</code> lines in it (see <a href="#random-lines"></a>).
       <code>truncated</code> <em class="rfc2119">MUST</em> be
       <code>true</code> when the producer left draw lines out of the entry, or
-      stopped recording, because of limits of its own, or when it cannot
-      confirm that every draw the recorder in the page sent it arrived; and
+      stopped recording, because of limits of its own, when it left out the
+      lines of a document at a stage that <a>snapshots</a> records as
+      <code>"withheld"</code> (see <a href="#random-lines"></a>), or when it
+      cannot confirm that every draw the recorder in the page sent it arrived;
+      and
       <code>false</code> otherwise.
     </p>
     <p>
@@ -2323,9 +2326,11 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       entry of <code>variables</code> or
       <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>, the
       other members of a line of <code>trace/events.jsonl</code> or of
-      <code>random/values.jsonl</code>, the names of members. A capture that
-      would write an occurrence in any of these
-      <em class="rfc2119">MUST NOT</em> produce a package.
+      <code>random/values.jsonl</code> apart from <code>value</code>, the
+      names of members. A capture that would write an occurrence in any of
+      these <em class="rfc2119">MUST NOT</em> produce a package. Nor is the
+      <code>value</code> of a draw line replaced: the producer leaves it out
+      (see <a href="#random-lines"></a>).
     </p>
     <p>
       [[BROWSERHIVE-WARC-PROFILE]] has the producer treat the value of certain
@@ -2904,7 +2909,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       again for it to be replayed.
     </p>
     <p class="note">
-      This is stated because the entries are the only ones in a conforming
+      This is stated because the entries are, with the preload scripts and
+      <code>random/recorder.js</code>, among the entries of a conforming
       package whose contents are executable, and because a reader that replays a
       package has an execution context already open.
     </p>
@@ -3736,7 +3742,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <code>random/recorder.js</code> <em class="rfc2119">MUST</em> be the
     source the producer evaluated in the page to record the values, byte for
     byte, as <code>behaviors/runtime.js</code> is for the behaviors (see
-    <a href="#behaviors-runtime"></a>).
+    <a href="#behaviors-runtime"></a>). If the producer evaluates the source
+    with values of the capture written into it, the entry holds that text.
   </p>
   <p>
     This profile asks nothing of how the entries are stored in the ZIP file.
@@ -3824,7 +3831,14 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <em class="rfc2119">MUST</em> name that record in <code>archive/</code>,
       and <code>date</code>, which <em class="rfc2119">MUST</em> be the
       <code>WARC-Date</code> of that record, character for character.
-      Otherwise the line <em class="rfc2119">MUST NOT</em> carry either.
+      Otherwise the line <em class="rfc2119">MUST NOT</em> carry either. The
+      <code>WARC-Target-URI</code> of the record that <code>record</code> names
+      <em class="rfc2119">MUST</em> be <code>url</code>, but for the values of
+      kept secrets replaced in <code>url</code>. Two document lines
+      <em class="rfc2119">MAY</em> carry the same <code>record</code>. When the
+      document's URL is a <code>data:</code> URL, <code>url</code>
+      <em class="rfc2119">MUST NOT</em> hold its data: the producer writes it
+      no further than the comma that ends its media type.
     </p>
     <p>
       A line whose <code>kind</code> is <code>"draw"</code>, a <strong>draw
@@ -3834,7 +3848,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <em class="rfc2119">MAY</em> contain <code>value</code>; a draw line whose
       <code>api</code> is <code>"crypto.getRandomValues"</code>
       <em class="rfc2119">MUST</em> also contain <code>bytes</code>, and any
-      other <em class="rfc2119">MUST NOT</em>.
+      other draw line <em class="rfc2119">MUST NOT</em>.
     </p>
     <table class="simple">
       <thead>
@@ -3872,7 +3886,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       more than on the draw line of the same document before it on every
       other. Within one document the draw lines
       <em class="rfc2119">MUST</em> be in the order in which the recorder saw
-      the calls. Lines of different documents <em class="rfc2119">MAY</em>
+      the calls. The producer <em class="rfc2119">MUST NOT</em> write a draw
+      line for a call that throws: the script received no value from it.
+      Lines of different documents <em class="rfc2119">MAY</em>
       interleave: a line of one document can stand between two lines of
       another.
     </p>
@@ -3893,7 +3909,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     </p>
     <ul>
       <li>For <code>"Math.random"</code>, a number, at least 0 and less than
-          1.</li>
+          1, written so that it reads back as the same IEEE 754 double.</li>
       <li>For <code>"crypto.randomUUID"</code>, a string: the UUID in its
           canonical form, 32 lowercase hexadecimal digits in groups of 8, 4,
           4, 4 and 12 separated by hyphens.</li>
@@ -3911,21 +3927,24 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       capture that was given secrets, or the bytes of a
       <code>crypto.getRandomValues</code> array longer than a limit of its
       own. The line then still records that the call was made, by which
-      script, and where it stands among the calls of its document. A line
-      without <code>value</code> is not a line left out, and
+      script, and where it stands among the calls of its document. A producer
+      <em class="rfc2119">MUST</em> leave <code>value</code> out of a draw line
+      when the value, as it would be written, holds an occurrence of the value
+      of a hidden secret. A line without <code>value</code> is not a line left
+      out, and
       <code>truncated</code> says nothing of it.
     </p>
     <pre class="json">
 {"profile":"browserhive:random/1","kind":"document","document":0,"url":"https://shop.example/","frame":"main","dpr":1,"record":"urn:uuid:b2e4c6a8-1d3f-4a5b-8c7d-9e0f1a2b3c4d","date":"2026-11-14T02:10:00.757Z"}
 {"profile":"browserhive:random/1","kind":"draw","document":0,"seq":0,"api":"Math.random","caller":"https://shop.example/assets/hero.js","value":0.25390625}
-{"profile":"browserhive:random/1","kind":"document","document":1,"url":"https://ads.example/slot","frame":"frame","dpr":1,"record":"urn:uuid:7d0e5a3c-6b1f-4f2e-8a9d-2c3b4e5f6a7b","date":"2026-11-14T02:10:01.204Z"}
-{"profile":"browserhive:random/1","kind":"draw","document":1,"seq":0,"api":"crypto.randomUUID","caller":"https://ads.example/slot.js","value":"3f2a9c1e-7b4d-4e8a-9f6c-0d1e2b3c4a5f"}
+{"profile":"browserhive:random/1","kind":"document","document":1,"url":"https://shop.example/widgets/recommend","frame":"frame","dpr":1,"record":"urn:uuid:7d0e5a3c-6b1f-4f2e-8a9d-2c3b4e5f6a7b","date":"2026-11-14T02:10:01.204Z"}
+{"profile":"browserhive:random/1","kind":"draw","document":1,"seq":0,"api":"crypto.randomUUID","caller":"https://shop.example/widgets/recommend.js","value":"3f2a9c1e-7b4d-4e8a-9f6c-0d1e2b3c4a5f"}
 {"profile":"browserhive:random/1","kind":"draw","document":0,"seq":1,"api":"crypto.getRandomValues","caller":"https://shop.example/assets/hero.js","bytes":4,"value":"q83vEg=="}
 {"profile":"browserhive:random/1","kind":"draw","document":0,"seq":2,"api":"Math.random","caller":"","value":0.8125}</pre>
     <p>
       In this excerpt the producer recorded in two documents: the page itself,
-      and a document in a frame from another site, whose lines interleave with
-      the page's. The script <code>hero.js</code> drew a number and then four
+      and a document in a frame from the same site, whose lines interleave
+      with the page's. The script <code>hero.js</code> drew a number and then four
       bytes, and the last value was drawn by code for which the browser
       reported no HTTP or HTTPS URL in the stack.
     </p>
@@ -3934,8 +3953,20 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       recording, to keep the entry within limits of its own. This profile sets
       no number for those limits. One that does
       <em class="rfc2119">MUST</em> set <code>truncated</code> in
-      <a>random</a> to <code>true</code>. Nothing in the entry marks where lines
-      were left out.
+      <a>random</a> to <code>true</code>. A producer that leaves a draw line
+      out <em class="rfc2119">MUST</em> leave out every later draw line of the
+      same document that has the same <code>caller</code> and the same
+      <code>api</code>, so that the n-th line of a caller and a function is
+      always the n-th call it saw. Nothing in the entry marks where lines were
+      left out.
+    </p>
+    <p>
+      When <a>snapshots</a> records a stage as <code>"withheld"</code> and
+      <a>document</a> carries no <code>withheld</code>, the producer
+      <em class="rfc2119">MAY</em> leave out the lines of the document in the
+      main frame at that stage, and one that does
+      <em class="rfc2119">MUST</em> set <code>truncated</code> in
+      <a>random</a> to <code>true</code>.
     </p>
     <p>
       The <code>url</code> of a document line and the <code>caller</code> of a
@@ -3975,16 +4006,21 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <p>
       A reader that replays a document <em class="rfc2119">MAY</em> return
       recorded values to the page's scripts. One that does
-      <em class="rfc2119">SHOULD</em>, for the n-th call (counting from 1)
-      that a script whose URL is S makes to the function A in a replayed
-      document that the document line D describes, return the
-      <code>value</code> of the n-th draw line of D whose <code>caller</code> is
-      S and whose <code>api</code> is A. When there is no such line, when the
-      line has no <code>value</code>, or when the value does not fit the call
-      &mdash; a <code>crypto.getRandomValues</code> call with an array of
-      another length than <code>bytes</code>, for instance &mdash; the reader
-      <em class="rfc2119">MUST NOT</em> present a value of its own as a
-      recorded value.
+      <em class="rfc2119">SHOULD</em>, for the n-th call (counting from 1) to
+      the function A in a replayed document that the document line D
+      describes, among the calls whose script S is found as
+      <code>caller</code> is &mdash; the URL under which the package holds the
+      script, of the innermost frame that has one, or the empty string &mdash;
+      return the <code>value</code> of the n-th draw line of D whose
+      <code>caller</code> is S and whose <code>api</code> is A. A call that
+      throws is not counted, and the producer writes no draw line for one.
+      When there is no such line, when the line has no <code>value</code>, or
+      when the value does not fit the call &mdash; a
+      <code>crypto.getRandomValues</code> call with an array of another length
+      than <code>bytes</code>, for instance &mdash; the reader
+      <em class="rfc2119">MAY</em> return a value of its own, and
+      <em class="rfc2119">MUST NOT</em> report it, to its user or elsewhere,
+      as a recorded value.
     </p>
     <p class="note" title="Which document line">
       Which document line describes a replayed document is the reader's to
@@ -3992,8 +4028,22 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       present, <code>record</code> and <code>date</code> are what a line
       offers for it. A page loaded more than once has a document line for each
       load. When <code>truncated</code> in <a>random</a> is <code>true</code>,
-      a line left out moves the lines after it, and the n-th line need not
-      record the n-th call.
+      the lines of a caller and a function can end before the calls do, and a
+      document can have no lines at all (see <a href="#random-lines"></a>).
+    </p>
+    <p class="note" title="The producer's own code">
+      The producer's own code in the page &mdash; the <a>behaviors</a> and the
+      scripts of <a>preload</a> &mdash; draws like the page's, and its calls
+      are recorded with whatever <code>caller</code> the stack gives. That code
+      does not run in a replay, so a reader's count of calls for that caller
+      can fall behind the lines.
+    </p>
+    <p class="note" title="What an entry does not say">
+      An entry without lines of a document, or with <code>truncated</code>
+      false, does not say that the page drew no other value. The producer need
+      not record everywhere a script can draw &mdash; in a frame from another
+      site, or in a worker, for instance &mdash; and a reader returns its own
+      values there.
     </p>
     <p>
       A reader <em class="rfc2119">MUST NOT</em> take <code>caller</code> as a
@@ -4010,7 +4060,9 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     </p>
     <p class="note" title="Values into the page">
       This is the first section of this specification that permits a reader
-      to pass something from a package into the page's scripts. The sections
+      to pass into the page's scripts something other than the archived
+      records: what the producer saw the page receive, rather than what
+      crossed the wire. The sections
       on <a href="#behaviors-reading">behaviors</a> and
       <a href="#preload-reading">preload</a> forbid a reader to run the code a
       package holds, and this one forbids it to run the recorder. What it
@@ -4115,7 +4167,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     archive, that text is <strong>not</strong> in the payload, and the package
     carries neither the tree, nor the page's text and title, nor a snapshot read
     from that document, nor a screenshot, nor the lines the page wrote to the
-    log (see <a>document</a>).
+    log, nor the values its scripts received at random (see <a>document</a>).
   </p>
   <p>
     A snapshot carries the page as it stood: its text, and the values in its
@@ -4254,7 +4306,11 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     the name the page gave its script (see <a href="#random-reading"></a>).
     As with the log, the rule of <a>document</a> looks at the document that
     <a>document</a> names: when the page moved on from a withheld document to
-    one that was kept, the lines of the first document stay.
+    one that was kept, the lines of the first document stay, unless the
+    producer leaves them out, as it may whenever <a>snapshots</a> records a
+    stage as <code>"withheld"</code>; one that does sets
+    <code>truncated</code> to <code>true</code> (see
+    <a href="#random-lines"></a>).
   </p>
   <p>
     <a>storage</a> exposes nothing the package did not already hold. It records
