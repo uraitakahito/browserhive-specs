@@ -101,7 +101,10 @@
     <code>data-NNN.warc.gz</code>, and it has them conform to BrowserHive WARC
     Profile 1.4.0 (see <a href="#archive-files"></a>). A package written
     against 1.24.0 names its WARC files the old way, and they name WARC Profile
-    1.3.0, so it does not conform to 1.25.0.
+    1.3.0, so it does not conform to 1.25.0. This version also recommends
+    that a package be named <code>&hellip;.browserhive.wacz</code> (see
+    <a href="#package-name"></a>), and says that a reader does not infer
+    conformance from a name.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
@@ -113,7 +116,7 @@
     A capture has to decide when a page is ready to be taken, and every way of
     deciding is a bet: a fixed pause robs a page that was ready and cuts short
     one that was not, and a signal-based wait can reach its deadline first.
-    Until this version a package could not say which of these happened. That
+    Before version 1.7.0 a package could not say which of these happened. That
     matters to a reader weighing the package as evidence, because the
     difference between &ldquo;the page looked like this&rdquo; and &ldquo;the
     page looked like this while it was still loading&rdquo; is recoverable from
@@ -164,10 +167,9 @@
     adds requirements. It removes none, and it relaxes none.
   </p>
   <p>
-    A package that conforms to this specification is called a
-    <dfn>BrowserHive WACZ</dfn>. Every BrowserHive WACZ is a WACZ package; a
-    WACZ package that is not a BrowserHive WACZ is still a WACZ package, and
-    this specification says nothing about it.
+    A package that conforms to a version of this specification is called a
+    <dfn>BrowserHive WACZ</dfn>. Every BrowserHive WACZ is a WACZ package. This
+    specification sets no requirement on what any other WACZ package holds.
   </p>
   <p>
     Where this specification uses the terms <em class="rfc2119">MUST</em>,
@@ -1733,15 +1735,16 @@
   <h2>Package name</h2>
   <p>
     [[WACZ]] requires a ZIP file that follows it to use the extension
-    <code>.wacz</code>. The name of a <a>BrowserHive WACZ</a>
-    <em class="rfc2119">SHOULD</em> end in <code>.browserhive.wacz</code>: the
-    extension [[WACZ]] requires, after a mark that lets a person or a program
-    holding the file tell what it is before opening it.
+    <code>.wacz</code>. The producer <em class="rfc2119">SHOULD</em> give a
+    <a>BrowserHive WACZ</a> a name that ends in <code>.browserhive.wacz</code>:
+    the extension [[WACZ]] requires, after a mark that lets a person or a
+    program holding the file tell what it is before opening it.
   </p>
   <p>
     The mark is a hint, not a declaration. A package keeps or loses its name
-    with every copy, and anyone can give a file any name; a package that
-    conforms keeps conforming under another name, and a name with the mark
+    with every copy, and anyone can give a file any name. A package that
+    conforms keeps conforming under another name that ends in
+    <code>.wacz</code>, with or without the mark, and a name with the mark
     proves nothing (see <a href="#conformance-declaration"></a>).
   </p>
 </section>
@@ -1751,8 +1754,9 @@
   <p>
     [[WACZ]] requires the <code>archive/</code> directory to hold one or more
     WARC files, with the extension <code>.warc.gz</code> when they are
-    compressed with GZIP, and says nothing else about their names, nor about
-    their number or what each one holds. This section fixes the names and the number, so that a reader
+    compressed with GZIP and preferably <code>.warc</code> when they are not,
+    and says nothing else about their names, nor about their number or what
+    each one holds. This section fixes the names and the number, so that a reader
     can tell whether a package holds every file the producer wrote, and a
     producer can bound the size of a single file. What each file holds is the
     subject of [[BROWSERHIVE-WARC-PROFILE]].
@@ -1782,6 +1786,11 @@
     <a data-cite="BROWSERHIVE-WARC-PROFILE#dfn-browserhive-warc">BrowserHive WARC</a>
     file by its name; as with the package (see <a href="#package-name"></a>),
     the mark is a hint, not a declaration.
+  </p>
+  <p>
+    Each WARC file in <code>archive/</code> <em class="rfc2119">MUST</em> be
+    compressed with GZIP, as [[WACZ]] has a file named <code>.warc.gz</code>
+    be.
   </p>
   <p>
     The name a file gives itself in the <code>WARC-Filename</code> of its

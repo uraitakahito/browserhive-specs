@@ -59,13 +59,16 @@ BrowserHive WACZ Profile の版ごとの変更。
 BrowserHive が書くファイルを、開かずに名前で見分けられるようにした。名前の印は手がかりで、
 適合を名乗るのは今までどおり `conformsTo` だけ。
 
-- **呼び名（Conformance）:** この仕様に適合するパッケージを `BrowserHive WACZ` と呼ぶ。BrowserHive WACZ でない
-  WACZ パッケージについては、この仕様は何も述べない。
-- **パッケージの名前（新しい節 Package name）:** BrowserHive WACZ の名前は `.browserhive.wacz` で終わるのが
-  望ましい（SHOULD）。WACZ 1.1.1 が求める拡張子 `.wacz` の前に印を置く形。
+- **呼び名（Conformance）:** この仕様のいずれかの版に適合するパッケージを `BrowserHive WACZ` と呼ぶ。
+  それ以外の WACZ パッケージが何を持つかについて、この仕様は何も求めない。
+- **パッケージの名前（新しい節 Package name）:** producer は BrowserHive WACZ に `.browserhive.wacz` で終わる名前を
+  付けるのが望ましい（SHOULD）。`.wacz` で終わる別の名前でも適合は変わらない。WACZ 1.1.1 が求める拡張子 `.wacz` の前に印を置く形。
 - **`archive/` の名前（Archive files）:** WARC ファイルは `data-NNN.browserhive.warc.gz` だけ（MUST。1.24.0 までは
   `data-NNN.warc.gz`）。`WARC-Filename` と索引の `filename` の決まりは形のまま、例を新しい名前に。
   WACZ 1.1.1 が gzip の WARC に求める拡張子 `.warc.gz` で終わる。
+- **GZIP（Archive files）:** `archive/` の各 WARC ファイルは GZIP で圧縮する（MUST）。名前が `.warc.gz` で終わるので、
+  WACZ 1.1.1 がその名前に求める圧縮を決まりにした（実装は前からそうしていたが、決まりが無かった）。
+- **「Until this version」の直し:** 待ちの記録の注の「この版まで」を「1.7.0 より前は」に（1.7.0 から古くなっていた）。
 - **適合は名前から推さない（Conformance declaration）:** 「`browserhive:capture` が在るだけで推してはならない」
   （MUST NOT）に、パッケージとその中のファイルの名前を足した。
 - **WARC Profile 1.4.0:** `archive/` の WARC ファイルは BrowserHive WARC Profile 1.4.0 に適合し、warcinfo で
