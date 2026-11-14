@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.25.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/) | 2026-11-14 | 適合するパッケージの呼び名「BrowserHive WACZ」を定め、中の WARC を `data-NNN.browserhive.warc.gz` と名付け、パッケージの名前に `.browserhive.wacz` を勧める（WARC Profile 1.4.0） |
 | [1.24.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/) | 2026-11-14 | 取り込みの節目のスクリーンショットがどうなったかを `screenshots` に記録し、画像を残してはならない取り込みを定める（WARC Profile 1.3.0） |
 | [1.23.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/) | 2026-11-13 | 取り込みの trace（要求ごとに 1 行）をパッケージに入れる（`trace/events.jsonl`） |
 | [1.22.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 2026-11-07 | シークレットを WARC に載せるかを `settings.secretArchive` に記録し、隠すシークレットの値をパッケージの全部のファイルから除く |
@@ -52,6 +53,25 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.25.0
+
+BrowserHive が書くファイルを、開かずに名前で見分けられるようにした。名前の印は手がかりで、
+適合を名乗るのは今までどおり `conformsTo` だけ。
+
+- **呼び名（Conformance）:** この仕様に適合するパッケージを `BrowserHive WACZ` と呼ぶ。BrowserHive WACZ でない
+  WACZ パッケージについては、この仕様は何も述べない。
+- **パッケージの名前（新しい節 Package name）:** BrowserHive WACZ の名前は `.browserhive.wacz` で終わるのが
+  望ましい（SHOULD）。WACZ 1.1.1 が求める拡張子 `.wacz` の前に印を置く形。
+- **`archive/` の名前（Archive files）:** WARC ファイルは `data-NNN.browserhive.warc.gz` だけ（MUST。1.24.0 までは
+  `data-NNN.warc.gz`）。`WARC-Filename` と索引の `filename` の決まりは形のまま、例を新しい名前に。
+  WACZ 1.1.1 が gzip の WARC に求める拡張子 `.warc.gz` で終わる。
+- **適合は名前から推さない（Conformance declaration）:** 「`browserhive:capture` が在るだけで推してはならない」
+  （MUST NOT）に、パッケージとその中のファイルの名前を足した。
+- **WARC Profile 1.4.0:** `archive/` の WARC ファイルは BrowserHive WARC Profile 1.4.0 に適合し、warcinfo で
+  その版を名乗る（1.4.0 は呼び名 BrowserHive WARC を定め、名前から推さないことを書いた版。レコードの決まりは 1.3.0 と同じ）。
+- **後方互換ではない:** 1.24.0 向けのパッケージは WARC ファイルの名前が古く、WARC Profile 1.3.0 を名乗るので、
+  1.25.0 に適合しない。
 
 ## 1.24.0
 
