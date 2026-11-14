@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.27.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/) | 2026-11-15 | 写しと一緒に同じ origin の子フレームの文書も写し（WARC Profile 1.5.0 のフレームの写し）、どの枠を写したかを `snapshots` の `frames` と `frameCounts` に記録する。子の写しは CDXJ に載せ、ページ一覧には載せない |
 | [1.26.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/) | 2026-11-14 | 取り込んだページの JS が乱数として受け取った値を、求められたときに `random/values.jsonl` に記録し、記録したかどうかを `random` で述べる |
 | [1.25.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/) | 2026-11-14 | 適合するパッケージの呼び名「BrowserHive WACZ」を定め、中の WARC を `data-NNN.browserhive.warc.gz` と名付け、パッケージの名前に `.browserhive.wacz` を勧める（WARC Profile 1.4.0） |
 | [1.24.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/) | 2026-11-14 | 取り込みの節目のスクリーンショットがどうなったかを `screenshots` に記録し、画像を残してはならない取り込みを定める（WARC Profile 1.3.0） |
@@ -64,6 +65,31 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.27.0
+
+写しを、主フレームの文書から、同じ origin の子フレームの文書まで広げた。いままで枠の中は、取り込みがその URL について
+記録した文書（サーバが送ったままで、ページのスクリプトが後で変えたものは入っていない）を読み手が出すしかなかった。
+`archive/` の WARC が適合する版を BrowserHive WARC Profile **1.5.0** に上げ（フレームの写しのレコードと、親の写しの枠が子を
+名指す `data-browserhive-snapshot` はそちらが定める）、パッケージの側では、どの枠を写したかを `snapshots` が述べる。
+
+- **`snapshots` の項目（写しを取った時点）に `frames`・`frameCounts`（新しい必須の member・新しい節 `snapshot-frames`）:**
+  - `frames` は、その時点の番号を付けるフレーム（WARC Profile の numbered frame）ごとに 1 つ、番号の順（MUST）。写した子は
+    `frame`・`parent`（主フレームは `0`）・`url`（子の URI）・`date`・`record`・`bytes`・`secretsReplaced`。写さなかった子は
+    `frame`・`parent`・`skipped` だけ（MUST）で、`skipped` は `withheld`・`too-large`・`task-budget`・`failed`。
+  - `withheld` は、`document` の `withheld` の決まりが子の文書（URL と media type）を伏せるとき、または伏せた子の下に在るとき。
+    producer はそうした子を写さない（MUST）。`too-large` の上限は主の写しと同じ。
+  - `frameCounts` は `read`・`unreadable`・`withheld`（MUST）。producer が進んだ文書（主フレームと、伏せなかった番号付きの子）の
+    中の枠を数える。`withheld` は `skipped` が `withheld` の要素の数、`read` はそれ以外の要素の数以上。
+  - 写しを取らなかった時点の項目はいままでどおり `stage` と `skipped` だけで、`frames` も `frameCounts` も持たない。
+  - パッケージは、`frames` が名指さないフレームの写しを持たない（MUST）。
+- **索引とページ一覧（`archive-files`・`pages`）:** フレームの写しの `resource` は CDXJ に載せ（MUST。鍵は
+  `urn:browserhive:frame-snapshot:` の URI そのまま、`status` 無し）、`pages/pages.jsonl` には載せない（MUST NOT）。
+  写しのエントリを開く素の読み手は枠に記録した元の文書を出し、`data-browserhive-snapshot` を読む読み手は子の写しを出せる、と注を足した。
+- **ページ由来の記録・シークレット・Security:** フレームの写しをページ由来の記録に含め（`document` が伏せる文書の写しと一緒の子も
+  持たない）、`url` の置き換えの一覧・残すシークレットを置き換える物・`maxTaskBytes` の線・Security の写しの段落に足した。
+- **食い違いの直し（`preload-directory` の注）:** 「behaviors は主フレームで 1 度だけ走る」は誤りで、BrowserHive はページを
+  読み込むたび（`devicePixelRatios` の要素ごと）に走らせる。事実に合わせた（BrowserHive の docs の behaviors の頁と同じ）。
 
 ## 1.26.0
 
