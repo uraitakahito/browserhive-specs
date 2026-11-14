@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.24.0</title>
+<title>BrowserHive WACZ Profile 1.25.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -69,9 +69,9 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/",
         publisher: "BrowserHive",
-        version: "1.3.0",
+        version: "1.4.0",
       },
     },
     lint: false,
@@ -95,27 +95,28 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.24.0 is not backward compatible with 1.23.0">
-    This version requires every package to say what became of the screenshots
-    of its capture &mdash; pictures of the page that a producer may take at
-    the stages at which it copies the document &mdash; as <a>screenshots</a>
-    in <a>browserhive:capture</a>, and it has the WARC files of a package
-    conform to BrowserHive WARC Profile 1.3.0, which defines the records of a
-    screenshot (see <a href="#archive-files"></a>). A package written against
-    1.23.0 has no such member, and its WARC files name version 1.2.0 of that
-    profile, so it does not conform to 1.24.0.
+  <p class="note" title="1.25.0 is not backward compatible with 1.24.0">
+    This version names the WARC files of a package
+    <code>data-NNN.browserhive.warc.gz</code> instead of
+    <code>data-NNN.warc.gz</code>, and it has them conform to BrowserHive WARC
+    Profile 1.4.0 (see <a href="#archive-files"></a>). A package written
+    against 1.24.0 names its WARC files the old way, and they name WARC Profile
+    1.3.0, so it does not conform to 1.25.0. This version also recommends
+    that a package be named <code>&hellip;.browserhive.wacz</code> (see
+    <a href="#package-name"></a>), and says that a reader does not infer
+    conformance from a name.
     This is intended, and it is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a>,
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
     deciding is a bet: a fixed pause robs a page that was ready and cuts short
     one that was not, and a signal-based wait can reach its deadline first.
-    Until this version a package could not say which of these happened. That
+    Before version 1.7.0 a package could not say which of these happened. That
     matters to a reader weighing the package as evidence, because the
     difference between &ldquo;the page looked like this&rdquo; and &ldquo;the
     page looked like this while it was still loading&rdquo; is recoverable from
@@ -166,6 +167,11 @@
     adds requirements. It removes none, and it relaxes none.
   </p>
   <p>
+    A package that conforms to a version of this specification is called a
+    <dfn>BrowserHive WACZ</dfn>. Every BrowserHive WACZ is a WACZ package. This
+    specification sets no requirement on what any other WACZ package holds.
+  </p>
+  <p>
     Where this specification uses the terms <em class="rfc2119">MUST</em>,
     <em class="rfc2119">MUST NOT</em>, <em class="rfc2119">SHOULD</em> and
     <em class="rfc2119">MAY</em>, they are to be interpreted as described in
@@ -207,7 +213,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -216,7 +222,9 @@
     </p>
     <p>
       A reader <em class="rfc2119">MUST NOT</em> infer conformance from the mere
-      presence of <a>browserhive:capture</a>. Without
+      presence of <a>browserhive:capture</a>, nor from the name of the package
+      or of the files in it (see <a href="#package-name"></a> and
+      <a href="#archive-files"></a>). Without
       <a>conformsTo</a>, the version a package was written against is unknown.
     </p>
   </section>
@@ -480,7 +488,7 @@
       <code>limits</code> <em class="rfc2119">MUST</em> be present even when no
       body was dropped. It is the only place the archive can say
       <em>which line</em> a truncated body crossed &mdash; a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
       carries the fact and the actual size, but whether that size was too much
       is only legible next to the line.
     </p>
@@ -567,7 +575,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>yes</td>
             <td>URLs whose body crossed the wire but the producer could not
             obtain as bytes, so the archive holds none (see
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#response-payloads">Response payloads</a> in
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#response-payloads">Response payloads</a> in
             [[BROWSERHIVE-WARC-PROFILE]]).</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>yes</td>
             <td>Targets other than the main document whose renderer crashed during
@@ -646,7 +654,7 @@
     <p>
       The WARC describes the same bodies one record at a time: each response
       recorded without the body the server sent carries a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
       ([[BROWSERHIVE-WARC-PROFILE]]), whose <code>truncated</code> says why. The
       URLs of bodies dropped at a size limit &mdash; <code>too-large</code> and
       <code>task-cap</code> &mdash; are listed in <code>truncatedUrls</code>,
@@ -1136,7 +1144,7 @@
       the capture copies the document, whether it did. A snapshot is a copy of
       the document in the page's main frame as it stood at that stage, recorded
       in the WARC
-      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#snapshots">Snapshots</a>
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#snapshots">Snapshots</a>
       in [[BROWSERHIVE-WARC-PROFILE]]). The array
       <em class="rfc2119">MUST</em> hold an entry for <code>"after-load"</code>
       and, when the capture ran a behavior (when <code>behaviors</code> in
@@ -1232,7 +1240,7 @@
       the package holds a screenshot of that stage, and why when it holds
       none. A screenshot is a picture of the page as the browser showed it at
       that stage, recorded in the WARC
-      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#screenshots">Screenshots</a>
+      (<a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#screenshots">Screenshots</a>
       in [[BROWSERHIVE-WARC-PROFILE]]) as two records: a <code>resource</code>
       record that holds the picture, under a <code>WARC-Target-URI</code> that
       begins <code>urn:browserhive:screenshot:</code>, and a
@@ -1375,13 +1383,13 @@
           either, as it holds no line the page wrote to the log, whichever
           document wrote it.</li>
       <li>A WARC file in <code>archive/</code> holds a
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-withheld-requests">record of a withheld request</a>
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
           whose <code>action</code> is <code>no-archive</code>, and that
           record either carries the <code>resourceType</code>
           <code>Document</code>, <code>Image</code> or <code>Media</code>, or
           carries no <code>resourceType</code>.</li>
       <li>A WARC file in <code>archive/</code> holds a
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-bodies-not-kept">record of a body not kept</a>
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
           whose <code>truncated</code> is <code>url-policy</code>, and the
           line of <code>trace/events.jsonl</code> whose <code>record</code>
           names the <code>response</code> record that record refers to (see
@@ -1723,12 +1731,32 @@
   </section>
 </section>
 
+<section id="package-name">
+  <h2>Package name</h2>
+  <p>
+    [[WACZ]] requires a ZIP file that follows it to use the extension
+    <code>.wacz</code>. The producer <em class="rfc2119">SHOULD</em> give a
+    <a>BrowserHive WACZ</a> a name that ends in <code>.browserhive.wacz</code>:
+    the extension [[WACZ]] requires, after a mark that lets a person or a
+    program holding the file tell what it is before opening it.
+  </p>
+  <p>
+    The mark is a hint, not a declaration. A package keeps or loses its name
+    with every copy, and anyone can give a file any name. A package that
+    conforms keeps conforming under another name that ends in
+    <code>.wacz</code>, with or without the mark, and a name with the mark
+    proves nothing (see <a href="#conformance-declaration"></a>).
+  </p>
+</section>
+
 <section id="archive-files">
   <h2>Archive files</h2>
   <p>
     [[WACZ]] requires the <code>archive/</code> directory to hold one or more
-    WARC files and says nothing about their names, their number or what each
-    one holds. This section fixes the names and the number, so that a reader
+    WARC files, with the extension <code>.warc.gz</code> when they are
+    compressed with GZIP and preferably <code>.warc</code> when they are not,
+    and says nothing else about their names, nor about their number or what
+    each one holds. This section fixes the names and the number, so that a reader
     can tell whether a package holds every file the producer wrote, and a
     producer can bound the size of a single file. What each file holds is the
     subject of [[BROWSERHIVE-WARC-PROFILE]].
@@ -1736,10 +1764,10 @@
   <p>
     Every WARC file in <code>archive/</code> <em class="rfc2119">MUST</em>
     conform to
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/">BrowserHive WARC Profile 1.3.0</a>, and its
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/">BrowserHive WARC Profile 1.4.0</a>, and its
     <code>warcinfo</code> record <em class="rfc2119">MUST</em> name that
     version in <code>conformsTo</code> (see
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#warcinfo">The warcinfo record</a> there). That
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#warcinfo">The warcinfo record</a> there). That
     specification fixes the records: their payloads, the records in which the
     values of hidden secrets are replaced, the records of bodies not
     kept, of withheld requests and of windows not opened, the snapshots of the
@@ -1749,16 +1777,27 @@
   </p>
   <p>
     The <code>archive/</code> directory <em class="rfc2119">MUST</em> contain
-    only files named <code>data-NNN.warc.gz</code>, where <code>NNN</code> is
-    three decimal digits, numbered contiguously from <code>000</code>. A
-    capture whose records fit in one file has exactly
-    <code>data-000.warc.gz</code>.
+    only files named <code>data-NNN.browserhive.warc.gz</code>, where
+    <code>NNN</code> is three decimal digits, numbered contiguously from
+    <code>000</code>. A capture whose records fit in one file has exactly
+    <code>data-000.browserhive.warc.gz</code>. The name ends in the extension
+    [[WACZ]] requires, after the mark <code>browserhive</code>, so that a WARC
+    file taken out of its package can still be told for a
+    <a data-cite="BROWSERHIVE-WARC-PROFILE#dfn-browserhive-warc">BrowserHive WARC</a>
+    file by its name; as with the package (see <a href="#package-name"></a>),
+    the mark is a hint, not a declaration.
+  </p>
+  <p>
+    Each WARC file in <code>archive/</code> <em class="rfc2119">MUST</em> be
+    compressed with GZIP, as [[WACZ]] has a file named <code>.warc.gz</code>
+    be.
   </p>
   <p>
     The name a file gives itself in the <code>WARC-Filename</code> of its
     <code>warcinfo</code> record <em class="rfc2119">MUST</em> be its name in
-    <code>archive/</code>, without the directory: <code>data-000.warc.gz</code>,
-    not <code>archive/data-000.warc.gz</code>.
+    <code>archive/</code>, without the directory:
+    <code>data-000.browserhive.warc.gz</code>, not
+    <code>archive/data-000.browserhive.warc.gz</code>.
   </p>
   <p>
     The producer <em class="rfc2119">MUST</em> start a new file before writing
@@ -1771,7 +1810,8 @@
   <p>
     The <code>filename</code> field of each CDXJ line <em class="rfc2119">MUST</em>
     name the file relative to <code>archive/</code>
-    (<code>data-001.warc.gz</code>, not <code>archive/data-001.warc.gz</code>);
+    (<code>data-001.browserhive.warc.gz</code>, not
+    <code>archive/data-001.browserhive.warc.gz</code>);
     readers prepend the directory themselves.
   </p>
   <p>
@@ -1796,9 +1836,9 @@
     records above, is not required to appear.
   </p>
     <pre class="text">
-archive/data-000.warc.gz    warcinfo (WARC-Filename: data-000.warc.gz), exchanges &hellip;
-archive/data-001.warc.gz    warcinfo (WARC-Filename: data-001.warc.gz), exchanges &hellip;
-indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"153","length":"2048",&hellip;}</pre>
+archive/data-000.browserhive.warc.gz    warcinfo (WARC-Filename: data-000.browserhive.warc.gz), exchanges &hellip;
+archive/data-001.browserhive.warc.gz    warcinfo (WARC-Filename: data-001.browserhive.warc.gz), exchanges &hellip;
+indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhive.warc.gz","offset":"153","length":"2048",&hellip;}</pre>
   <p class="note" title="Why the size of a file is bounded and its number is not">
     A capture that follows links records for as long as the crawl runs, and a
     single file that grows with it cannot be read in part, verified in part, or
@@ -1951,14 +1991,14 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     </table>
     <p>
       The record a <code>deny</code> or <code>no-archive</code> entry leaves is a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
       ([[BROWSERHIVE-WARC-PROFILE]]). Its <code>action</code> is the entry's
       <code>action</code>, and its <code>pattern</code>
       <em class="rfc2119">MUST</em> be the entry's <code>pattern</code>, spelled
       exactly as it appears here, so that a reader can find the entry. A
       <code>no-body</code> entry leaves no such record: the exchange is recorded
       as usual, and its absent body is described by a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-bodies-not-kept">record of a body not kept</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
       whose <code>truncated</code> is <code>url-policy</code> &mdash; never as a
       body dropped at a size limit (see <a>completeness</a>).
     </p>
@@ -2046,7 +2086,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
   </p>
   <p>
     Each time the page asked for one is recorded in the WARC as a
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-windows-not-opened">record of a window not opened</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-windows-not-opened">record of a window not opened</a>
     ([[BROWSERHIVE-WARC-PROFILE]]). No request was sent for the window's
     document, so the record is written whether or not an entry of
     <a>urlPolicies</a> matches the URL, and it is not a record of a withheld
@@ -2074,7 +2114,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     A request may supply values in confidence for the behaviors to read, and
     <a>settings</a> records their names. A behavior can send such a value over
     the network and a page can show it, so the capture meets it in what it
-    records. The <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#redacted-records">Redacted records</a> section of [[BROWSERHIVE-WARC-PROFILE]] defines the
+    records. The <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#redacted-records">Redacted records</a> section of [[BROWSERHIVE-WARC-PROFILE]] defines the
     terms <em>secret</em>, <em>hidden secret</em>, <em>occurrence</em>,
     <em>redacted record</em> and <em>text body</em>, and says what a single WARC
     file does about them. This section says which secrets of a package are
@@ -3403,7 +3443,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
       long it took, the trace would be a second place to read what was to be
       left out, and a policy that held for the WARC would not hold for the
       package. The line therefore carries no more than the
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
       does &mdash; that the page asked for the URL, by which method, for what
       kind of resource, and what the producer decided &mdash; and when. The
       order of the lines still shows one thing about the response. When the
@@ -3495,7 +3535,7 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     <p class="note" title="The trace and the records of the WARC">
       A line whose <code>outcome</code> is <code>"not-archived"</code> or
       <code>"denied"</code> is a request for which the WARC holds a
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-withheld-requests">record of a withheld request</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-withheld-requests">record of a withheld request</a>
       whose <code>action</code> is <code>no-archive</code> or
       <code>deny</code>, and a line that carries <code>record</code> is an
       exchange whose records the WARC holds. For a request that failed or had
@@ -3617,12 +3657,12 @@ indexes/index.cdxj          &hellip; {"filename":"data-001.warc.gz","offset":"15
     package empirically does not hold. It does not assert that the bodies it
     does hold are what the origin served. Nor does <code>complete</code> say that
     no body was dropped for holding the value of a hidden secret: a
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#records-of-bodies-not-kept">record of a body not kept</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#records-of-bodies-not-kept">record of a body not kept</a>
     whose <code>truncated</code> is <code>secret</code> says that.
   </p>
   <p>
     What a conforming package does assert about the bodies it holds is the
-    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.3.0/#payloads">Payloads</a> section of
+    subject of the <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/#payloads">Payloads</a> section of
     [[BROWSERHIVE-WARC-PROFILE]]: they are the bytes that crossed the wire,
     so a payload digest is a digest of what the origin sent, not of a copy the
     producer re-encoded. The exception is a redacted record whose

@@ -6,6 +6,9 @@ BrowserHive WACZ Profile は、[specs](https://github.com/uraitakahito/specs) �
 **後方互換性を持った拡張規格**である。WACZ 1.1.1 が認める範囲で要求を足すだけで、取り除くことも緩めることもしない。
 だから、この Profile に適合する WACZ は WACZ 1.1.1 にも適合し、ReplayWeb.page など WACZ を読むソフトウェアでそのまま開ける。
 逆は成り立たない。ふつうの WACZ 1.1.1 は `browserhive:capture` などを持たないので、この Profile には適合しない。
+この Profile に適合する WACZ を **BrowserHive WACZ** と呼ぶ（1.25.0 から仕様の Conformance で定義）。
+1.25.0 から、BrowserHive WACZ の名前は `.browserhive.wacz` で終わるのが望ましく、中の WARC は
+`archive/data-NNN.browserhive.warc.gz` と名付ける。名前の印は手がかりで、適合を名乗るのは `conformsTo` だけ。
 
 `specs` は Webrecorder の仕様書（[webrecorder/specs](https://github.com/webrecorder/specs)）の fork で、
 WACZ 1.1.1 の[日本語訳](https://uraitakahito.github.io/specs/wacz/1.1.1/)を持つ。
@@ -17,7 +20,8 @@ WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/u
 
 | 仕様 | 版 | 日本語訳 |
 |---|---|---|
-| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/) | **1.24.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/) | **1.25.0** | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/) |
+| [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/) | 1.24.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/) | 1.23.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/) | 1.22.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/) | 1.21.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/) |
@@ -76,4 +80,4 @@ CI（`.github/workflows/build.yml`）は公開の経路に居らず、`main` へ
 公開が CI を通らないので、壊れた原稿の merge を止められるのはこの検査だけ —— だから赤は merge を止める。同梱した ReSpec が上流から
 離れていないかは、`.github/workflows/respec-drift.yml` が週に 1 回見る。
 
-ローカルで見るには `wacz-profile/1.24.0/index.html` をブラウザで開く。
+ローカルで見るには `wacz-profile/1.25.0/index.html` をブラウザで開く。

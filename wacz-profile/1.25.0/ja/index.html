@@ -1,0 +1,3484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>BrowserHive WACZ Profile 1.25.0 (日本語訳)</title>
+<!--
+  ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
+  wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
+  ReSpec は読者のブラウザで走る。詳しくは ../index.html を参照。
+
+  見出しは訳していない。ReSpec が見出しから id を生成するので、訳すと英語版と
+  id がずれ、節への参照が言語をまたいで通らなくなる。
+-->
+<script src="../../../assets/js/respec-w3c.js" class="remove" defer></script>
+<script class="remove">
+  var respecConfig = {
+    specStatus: "unofficial",
+    shortName: "browserhive-wacz-profile-ja",
+    // 未指定だと ReSpec が空文字を代入し (specStatus: "unofficial" には URL を
+    // 導く /TR/ が無い)、ヘッダは「キーは在るが偽」として文字列 "none" を出す。
+    // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
+    //
+    // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
+    // 版を出すたびに新しい版で上書きする。1.25.0 が出たときにこの文書が最新で
+    // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
+    latestVersion:
+      "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
+    editors: [{ name: "uraitakahito", url: "https://github.com/uraitakahito" }],
+    github: "uraitakahito/browserhive-specs",
+    // 参照はここで完結させる。SpecRef (api.specref.org) を引かない。
+    //
+    // spec-prod は ReSpec をビルド時に走らせるので、そのとき SpecRef が落ちていると
+    // <strong>本文と無関係に CI が赤くなる</strong>。実際 2026-08 以降 409 (Cloudflare 1001) を
+    // 返し続けており、PR #23 はそれだけの理由で止まっていた。
+    //
+    // 引く参照は 4 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
+    // しておく理由が無い。
+    localBiblio: {
+      WACZ: {
+        title: "Web Archive Collection Zipped (WACZ)",
+        href: "https://specs.webrecorder.net/wacz/1.1.1/",
+        publisher: "Webrecorder",
+        // 版を固定する。この profile が制約しているのは 1.1.1 であって、
+        // 将来の版ではない。
+        version: "1.1.1",
+      },
+      RFC2119: {
+        title:
+          "Key words for use in RFCs to Indicate Requirement Levels",
+        href: "https://www.rfc-editor.org/rfc/rfc2119",
+        authors: ["S. Bradner"],
+        date: "March 1997",
+        publisher: "IETF",
+      },
+      RFC3339: {
+        title: "Date and Time on the Internet: Timestamps",
+        href: "https://www.rfc-editor.org/rfc/rfc3339",
+        authors: ["G. Klyne", "C. Newman"],
+        date: "July 2002",
+        publisher: "IETF",
+      },
+      // WARC のレコードの決まりは 1.16.0 からこちらに在る。archive/ の WARC が名乗る版に
+      // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
+      "BROWSERHIVE-WARC-PROFILE": {
+        title: "BrowserHive WARC Profile",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/",
+        publisher: "BrowserHive",
+        version: "1.4.0",
+      },
+    },
+    lint: false,
+  };
+</script>
+</head>
+<body>
+
+<section id="abstract">
+  <p class="note" title="非公式翻訳 (Unofficial translation)">
+    これは BrowserHive WACZ Profile 1.25.0 の日本語訳です。<strong>正典は
+    <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
+    訳と原典が食い違った場合は原典が優先します。
+  </p>
+  <p>
+    本仕様は [[WACZ]] のプロファイルです。WACZ パッケージの書き方を制約し、BrowserHive が
+    その中に記録する追加の member を定めます。アーカイブだけを手にした読み手が、その取り込みが
+    何を取得し何を取得できなかったか、どのような設定の下で走ったかを判断できるようにするためです。
+  </p>
+</section>
+
+<section id="sotd">
+  <p>
+    これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
+    以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
+  </p>
+  <p class="note" title="1.25.0 は 1.24.0 と後方互換ではありません">
+    この版は、パッケージの WARC ファイルの名前を <code>data-NNN.warc.gz</code> から
+    <code>data-NNN.browserhive.warc.gz</code> に替え、それらを BrowserHive WARC Profile 1.4.0 に
+    適合させます（<a href="#archive-files"></a> を参照）。WARC ファイルを古い名前で持ち、それらが
+    WARC Profile 1.3.0 を名乗る 1.24.0 向けのパッケージは、1.25.0 に適合しません。この版はあわせて、
+    パッケージに <code>&hellip;.browserhive.wacz</code> という名前を勧め（<a href="#package-name"></a> を参照）、
+    読み手が名前から適合を推さないことを書きます。これは
+    意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
+    パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    BrowserHive はもうそれらを出力しません。
+  </p>
+  <p class="note" title="なぜ待ちを記録するのか">
+    取り込みは、ページをいつ撮ってよいかを決めなければならず、どの決め方も賭けです ——
+    固定の間は、もう揃っていたページから時間を奪い、揃っていないページには足りません。
+    合図で終える待ちは、合図より先に期限に当たることがあります。1.7.0 より前は、パッケージは
+    そのどれが起きたかを言えませんでした。これはパッケージを証拠として読む人にとって
+    重要です。「ページはこう見えていた」と「ページはまだ読み込み中に、こう見えていた」の
+    違いは、パッケージの他のどこからも取り戻せません —— 記録が言うのは届いたものであって、
+    取り込みが先へ進んだときにまだ向かっていたものではないからです。
+  </p>
+</section>
+
+<section id="introduction" class="informative">
+  <h2>Introduction</h2>
+  <p>
+    [[WACZ]] のパッケージは、何が取り込まれたかを述べます。しかし何が<em>抜けたか</em>は述べず、
+    どのような条件下で取り込みが走ったかも述べません。それらは取り込み時にしか知り得ず、
+    取り込みを行ったプロセスが終了した時点で失われます。
+  </p>
+  <p>
+    この喪失が問題になるのは、旅をするのがアーカイブの方だからです。3 年後にパッケージを開いた
+    読み手には、API の応答も、それを作った機械も、その機械が持っていたログも残っていません。
+    「ここに欠けているものはあるか」にパッケージ自身が答えられないなら、他の誰も答えられません。
+  </p>
+  <p>
+    そこで本プロファイルは、パッケージが取り込みについての自身の申告を運ぶことを要求します ——
+    どの本文が欠けていてそれはなぜか、どの上限が効いていたか、どのリクエストを送らず
+    どのリクエストを送って保持しなかったか、記録の前にページから何を取り除いたか、
+    どのシークレットを渡され、そのどれを残したか、
+    各オリジンがどの証明書を提示したか、取り込みが走りながら書いたログ、取り込みが
+    始まりを見た要求と、そのそれぞれがどう終わったか、そして取り込んだページの画像を残したか
+    どうかと、残さなかったときはその理由。これらは
+    [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
+  </p>
+</section>
+
+<section>
+  <h2>Conformance</h2>
+  <p>
+    本仕様の適合対象は<dfn>パッケージ</dfn>、すなわちファイル 1 つです。適合はファイルの性質で
+    あって、それを書くソフトウェアの性質ではありません。ある実装が、あるときは適合する
+    パッケージを、別のときは適合しないパッケージを書くことはあり得ます。本仕様はそのどちらで
+    あるかについて何も述べません。
+  </p>
+  <p>
+    適合するパッケージは、適合する [[WACZ]] パッケージです。本仕様は要求を<em>追加</em>します。
+    取り除くことも、緩めることもしません。
+  </p>
+  <p>
+    本仕様のいずれかの版に適合するパッケージを <dfn>BrowserHive WACZ</dfn> と呼びます。
+    BrowserHive WACZ はどれも WACZ パッケージです。それ以外の WACZ パッケージが何を持つかに
+    ついて、本仕様は何も求めません。
+  </p>
+  <p>
+    本仕様における <em class="rfc2119">MUST</em>（〜しなければならない）、
+    <em class="rfc2119">MUST NOT</em>（〜してはならない）、
+    <em class="rfc2119">SHOULD</em>（〜すべきである）、
+    <em class="rfc2119">MAY</em>（〜してもよい）は [[RFC2119]] の記述に従って解釈されます。
+  </p>
+  <p>
+    JSON の member 名は大文字と小文字を区別します。timestamp を保持すると記した member の値は、
+    UTC の [[RFC3339]] date-time で<em class="rfc2119">なければならない</em>。
+  </p>
+</section>
+
+<section id="the-browserhive-capture-member">
+  <h2>The <code>browserhive:capture</code> member</h2>
+
+  <p>
+    適合するパッケージの <code>datapackage.json</code> は、値が JSON オブジェクトである
+    <dfn data-lt="browserhive:capture">browserhive:capture</dfn> という名前の member を持た
+    <em class="rfc2119">なければならない</em>。
+  </p>
+  <p>
+    この member を <code>config</code> または <code>metadata</code> の中に置いては
+    <em class="rfc2119">ならない</em>。これらの名前は [[WACZ]] の読み手にとって意味を持ちます
+    （<a href="#replay-constraints"></a> を参照）。
+  </p>
+  <p>
+    ここで定義されていない member が <code>browserhive:capture</code> に存在しても
+    <em class="rfc2119">よい</em>。読み手は認識しない member を無視し
+    <em class="rfc2119">なければならない</em>。
+  </p>
+
+  <section id="conformance-declaration">
+    <h3>Conformance declaration</h3>
+    <p>
+      <code>browserhive:capture</code> は、そのパッケージが満たすと主張する本仕様の版の URL を
+      値とする <dfn>conformsTo</dfn> という member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <pre class="json">
+"browserhive:capture": {
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/"
+}</pre>
+    <p>
+      宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
+      <a href="#replay-constraints">そちらがこの用途に使えない</a>ためです。
+    </p>
+    <p>
+      読み手は <a>browserhive:capture</a> が存在するというだけで、また、パッケージやその中の
+      ファイルの名前から（<a href="#package-name"></a> と <a href="#archive-files"></a> を参照）、
+      適合を推定しては <em class="rfc2119">ならない</em>。<a>conformsTo</a> が無ければ、そのパッケージが
+      どの版に向けて書かれたかは不明です。
+    </p>
+  </section>
+
+  <section id="build">
+    <h3><code>build</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、パッケージを作ったソフトウェアを機械可読な形で
+      識別する <dfn>build</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>version</code></td><td>string</td><td>はい</td><td>リリースの識別子。</td></tr>
+        <tr><td><code>revision</code></td><td>string</td><td>はい</td><td>ビルド元のソース revision。</td></tr>
+        <tr><td><code>buildTime</code></td><td>string</td><td>はい</td><td>ソフトウェアがビルドされた時刻。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"build": {
+  "version": "3.4.0",
+  "revision": "0776cae",
+  "buildTime": "2026-08-21T04:04:09.000Z"
+}</pre>
+    <p>
+      <code>version</code> の書式は定めません。リリースそのものから作られた build は
+      <code>"3.4.0"</code> のような値を持ちますが、リリースとリリースの間で作られた build は
+      <code>"3.4.0-12-gabc1234"</code> のように、直近のリリースからの距離を含んだ値になり
+      得ます。どちらも「どの build か」を言うという点では同じで、読み手はこれを版数として
+      解釈するのではなく、<strong>同じ値なら同じ build である</strong>という識別子として
+      扱うべきです。
+    </p>
+    <p class="note">
+      [[WACZ]] は既に <code>software</code> を定めています。あちらは散文で、書き方が producer
+      ごとに違うため誰も解析しません。<code>build</code> があるのは、同じ事実を形式を推測せずに
+      機械が読めるようにするためです。
+    </p>
+  </section>
+
+  <section id="browser">
+    <h3><code>browser</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みを行った browser を記述する <dfn>browser</dfn>
+      member を持た<em class="rfc2119">なければならない</em>。値が string である
+      <code>product</code> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <pre class="json">
+"browser": {
+  "product": "Chrome/151.0.7922.137"
+}</pre>
+    <p class="note">
+      綴りは定めません。値は browser 自身が名乗るものなので、別のエンジンが作った
+      パッケージは別の形を運びます。読み手は 2 つの値が等しいかどうかを比べられますが、
+      書式を仮定することはできません。
+    </p>
+    <p>
+      値は代用のものであっては<em class="rfc2119">ならない</em>。これを取得できない producer は、
+      適合するパッケージを作っては<em class="rfc2119">ならない</em>。記録した browser が不明な
+      アーカイブはこのプロファイルの外にあり、member を省くことはそれを表明する手段では
+      ありません。
+    </p>
+  </section>
+
+  <section id="settings">
+    <h3><code>settings</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、この取り込みに<em>効いていた</em>設定を記録する
+      <dfn>settings</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <p>
+      値は解決後の値で<em class="rfc2119">なければならない</em>。要求が指定した値ではありません。
+      何も指定しない要求も何らかの設定の下で走っており、アーカイブが報告すべきなのはその設定です。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>signature</code></td><td>string</td><td>はい</td>
+            <td><code>"required"</code> または <code>"none"</code>。この取り込みが署名なしで
+            出されてよかったか。</td></tr>
+        <tr><td><code>viewport</code></td><td>object</td><td>はい</td>
+            <td>member <code>width</code> と <code>height</code>。ともに整数、単位は CSS ピクセル。</td></tr>
+        <tr><td><code>devicePixelRatios</code></td><td>array of number</td><td>はい</td>
+            <td>ページを読み込んだときの device pixel ratio を、読み込んだ順に。要素数が
+            そのまま読み込みの回数。</td></tr>
+        <tr><td><code>session</code></td><td>string</td><td>はい</td>
+            <td>その取り込みのために作られ、終われば捨てられる browser context で
+            走ったのか、取り込みをまたいで使い回される context で走ったのか。
+            前の取り込みが残した状態にパッケージが依存しうるかどうかを、
+            読み手はこれで判定します。</td></tr>
+        <tr><td><code>userAgent</code></td><td>string</td><td>はい</td>
+            <td>取り込みが送った <code>User-Agent</code>。要求が指定した値を解決した後の値で、
+            指定が無ければブラウザ自身の値。</td></tr>
+        <tr><td><code>behaviors</code></td><td>array of object</td><td>はい</td>
+            <td>読み込み後に走った behavior。走った順のまま。
+            各項目は <code>id</code>（その behavior が走った名前）と
+            <code>origin</code>（<code>"builtin"</code>・<code>"site"</code>・
+            <code>"custom"</code> のいずれか）を持ちます。自前の behavior を
+            持たない producer は、すべての項目に <code>"custom"</code> と書きます。
+            <a href="#behaviors-directory">behaviors ディレクトリ</a>を参照。</td></tr>
+        <tr><td><code>preload</code></td><td>array of object</td><td>はい</td>
+            <td>遷移の前に走らせるために持ち込まれたスクリプト。登録した順のまま ——
+            <strong>報告したもの</strong>ではありません（それら自身は何も報告できないため）。
+            各項目は <code>id</code>（持ち込まれた名前）を持ちます。空の配列は
+            「1 本も持ち込まれなかった」と述べます。
+            <a href="#preload-directory">preload ディレクトリ</a>を参照。</td></tr>
+        <tr><td><code>variables</code></td><td>object</td><td>はい</td>
+            <td>behavior が読むために要求が渡した値を、名前ごとに。値はどれも文字列。
+            空のオブジェクトは「1 つも渡されなかった」と述べます。
+            <a href="#behaviors-runtime"></a> を参照。</td></tr>
+        <tr><td><code>secrets</code></td><td>array of string</td><td>はい</td>
+            <td>behavior が読むために要求が秘密として渡した値の名前を、名前順に。
+            名前だけ —— この member は値を持ちません（下を参照）。空の配列は
+            「1 つも渡されなかった」と述べます。</td></tr>
+        <tr><td><code>secretArchive</code></td><td>object</td><td>はい</td>
+            <td>それらのシークレットのうち、要求が WARC のレコードに残すことを求めたもの。
+            各 member の名前は <code>secrets</code> の項目で、値は文字列
+            <code>"keep"</code>。ここに名前の無いシークレットは隠します。
+            空のオブジェクトは「1 つも残さなかった」と述べます。
+            <a href="#secret-values"></a> を参照。</td></tr>
+        <tr><td><code>limits</code></td><td>object</td><td>はい</td>
+            <td>この取り込みに効いていた上限。member <code>maxResponseBytes</code> と
+            <code>maxTaskBytes</code>（本文の上限）、<code>maxWarcBytes</code>（新しい WARC ファイルを
+            始める大きさ。<a href="#archive-files"></a> を参照）。3 つとも整数で、単位はバイト。</td></tr>
+        <tr><td><code>urlPolicies</code></td><td>array of object</td><td>はい</td>
+            <td>効いていた URL パターンのそれぞれに対して取り込みが何をしたかを、
+            <strong>評価した順に</strong>。<a>urlPolicies</a> を参照。</td></tr>
+        <tr><td><code>contentTypePolicies</code></td><td>array of object</td><td>はい</td>
+            <td>効いていたメディア型のそれぞれに対して取り込みが何をしたか。
+            <a>contentTypePolicies</a> を参照。</td></tr>
+        <tr><td><code>acceptLanguage</code></td><td>string</td><td>いいえ</td>
+            <td>取り込みが設定したときにのみ存在する。オリジンが返すものが変わるため。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"settings": {
+  "signature": "none",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1],
+  "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+  "behaviors": [
+    { "id": "autoscroll", "origin": "builtin" },
+    { "id": "autofetch", "origin": "builtin" }
+  ],
+  "variables": {},
+  "secrets": [],
+  "secretArchive": {},
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
+  },
+  "urlPolicies": [
+    { "pattern": "*://*.example-analytics.com/*", "action": "deny" }
+  ],
+  "contentTypePolicies": []
+}</pre>
+    <p>
+      この例の <code>session</code> は、取り込みがそれ自身の context で走ったことを
+      表しています。<code>devicePixelRatios</code> の要素が 1 つなのは、ページを
+      1 回だけ読み込んだという意味です。<code>behaviors</code> に並ぶ 2 つは実際に走った
+      behavior です —— 有効化されていた
+      ものの一覧ではありません。<code>userAgent</code> がブラウザ自身の値なのは、要求が指定
+      しなかったからです。<code>acceptLanguage</code> は、この取り込みが設定しなかった
+      ので在りません。<code>variables</code>・<code>secrets</code>・<code>secretArchive</code> が
+      空なのは、要求が behavior に値を 1 つも渡さなかったからです。値そのものは producer が決めるもので、ここに挙げた綴りを
+      このプロファイルが定めているわけではありません。
+    </p>
+    <p class="note" title="One vocabulary here is not the producer's">
+      例外は <code>origin</code> です。behavior の <code>id</code> はそれを提供した側が
+      決めた名前で、本仕様はその綴りについて何も述べません。しかし
+      <code>origin</code> が答えるのは behavior についての問いではなく
+      <strong>パッケージについての問い</strong> —— そのコードは producer から来たのか、
+      リクエストから来たのか —— なので、この 3 値はここで定めます。
+    </p>
+    <p class="note">
+      <code>devicePixelRatios</code> が数値ではなくリストなのは、取り込みがページを 2 回以上
+      読み込むことがあるためです。単一の値で記録すると、在る描画が無いと読み手に
+      伝えてしまいます。
+    </p>
+    <p>
+      値は読み込んだ<em>順序</em>で並んで<em class="rfc2119">いなければならない</em>。読み手が
+      「どの版がアーカイブに在るか」だけでなく「どの版が最後に描かれたか」を言えるように
+      するためです —— ページの見た目を伴う成果物は、最後の読み込みが残した状態に従います。
+    </p>
+    <p>
+      2 回読み込む取り込みでは、読み込んだ数だけ値が並びます。要求が <code>User-Agent</code> を
+      指定した場合は送った値が現れ、<code>acceptLanguage</code> を指定した場合は、それもここに
+      現れます。behavior に値を渡した
+      要求では、その値も現れます —— 変数は値ごと、シークレットは名前だけで、
+      残すことを求めたものは <code>secretArchive</code> に:
+    </p>
+    <pre class="json">
+"settings": {
+  "signature": "required",
+  "viewport": { "width": 1280, "height": 800 },
+  "devicePixelRatios": [1, 2],
+  "session": "isolated",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 BrowserHive",
+  "behaviors": [
+    { "id": "autoscroll", "origin": "builtin" },
+    { "id": "example.com:gallery", "origin": "custom" }
+  ],
+  "variables": { "query": "gallery" },
+  "secrets": ["api_token", "member_id"],
+  "secretArchive": { "member_id": "keep" },
+  "acceptLanguage": "ja,en;q=0.9",
+  "limits": {
+    "maxResponseBytes": 20971520,
+    "maxTaskBytes": 209715200,
+    "maxWarcBytes": 1000000000
+  },
+  "urlPolicies": [],
+  "contentTypePolicies": [{ "prefix": "video/", "action": "no-body" }]
+}</pre>
+    <p>
+      2 つは<strong>測る対象が違います</strong>。<code>maxResponseBytes</code> は
+      レスポンス 1 件の本文に掛かり、<code>maxTaskBytes</code> はこのパッケージへ書いた
+      本文の累計に掛かります。写しとスクリーンショットも、同じ線に照らします: 残すと、
+      取り込みが残すバイト数がその線を超えるものは、残しません（<a>snapshots</a> と
+      <a>screenshots</a> を参照）。
+    </p>
+    <p>
+      この違いは読み手にとって実際的です。<code>maxResponseBytes</code> は 1 件ずつを量るので、
+      それを下回るレスポンスは何件でも入り、<strong>パッケージ全体の大きさはこの値からは
+      分かりません</strong>。<code>maxTaskBytes</code> は積み上げた総量を見るので、線を越えた
+      後は<strong>大きさに関わらず</strong>本文が落ちます —— 落ちた中に小さなレスポンスが
+      混じっていても、それは矛盾ではありません。
+    </p>
+    <p>
+      <code>maxWarcBytes</code> は本文の上限ではありません。これで落ちる本文は無く、producer が
+      いまの WARC ファイルを閉じて次を始める大きさです（<a href="#archive-files"></a> を参照）。
+      ここに記録するのは、読み手が <code>archive/</code> のファイルを、それを生んだ線と並べて
+      確かめられるようにするためです。
+    </p>
+    <p>
+      本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
+      <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
+      アーカイブが言える場所は、ここだけです ——
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
+      実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
+    </p>
+    <p class="note">
+      <a>completeness</a> の <code>truncatedUrls</code> は、この 2 つのどちらを超えて落ちたのかを
+      <strong>区別しません</strong>。
+      対処が違う (前者は 1 件が大きすぎ、後者はページ全体が重い) にもかかわらずです。
+      区別が要る読み手は、パッケージの外 —— 取り込みが出した報告 —— を見ることになります。
+    </p>
+    <p>
+      <code>userAgent</code> は送った値で、要求が書いた文字列ではありません。要求は値の一部を
+      producer に埋めさせることができ、オリジンが見たのは埋めた後の値だからです。
+      <code>WARC-Target-URI</code> が <code>mainPageURL</code> である <code>request</code> レコードは
+      どれも、この値を <code>User-Agent</code> ヘッダに持た<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <p class="note">
+      決まりが掛かるのはそのレコードだけです。ページ自身のスクリプトが出す要求は別の値を持ちうるし、
+      service worker の要求はパッケージに入らないことがあります。この値が何であれ、<a>browser</a> は
+      取り込みを行ったブラウザを名指し続けるので、読み手はオリジンに何と伝えたかと、実際に何が
+      取り込んだかを区別できます。
+    </p>
+    <p>
+      <code>variables</code> と <code>secrets</code> は、要求が behavior に読ませるために渡したものを
+      記録します（<a href="#behaviors-runtime"></a> を参照）。<code>secretArchive</code> は、
+      シークレットのどれを残すことを求めたかを記録します。要求が何も渡さなかったときも、
+      3 つとも存在し<em class="rfc2119">なければならない</em>（MUST）。空のオブジェクトと空の配列が、
+      書き漏らしではなく主張になるようにするためです。
+    </p>
+    <p>
+      <code>variables</code> は値を運びます。語を検索する behavior は何らかの語の下で走っており、
+      パッケージを証拠として読む人は、それがどの語だったかを言えなければなりません。
+      コードだけではそれが言えません —— 同じコードが、どの値の下でも走るからです。
+    </p>
+    <p>
+      <code>secrets</code> は名前だけを運びます。名前を記録するのは、behavior がこの member の
+      持たない何かを読んだことを、読み手が分かるようにするためです。
+      producer は、シークレットの値を <code>secrets</code> と <code>secretArchive</code> に
+      書いては<em class="rfc2119">ならない</em>（MUST NOT）。パッケージの残りが値について何を持つかは
+      <a href="#secret-values"></a> が、behavior がその値をどうするかは
+      <a href="#security-and-privacy-considerations"></a> が述べます。
+    </p>
+    <p>
+      要求が何も言わないシークレットは隠します。だから <code>secretArchive</code> は、要求が
+      残すことを求めたものだけを挙げます。<code>secretArchive</code> の名前はどれも
+      <code>secrets</code> の項目で<em class="rfc2119">なければならず</em>（MUST）、値はどれも文字列
+      <code>"keep"</code> で<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <p class="note" title="Names are the request's">
+      behavior の <code>id</code> と同じく、<code>variables</code>・<code>secrets</code>・
+      <code>secretArchive</code> の名前は値を渡した側が決めたもので、本仕様はその綴りについて何も述べません。<code>secrets</code> の
+      並びだけはここで定めます —— 名前順です。同じ名前を読んだ 2 つのパッケージが、同じ並びで
+      それを挙げるようにするためです。
+    </p>
+  </section>
+
+  <section id="completeness">
+    <h3><code>completeness</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、そのパッケージが保持していないもの —— 欠けている本文と、
+      落ちた target —— についての自身の申告である <dfn>completeness</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>bodylessUrls</code></td><td>array of string</td><td>はい</td>
+            <td><code>304</code> としてしか現れなかった URL。本文が wire を渡っていないので、
+            アーカイブは保持し得ません。</td></tr>
+        <tr><td><code>truncatedUrls</code></td><td>array of string</td><td>はい</td>
+            <td>サイズ上限に達して取り込みが本文を落とした URL。</td></tr>
+        <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
+            <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
+            アーカイブが本文を持たない URL（[[BROWSERHIVE-WARC-PROFILE]] の
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
+        <tr><td><code>crashedTargets</code></td><td>array of object</td><td>はい</td>
+            <td>取り込みの間に renderer が落ちた、主文書以外の target
+            （<a href="#completeness-crashed-targets"></a> を参照）。</td></tr>
+        <tr><td><code>complete</code></td><td>boolean</td><td>はい</td>
+            <td>4 つの配列がすべて空のとき、かつそのときに限り <code>true</code>。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"completeness": {
+  "bodylessUrls": [],
+  "truncatedUrls": [],
+  "uninterceptedUrls": [],
+  "crashedTargets": [],
+  "complete": true
+}</pre>
+    <p>
+      何も欠けなかった取り込みはこの形になります。<code>complete</code> は 4 つの配列から
+      導かれるので、空の配列 4 つと <code>false</code> という組み合わせは現れません。
+    </p>
+    <p>
+      次は、3 つの理由すべてで本文を欠いた取り込みです:
+    </p>
+    <pre class="json">
+"completeness": {
+  "bodylessUrls": [
+    "https://example.com/assets/app.css"
+  ],
+  "truncatedUrls": [
+    "https://example.com/media/hero.mp4",
+    "https://example.com/media/poster.png"
+  ],
+  "uninterceptedUrls": [
+    "https://example.com/api/feed"
+  ],
+  "crashedTargets": [],
+  "complete": false
+}</pre>
+    <p>
+      この取り込みでは、CSS が <code>304</code> としてしか現れませんでした —— 本文が wire を
+      渡っていないので、アーカイブは持ちようがありません。動画とポスター画像は上限に当たって
+      落ちたものです。feed の本文は届きましたが、producer がバイト列として読めませんでした。
+      同じ URL が 2 回落ちても、配列には 1 度だけ現れます。
+    </p>
+    <p>
+      同じページの 2 つの取り込みを比較できるよう、URL の 3 つの配列はコードポイント順に整列されて
+      <em class="rfc2119">いなければならない</em>。
+    </p>
+    <p>
+      3 つが別の member なのは、求められる対応が違うからです。<code>304</code> はオリジン側の
+      事情でここからは回復できません。上限で落とした本文はこちら側の事情で、上限を上げれば
+      戻ります。取り込めなかった本文は producer の失敗で、リクエストの設定をどう変えても戻りません。
+    </p>
+    <p>
+      正当に本文を持たないレスポンスを列挙しては<em class="rfc2119">ならない</em> ——
+      redirect、<code>204</code>、要求者が設定した方針で省かれた本文
+      (<a>urlPolicies</a> の <code>no-body</code>、または <a>contentTypePolicies</a> の項目)、および
+      隠すシークレットの値を持つので落とした本文。最後のものは、要求者がそのシークレットを
+      残さなかったことで選んだ結果です（<a href="#secret-values"></a> を参照）。
+      これらを報告しても、読み手が既に決めたこと以上を何も伝えません。
+    </p>
+    <p>
+      これは<strong>省いた本文の大きさに関係なく</strong>成り立ちます。方針で省いた本文は
+      取り込みがそもそも取りに行かなかったもので、上限で落とされたはずがありません。
+      <code>maxResponseBytes</code> より大きくても、累計が <code>maxTaskBytes</code> に達した後に
+      届いても、<code>truncatedUrls</code> に載せては<em class="rfc2119">ならない</em>（MUST NOT）。
+      そこに載せれば、要求者が保存しないよう頼んだ本文を、上限を上げれば取り戻せると
+      読み手に伝えることになります。
+    </p>
+    <p>
+      WARC は、同じ本文をレコード 1 つずつで述べます。サーバが送った本文を持たずに記録した
+      応答には、それぞれ
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
+      （[[BROWSERHIVE-WARC-PROFILE]]）が付き、その <code>truncated</code> が理由を言います。
+      サイズ上限で落とした本文 —— <code>too-large</code> と <code>task-cap</code> —— の URL は
+      <code>truncatedUrls</code> に、バイト列として得られなかった本文 ——
+      <code>not-intercepted</code> —— の URL は <code>uninterceptedUrls</code> に載ります。
+      方針で省いた本文 —— <code>url-policy</code> と <code>content-type</code> —— と、
+      隠すシークレットのために落とした本文 —— <code>secret</code> —— は、どちらにも載りません。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、これらの値を producer の上限と方針で定め、その名前は
+      言いません。パッケージの中では、それは <a>settings</a> に記録したものです:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th><code>truncated</code></th><th><a>settings</a> の中の上限・方針</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>too-large</code></td>
+            <td>本文が <code>limits.maxResponseBytes</code> より大きかった。</td></tr>
+        <tr><td><code>task-cap</code></td>
+            <td>本文を書けば、パッケージに書いた本文の累計が
+            <code>limits.maxTaskBytes</code> を超えるところだった。</td></tr>
+        <tr><td><code>url-policy</code></td>
+            <td>URL に最初に当たった <a>urlPolicies</a> の項目の action が
+            <code>no-body</code>。</td></tr>
+        <tr><td><code>content-type</code></td>
+            <td><a>contentTypePolicies</a> の項目が media type に当たった。</td></tr>
+        <tr><td><code>not-intercepted</code></td>
+            <td>設定は無い。本文は wire を渡ったが、producer がバイト列として
+            得られなかった。</td></tr>
+        <tr><td><code>secret</code></td>
+            <td>上限でも方針でもない。本文が文字の本文でなく、隠すシークレットの値を持っていた。
+            隠すシークレットは、<code>secrets</code> の名前のうち <code>secretArchive</code> に
+            無いものと、それとして扱う値です（<a href="#secret-values"></a> を参照）。</td></tr>
+      </tbody>
+    </table>
+
+    <section id="completeness-crashed-targets">
+      <h4><code>crashedTargets</code></h4>
+      <p>
+        ページは複数の renderer プロセスにまたがって動くことがあります。別サイトの iframe は自分の
+        プロセスを持ちます。その renderer が落ちても、ページの残りは動き続け、取り込みは終えられますが、
+        その target が見せていたものは失われます。スクリーンショットのその場所には Chromium が描く灰色の枠が
+        写りますが、それは画像の中の絵で、アーカイブを読む道具には読めません。保存した文書には、ふだんの iframe の
+        要素が残るだけです。だからパッケージが自分で言います。
+      </p>
+      <p>
+        <code>crashedTargets</code> は、取り込みが始まってからパッケージを組み立てるまでの間に renderer が
+        落ちた、主文書以外の target ごとに 1 つの項目を持た<em class="rfc2119">なければならない</em>。
+      </p>
+      <table class="simple">
+        <thead>
+          <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>type</code></td><td>string</td><td>はい</td>
+              <td>target の種類。ブラウザ自身の語のまま（<code>iframe</code>・
+              <code>service_worker</code> など）。</td></tr>
+          <tr><td><code>url</code></td><td>string</td><td>いいえ</td>
+              <td>target の URL。無い場合は下を参照。</td></tr>
+          <tr><td><code>status</code></td><td>string</td><td>はい</td>
+              <td>renderer の終わり方。ブラウザ自身の語のまま（プロセスの外から止められたなら
+              <code>killed</code>、プロセス自身が落ちたなら <code>crashed</code> など）。</td></tr>
+        </tbody>
+      </table>
+      <pre class="json">
+"completeness": {
+  "bodylessUrls": [],
+  "truncatedUrls": [],
+  "uninterceptedUrls": [],
+  "crashedTargets": [
+    {
+      "type": "iframe",
+      "url": "https://ads.example.net/slot/1",
+      "status": "killed"
+    }
+  ],
+  "complete": false
+}</pre>
+      <p>
+        <code>url</code> は、それに最初に当たる <a>urlPolicies</a> の項目の action が
+        <code>no-archive</code> か <code>deny</code> のとき、および <a>document</a> が
+        <code>withheld</code> を持つとき、省か<em class="rfc2119">なければならない</em>。target の URL は
+        ページから来るので、要求者が残さないよう頼んだものを運び出しては<em class="rfc2119">ならない</em>。
+      </p>
+      <p>
+        配列は <code>url</code>、<code>type</code>、<code>status</code> の順に、それぞれコードポイント順で整列されて
+        <em class="rfc2119">いなければならない</em>。<code>url</code> の無い項目は、在る項目より前に置きます。
+      </p>
+      <p>
+        主文書はここに現れません。パッケージを組み立てる前に主文書の renderer が落ちれば、取り込みは失敗し、
+        パッケージは書かれません。組み立てを始めた後は renderer が要らないので、落ちてもパッケージの申告は
+        変わりません。同じサイトの iframe と dedicated worker は主文書の renderer の中で動くので、
+        それらが落ちることは主文書が落ちることです。
+      </p>
+    </section>
+  </section>
+
+  <section id="coverage">
+    <h3><code>coverage</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みがページのどこまで下れたかを記述する
+      <dfn>coverage</dfn> member を持っても<em class="rfc2119">よい</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>scrollExhausted</code></td><td>boolean</td><td>はい</td>
+            <td>スクロールがページの終端ではなく段数の上限で止まったとき <code>true</code> ——
+            つまりその下にあるものが一度も要求されていないとき。</td></tr>
+        <tr><td><code>scrollSteps</code></td><td>number</td><td>はい</td><td>実際に進んだ段数。</td></tr>
+        <tr><td><code>scrolledPx</code></td><td>number</td><td>はい</td>
+            <td>到達した深さの概算。段数 × viewport の高さ。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"coverage": {
+  "scrollExhausted": true,
+  "scrollSteps": 40,
+  "scrolledPx": 32000
+}</pre>
+    <p class="note">
+      3 つの値は互いを読み合うためのものです。<code>scrolledPx</code> は
+      <code>scrollSteps</code> に <a>settings</a> が記録した viewport の高さを
+      掛けたもの —— ここでは 40 × 800 —— なので、読み手は一方を他方で検算できます。
+      そして <code>scrollExhausted</code> が <code>true</code> である以上、
+      この 32,000 ピクセルは取り込みが<em>止まった</em>地点であって、ページが
+      終わった地点ではありません。その下にあったものは一度も要求されておらず、
+      したがってパッケージの他のどこにも痕跡を残していません。
+    </p>
+    <p>
+      スクロールの behavior が何も報告しなかった場合、<code>coverage</code> は存在しては
+      <em class="rfc2119">ならない</em>。既定値を入れて書いては<em class="rfc2119">ならない</em> ——
+      <code>scrollExhausted: false</code> はページを覆えたという主張であり、一度もスクロール
+      しなかった取り込みはその主張を得ていません。
+    </p>
+  </section>
+
+  <section id="settle">
+    <h3><code>settle</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、読み込み後の待ちがどう終わったか ——
+      ページが静まって終わったのか、まだ動いているうちに期限で終わったのか —— を述べる
+      <dfn>settle</dfn> member を持た<em class="rfc2119">なければならない</em>。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>strategy</code></td><td>string</td><td>はい</td>
+            <td>どの合図を、どの順で見たか。この版が定めるのは <code>"fully-loaded"</code> ——
+            <code>load</code>、次に <code>limits.minMs</code> の間を置き、それから
+            <code>network</code>・<code>cpu</code>・<code>dom</code> を並べて見る。</td></tr>
+        <tr><td><code>endedBy</code></td><td>string</td><td>はい</td>
+            <td>見ていた合図がすべて期限の前に満ちたとき <code>"quiet"</code>、そうでなければ
+            <code>"deadline"</code>。</td></tr>
+        <tr><td><code>waitedMs</code></td><td>number</td><td>はい</td>
+            <td>navigation が返ってから待ちが終わるまでのミリ秒。</td></tr>
+        <tr><td><code>devicePixelRatio</code></td><td>number</td><td>はい</td>
+            <td>この観測がどの読み込みのものか。<code>devicePixelRatios</code> の要素の 1 つで、
+            複数あるときは最後のもの。</td></tr>
+        <tr><td><code>limits</code></td><td>object</td><td>はい</td>
+            <td>効いていた上限。どれも数値で、<code>minMs</code>、<code>maxMs</code>（期限）、
+            <code>quietMs</code>（静止の合図がそれぞれ満たすべき窓）、
+            <code>networkConcurrency</code>（静かとみなしてよい要求の数）。</td></tr>
+        <tr><td><code>load</code></td><td>object</td><td>はい</td>
+            <td><code>atMs</code>: document が読み込み終わったのを見た時刻。</td></tr>
+        <tr><td><code>network</code></td><td>object</td><td>はい</td>
+            <td><code>quietAtMs</code>: in-flight の要求が <code>limits.networkConcurrency</code>
+            以下のまま <code>limits.quietMs</code> 続いた時刻。</td></tr>
+        <tr><td><code>cpu</code></td><td>object</td><td>はい</td>
+            <td><code>quietAtMs</code>: long task —— メインスレッドを 50&nbsp;ms 以上握ったタスク ——
+            が <code>limits.quietMs</code> の間走らなかった時刻。</td></tr>
+        <tr><td><code>dom</code></td><td>object</td><td>はい</td>
+            <td><code>quietAtMs</code>: 要素の出入りも文字の書き換えも <code>limits.quietMs</code>
+            の間無かった時刻。属性の変化は数えない。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"settle": {
+  "strategy": "fully-loaded",
+  "endedBy": "quiet",
+  "waitedMs": 2310,
+  "devicePixelRatio": 1,
+  "limits": { "minMs": 1000, "maxMs": 3000, "quietMs": 1000, "networkConcurrency": 0 },
+  "load": { "atMs": 210 },
+  "network": { "quietAtMs": 2205 },
+  "cpu": { "quietAtMs": 2104 },
+  "dom": { "quietAtMs": 2004 }
+}</pre>
+    <p>
+      時刻はすべて navigation が返ってからのミリ秒で、<code>waitedMs</code> と同じ時計で測る。
+      producer が自分の操作の間に差し込んだ間は、この時計に含まない。
+    </p>
+    <p>
+      合図の時刻は、合図が満ちたときは数値、先に期限が来たときは <code>null</code> である。
+      時刻は <code>null</code> であっても書か<em class="rfc2119">なければならない</em>。
+      書かずに省くと「この合図は見ていなかった」と読まれ、それは別の事実です。
+    </p>
+    <p>
+      <code>endedBy</code> は 4 つの時刻から導かれる。producer は、どれかが <code>null</code> で
+      あるのに <code>"quiet"</code> を書いては<em class="rfc2119">ならず</em>、どれも
+      <code>null</code> でないのに <code>"deadline"</code> を書いてもならない。
+    </p>
+    <p>
+      期限が先に来たページ:
+    </p>
+    <pre class="json">
+"settle": {
+  "strategy": "fully-loaded",
+  "endedBy": "deadline",
+  "waitedMs": 3116,
+  "devicePixelRatio": 1,
+  "limits": { "minMs": 1000, "maxMs": 3000, "quietMs": 1000, "networkConcurrency": 0 },
+  "load": { "atMs": 188 },
+  "network": { "quietAtMs": 2011 },
+  "cpu": { "quietAtMs": 2108 },
+  "dom": { "quietAtMs": null }
+}</pre>
+    <p>
+      ここではページが文字を書き換え続けていた —— たとえば時計 —— ので、DOM は 1 秒と
+      静かにならず、取り込みは 3 秒の期限で先へ進みました。通信と CPU は静まっており、
+      静まらなかったのは DOM だけです。
+    </p>
+    <p class="note" title="期限は失敗ではない">
+      <code>endedBy: "deadline"</code> は取り込みの失敗を意味しません。パッケージは、その時点までに
+      ページがなったものを保持しています。記録しているのはページが静まっていなかったことで、
+      それはパッケージを証拠として読む人が知る必要があり、しかもパッケージの他のどこからも
+      取り戻せないものです。
+    </p>
+    <p class="note" title="静かさが主張すること、しないこと">
+      静止の合図はそれぞれ「<code>limits.quietMs</code> の間ページが動かなかったか」を問うもので、
+      「この先も動かないか」を問うものではありません。窓より長く黙ってから変わるページは、
+      変わる前に静まったと読まれます。
+    </p>
+  </section>
+
+  <section id="dismissal">
+    <h3><code>dismissal</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みが記録の前にページから何を取り除いたか、
+      そして何を探したかを記録する <dfn>dismissal</dfn> member を持っても<em class="rfc2119">よい</em>。
+    </p>
+    <p>
+      同意バナーを取り除いた取り込みは、そのあと保存する文書そのものを変えています。
+      それを述べるものは他にありません —— 取り除かれた要素は WARC にも索引にも
+      描画後のスナップショットにも痕跡を残さず、読み手はもともとバナーの無いページと
+      区別できません。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>selectors</code></td><td>object の配列</td><td>はい</td>
+            <td>効いていた選択子。<strong>評価した順のまま。</strong>
+            member は <code>framework</code> と <code>selector</code> で、どちらも文字列。</td></tr>
+        <tr><td><code>heuristic</code></td><td>object</td><td>はい</td>
+            <td>どの選択子も名指ししていない要素の除去を支配していた閾値。
+            member は <code>enabled</code> (boolean)・
+            <code>minViewportCoverageRatio</code> (number)・
+            <code>minZIndex</code> (number)。</td></tr>
+        <tr><td><code>framework</code></td><td>文字列または null</td><td>いいえ</td>
+            <td>最初に一致した項目の <code>framework</code>。閾値だけが発火したときは
+            <code>"heuristic"</code>。何も取り除かなかったときは <code>null</code>。</td></tr>
+        <tr><td><code>removedSelectors</code></td><td>文字列の配列</td><td>いいえ</td>
+            <td>要素が取り除かれた選択子。<code>selectors</code> の部分集合で、評価した順。</td></tr>
+        <tr><td><code>unusableSelectors</code></td><td>文字列の配列</td><td>いいえ</td>
+            <td>ページを読む側が評価できなかった <code>selectors</code> の項目。
+            これらが何にも当たらなかったのは選択子として成立していなかったからであって、
+            「当たらなかった」とは別の主張。</td></tr>
+        <tr><td><code>removedOverlays</code></td><td>number</td><td>いいえ</td>
+            <td>選択子ではなく閾値によって取り除かれた要素の数。</td></tr>
+        <tr><td><code>devicePixelRatio</code></td><td>number</td><td>いいえ</td>
+            <td>どの読み込みの観測か。<code>devicePixelRatios</code> の項目のいずれか。</td></tr>
+        <tr><td><code>unreadable</code></td><td>true</td><td>いいえ</td>
+            <td>除去を試みたが遂行できなかったときに在る。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"dismissal": {
+  "selectors": [
+    { "framework": "OneTrust", "selector": "#onetrust-banner-sdk" },
+    { "framework": "Cookiebot", "selector": "#CybotCookiebotDialog" }
+  ],
+  "heuristic": { "enabled": true, "minViewportCoverageRatio": 0.3, "minZIndex": 1000 },
+  "framework": "OneTrust",
+  "removedSelectors": ["#onetrust-banner-sdk"],
+  "unusableSelectors": [],
+  "removedOverlays": 0,
+  "devicePixelRatio": 1
+}</pre>
+    <p>
+      除去を試みなかった場合、<code>dismissal</code> は存在しては
+      <em class="rfc2119">ならない</em>。したがって不在は「配信されたままのページを
+      保存した」を意味します。「何も見つからなかった」ではありません。
+    </p>
+    <p>
+      <code>dismissal</code> が在るとき、何も取り除かなかった場合でも
+      <code>selectors</code> と <code>heuristic</code> は在ら<em class="rfc2119">なければならない</em>。
+      結果を検証可能にしているのはこの 2 つです —— 20 件の項目の隣に在る空の
+      <code>removedSelectors</code> は「そのどれもが名指しするバナーをページは持たなかった」
+      と述べますが、項目が 1 件も無い隣の同じ空リストは「何も探さなかった」としか
+      述べません。1 件も濾さなかった取り込みにも <a>urlPolicies</a> を必須にしているのと
+      同じ理屈です。
+    </p>
+    <p>
+      パッケージは <code>unreadable</code> を <code>framework</code>・
+      <code>removedSelectors</code>・<code>unusableSelectors</code>・
+      <code>removedOverlays</code> と並べて持っては<em class="rfc2119">ならない</em>。
+      遂行できなかった除去は何も観測しておらず、その隣に空の結果を書くことは
+      「ページはバナーを持たなかった」という主張になります。
+    </p>
+    <p class="note" title="Scrolling is recorded by coverage, not here">
+      スクロールもまた取り込みが見るものを変えますが、それが何をしたかは既に
+      <a>coverage</a> —— ページのどこまで下れたかを述べるもの —— が記録しています。
+      同じ行為の 2 つ目の申告をここに置けばそれは写しであり、いずれ片方が
+      古いほうになります。
+    </p>
+    <p class="note" title="One load, one observation">
+      ページを 2 回以上読み込む取り込みは、読み込みごとに要素を取り除きます ——
+      除去は同意ではないので、同意フレームワークは次の読み込みで再び描画されます。
+      <code>removedSelectors</code> は読み込みをまたいだ和ではなく、ある瞬間の
+      1 つの文書に対する観測であり、それをどの読み込みのものかに結び付けるのが
+      <code>devicePixelRatio</code> です。
+    </p>
+  </section>
+
+  <section id="document">
+    <h3><code>document</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、ページ由来の記録をどの文書から読んだかを名乗り、
+      それらを伏せたかどうかを述べる <dfn>document</dfn> member を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      <strong>ページ由来の記録</strong>とは、文書の写し（<a>snapshots</a> を参照）、
+      取り込んだページのスクリーンショット（<a>screenshots</a> を参照）、
+      <code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
+      <code>datapackage.json</code> の <code>title</code>、
+      <code>accessibility/axtree.jsonl</code>、そして <code>logs/capture.jsonl</code> の
+      <code>source</code> が <code>"page"</code> の行（<a href="#logs-lines"></a> を参照）です。これらは
+      ネットワークからではなく描画されたページから読むので、WARC の本文はそれらを縛りません ——
+      <strong>方針が文書の本文を archive に入れなくても、それだけではその文書の文字は
+      締め出されません。</strong>
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>url</code></td><td>string</td><td>はい（<code>withheld</code> が <code>"unattributed"</code> のときを除く）</td><td>browser が確定させた、その文書の URL。<code>"deny"</code> のときは、リクエストを断った URL。隠すシークレットの値は置き換えます（<a href="#secret-values"></a> を参照）。</td></tr>
+        <tr><td><code>withheld</code></td><td>string</td><td>いいえ</td><td>ページ由来の記録がパッケージに無い理由。在るときは置かない。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"document": {
+  "url": "https://example.com/next",
+  "withheld": "url-policy"
+}</pre>
+    <p>
+      文書とは、<strong>ページ由来の記録を読んだ時点</strong>で主フレームにあった文書です。
+      要求した URL の文書とは限りません。サーバのリダイレクトや、ページが自分で行う遷移は
+      文書を置き換え、記録は置き換わった後のものを記述します。<code>url</code> は、そうした
+      リダイレクトや遷移の後に browser が確定させた、その文書の URL です。
+    </p>
+    <p>
+      ページ由来の記録は、時点ごとに読みます。ある時点の写しと、それを並べる
+      <code>pages/pages.jsonl</code> のエントリ（<a href="#pages"></a> を参照）は、その時点で
+      主フレームにあった文書から読み、ある時点のスクリーンショットには、その文書が主フレームに
+      在る間の、取り込んだページが写ります。<code>datapackage.json</code> の <code>title</code>
+      と <code>accessibility/axtree.jsonl</code> は、behavior の後に、<code>document</code> が
+      名指す文書から読み、<code>"after-behaviors"</code> の時点の写しと、
+      <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
+      も同じです。<code>logs/capture.jsonl</code> の <code>source</code> が
+      <code>"page"</code> の行は、ある時点で読むのではなく取り込みの間ずっと書かれるもので、
+      <code>document</code> が名指す文書から読んだものとして扱います。下の
+      <code>withheld</code> の決まりは、各時点で、その時点の文書に当てはまります: 決まりが文書を
+      伏せる時点には写しが無く、<a>snapshots</a> はそれを <code>"withheld"</code> と記録します。
+      その時点のスクリーンショットも在りません（<a>screenshots</a> を参照）。
+    </p>
+    <p>
+      <code>deny</code> の項目が主フレームの遷移を止めたとき（<a>urlPolicies</a> を参照）、
+      前の文書を置き換える文書はありません。browser はその場所に誤りのページを表示しますが、
+      それは取り込みの文書ではありません。このとき文書は遷移が向かっていた先のもので、
+      <code>url</code> はリクエストを断った URL です。
+    </p>
+    <p>
+      <code>withheld</code> は、置くなら次のどれかでなければなりません
+      （<em class="rfc2119">MUST</em>）。はじめの 4 つは、文書を、あるいはその本文を archive に
+      入れなかった方針を名指します（<a href="#policies"></a> を参照）。
+    </p>
+    <ul>
+      <li><code>"url-policy"</code> —— 文書の URL に最初に当たる <a>urlPolicies</a> の項目の
+          action が <code>no-body</code>。</li>
+      <li><code>"content-type"</code> —— 文書の URL に当たる <a>urlPolicies</a> の項目が無く、
+          <a>contentTypePolicies</a> の項目がその media type に当たる。</li>
+      <li><code>"no-archive"</code> —— 文書の URL に最初に当たる <a>urlPolicies</a> の項目の
+          action が <code>no-archive</code>。パッケージは、その文書を運んだ応答も、その本文も持たない。
+          持つのは、その要求の withheld request のレコードと、trace の行だけ。</li>
+      <li><code>"deny"</code> —— 文書の URL に最初に当たる <a>urlPolicies</a> の項目の
+          action が <code>deny</code>。その文書は一度も要求されていない。その時点で読んだ
+          ページ由来の記録は、文書ではなく browser の誤りのページを記述することになる。</li>
+      <li><code>"unattributed"</code> —— どの文書から記録を読んだかを producer が言えない。
+          たとえば、読んでいる間に主フレームが遷移した。</li>
+    </ul>
+    <p>
+      producer は、その方針が文書に当たったとき、<b>そしてそのときに限り</b>、
+      <code>withheld</code> を <code>"url-policy"</code>・<code>"content-type"</code>・
+      <code>"no-archive"</code>・<code>"deny"</code> にしなければなりません
+      （<em class="rfc2119">MUST</em>）。
+      <strong>この決まりは両向きに働きます。</strong>リダイレクトの中継だけ、あるいは
+      ページが遷移して離れた文書だけに当たった方針は、何も伏せません。文書に当たった方針は、
+      要求した URL に当たっていなくても、その記録を伏せます。
+    </p>
+    <p>
+      <code>withheld</code> を置くとき、パッケージはその文書から読んだページ由来の記録を
+      持ってはなりません（<em class="rfc2119">MUST NOT</em>）。<code>datapackage.json</code>
+      の <code>title</code> はページから読んではならず（<em class="rfc2119">MUST NOT</em>）、
+      パッケージは <code>accessibility/axtree.jsonl</code> を含んではなりません
+      （<em class="rfc2119">MUST NOT</em>）。<code>pages/pages.jsonl</code> の文書のエントリ（<a href="#pages"></a>
+      を参照）は <code>text</code> と
+      <code>title</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。そのエントリは
+      理由を <code>textWithheld</code> として持ってもよく（<em class="rfc2119">MAY</em>）、
+      持つなら値は <code>withheld</code> と等しくなければなりません
+      （<em class="rfc2119">MUST</em>）。文書を伏せたパッケージは、どの時点の
+      スクリーンショットも持ちません（<a>screenshots</a> を参照）。
+    </p>
+    <p class="note">
+      大きさの上限で落とした本文は、ページ由来の記録を伏せません。上限は取り込みの側の
+      ものであって要求者のものではなく、本文が archive に収まらなかったページこそ、
+      文字が最も役に立ちます。
+    </p>
+  </section>
+
+  <section id="snapshots">
+    <h3><code>snapshots</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みが文書を写す時点ごとに、写したかどうかを
+      述べる配列の <dfn>snapshots</dfn> member を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。写しは、その時点のページの主フレームの文書の姿を写した
+      もので、WARC に記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#snapshots">Snapshots</a>）。
+      配列は、<code>"after-load"</code> の項目と、取り込みが behavior を走らせたとき
+      （<a>settings</a> の <code>behaviors</code> が空でないとき）はその後に
+      <code>"after-behaviors"</code> の項目を持たなければならず（<em class="rfc2119">MUST</em>）、
+      ほかの項目は持ちません。
+    </p>
+    <p>
+      producer が写しを取った時点の項目は、次を持たなければなりません
+      （<em class="rfc2119">MUST</em>）:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>stage</code></td><td>string</td><td>はい</td>
+            <td>時点: <code>"after-load"</code> か <code>"after-behaviors"</code>。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい</td>
+            <td>写しの <code>resource</code> レコードの <code>WARC-Target-URI</code>。</td></tr>
+        <tr><td><code>date</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Date</code>。タイムスタンプ。</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Record-ID</code> の URI。その欄が付ける山括弧は
+            付けません。</td></tr>
+        <tr><td><code>bytes</code></td><td>number</td><td>はい</td>
+            <td>写しの大きさ（バイト）。そのレコードの <code>Content-Length</code>。</td></tr>
+        <tr><td><code>secretsReplaced</code></td><td>number</td><td>はい</td>
+            <td>producer が写しの中でシークレットの値を置き換えた回数。写しの
+            <code>metadata</code> レコードの <code>secrets-replaced</code>。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"snapshots": [
+  {
+    "stage": "after-load",
+    "url": "urn:browserhive:snapshot:after-load:https://example.com/",
+    "date": "2026-11-02T01:20:05.118Z",
+    "record": "urn:uuid:5e0f6a3c-2d7b-4f1e-9a8c-1b2d3e4f5a6b",
+    "bytes": 7255,
+    "secretsReplaced": 0
+  },
+  {
+    "stage": "after-behaviors",
+    "url": "urn:browserhive:snapshot:after-behaviors:https://example.com/results",
+    "date": "2026-11-02T01:20:07.415Z",
+    "record": "urn:uuid:d6874c5c-9710-40d4-9fb8-ceb24bb0dfc8",
+    "bytes": 26444,
+    "secretsReplaced": 0
+  }
+]</pre>
+    <p>
+      producer が写しを取らなかった時点の項目は、<code>stage</code> と <code>skipped</code>
+      だけを持たなければなりません（<em class="rfc2119">MUST</em>）—— たとえば
+      <code>{"stage": "after-behaviors", "skipped": "too-large"}</code>。<code>skipped</code>
+      は次のどれかでなければなりません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <ul>
+      <li><code>"withheld"</code> —— <a>document</a> の <code>withheld</code> の決まりが、
+          その時点の文書を伏せる。あるいは、それがどの文書だったかを producer が言えない。</li>
+      <li><code>"too-large"</code> —— 写しが、producer が 1 つの写しに許す大きさを超えた。</li>
+      <li><code>"task-budget"</code> —— 写しを残すと、取り込みが残すバイト数が
+          <code>limits.maxTaskBytes</code>（<a>settings</a> を参照）を超えるところだった。
+          レスポンスの本文やスクリーンショットと分け合う上限です。</li>
+      <li><code>"failed"</code> —— producer が写しを取ろうとして、取れなかった。</li>
+    </ul>
+    <p>
+      パッケージは、項目が名指す写しをすべて持たなければならず、どの項目も名指さない写しは
+      持ちません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p class="note" title="なぜ写しの無い時点も並べるのか">
+      パッケージに無い写しは、伏せたのか、大きすぎたのか、失われたのかが分からず、取り込みに
+      その時点がそもそも無かったのかもしれません。項目はそのどれかを述べるので、読み手は、
+      取り込みが入れないと決めたページを、写し損ねたページと取り違えません。
+    </p>
+  </section>
+
+  <section id="screenshots">
+    <h3><code>screenshots</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みが文書を写す時点（<a>snapshots</a> を参照）
+      ごとに、パッケージがその時点のスクリーンショットを持つかどうかと、持たないときはその理由を
+      述べる配列の <dfn>screenshots</dfn> member を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。スクリーンショットは、その時点に browser が見せていた、
+      取り込んだページの画像で、WARC に 2 つのレコードで記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#screenshots">Screenshots</a>）:
+      画像を持つ <code>resource</code> レコード —— その <code>WARC-Target-URI</code> は
+      <code>urn:browserhive:screenshot:</code> で始まります —— と、その画像が何であるかを述べる
+      <code>metadata</code> レコードです。配列は、<code>"after-load"</code> の項目と、
+      取り込みが behavior を走らせたとき（<a>settings</a> の <code>behaviors</code> が空でない
+      とき）はその後の <code>"after-behaviors"</code> の項目だけを持たなければなりません
+      （<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      スクリーンショットに写るのは、そのときまでに取り込みが手を入れた後の、取り込んだページです。
+      取り込みが記録の前にそのページから何かを取り除いていれば、画像にはそれが無いページが写り、
+      何を取り除いたかは <a>dismissal</a> が述べます。
+    </p>
+    <p>
+      スクリーンショットを撮るかどうかは producer が選ぶことで、本プロファイルは撮ることを
+      求めません。求めるのは、スクリーンショットがどうなったかをパッケージが述べることと、
+      取り込みがパッケージに入れないよう求められたものを画像が写しうるときに、パッケージが
+      スクリーンショットを 1 枚も持たないことです（下を参照）。
+    </p>
+    <p>
+      パッケージがスクリーンショットを持つ時点の項目は、次の member を持たなければならず、
+      <code>skipped</code> は持ちません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>stage</code></td><td>string</td><td>はい</td>
+            <td>時点: <code>"after-load"</code> か <code>"after-behaviors"</code>。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい</td>
+            <td>スクリーンショットの <code>resource</code> レコードの <code>WARC-Target-URI</code>。</td></tr>
+        <tr><td><code>date</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Date</code>。タイムスタンプ。</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>はい</td>
+            <td>そのレコードの <code>WARC-Record-ID</code> の URI。その欄が付ける山括弧は
+            付けません。</td></tr>
+        <tr><td><code>bytes</code></td><td>number</td><td>はい</td>
+            <td>画像の大きさ（バイト）。そのレコードの <code>Content-Length</code>。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"screenshots": [
+  {
+    "stage": "after-load",
+    "url": "urn:browserhive:screenshot:after-load:https://shop.example/",
+    "date": "2026-11-02T01:20:05.204Z",
+    "record": "urn:uuid:0b6f7c1e-5a2d-4e83-b9f0-3c4d5e6f7a8b",
+    "bytes": 9344
+  },
+  {
+    "stage": "after-behaviors",
+    "url": "urn:browserhive:screenshot:after-behaviors:https://shop.example/results",
+    "date": "2026-11-02T01:20:07.512Z",
+    "record": "urn:uuid:8f3a1c7e-52d4-4b9a-b6e0-1d7c9a4f2e35",
+    "bytes": 18764
+  }
+]</pre>
+    <p>
+      スクリーンショットに写るのは viewport —— 取り込んだページのうち browser が見せていた
+      部分 —— で、その先は写りません。取り込みの viewport は <a>settings</a> が記録するもので、
+      画像の大きさと、そのときの device pixel ratio は、スクリーンショットの
+      <code>metadata</code> レコードが述べます。
+    </p>
+    <p>
+      パッケージがスクリーンショットを持たない時点の項目は、<code>stage</code> と
+      <code>skipped</code> だけを持たなければなりません（<em class="rfc2119">MUST</em>）——
+      たとえば <code>{"stage": "after-load", "skipped": "withheld"}</code>。
+      <code>skipped</code> は次のどれかで、いくつも当てはまるときは、この並びで先に来るもので
+      なければなりません（<em class="rfc2119">MUST</em>）:
+    </p>
+    <ul>
+      <li><code>"disabled"</code> —— producer が、スクリーンショットを撮る設定になっていなかった。</li>
+      <li><code>"secret"</code> —— 取り込みがシークレットを渡された。<a>settings</a> の
+          <code>secrets</code> が空でない。</li>
+      <li><code>"withheld"</code> —— 取り込みの方針か、文書の成り行きが、スクリーンショットを
+          外す（下を参照）: 取り込みがメディア型の方針を持っていた。<a>urlPolicies</a> の
+          <code>no-archive</code> か <code>no-body</code> の項目が、文書・画像・メディアの要求に、
+          またはパッケージが種類を示せない要求に当たった。取り込みの終わりに、またはその時点で、
+          文書が伏せられている。あるいは、その時点の画像がどの文書を写しているかを producer が
+          言えない。</li>
+      <li><code>"task-budget"</code> —— 画像を残すと、取り込みが残すバイト数が
+          <code>limits.maxTaskBytes</code>（<a>settings</a> を参照）を超えるところだった。
+          スクリーンショットが、レスポンスの本文や写しと分け合う上限です。</li>
+      <li><code>"failed"</code> —— producer がスクリーンショットを撮ろうとして、撮れなかった。
+          あるいは、先の 1 枚を諦めた後で、試さなかった（下を参照）。</li>
+    </ul>
+    <p>
+      したがって、項目が <code>"secret"</code> を持つのは <code>secrets</code> が空でない
+      パッケージだけで、そういうパッケージでは、どの項目も <code>"disabled"</code> か
+      <code>"secret"</code> を持ちます。
+    </p>
+    <p>
+      パッケージは、項目が名指すスクリーンショットをすべて持たなければならず、どの項目も
+      名指さないスクリーンショットは持ちません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      画像は、文字のようには直せません。producer は、スクリーンショットのピクセルの中から、
+      値も、方針が伏せた画像も見つけられず、そこだけを取り除いて残りを残すこともできません。
+      だから、取り込みがパッケージに入れないよう求められたものを画像に入れない手は、画像を
+      残さないことだけです。パッケージは、次のどれかが当てはまるとき、どの時点の
+      スクリーンショットも持ってはなりません（<em class="rfc2119">MUST NOT</em>）:
+    </p>
+    <ol>
+      <li><a>settings</a> の <code>secrets</code> が空でない。取り込んだページは、シークレットの
+          値を見せることがあります —— behavior が値を打った欄や、オリジンが返したものの中に。
+          これは、隠すシークレットにも残すシークレットにも当てはまります: シークレットを残すと、
+          wire を渡ったものの記録に値が残りますが、取り込んだページから読むものでは、残す値も置き換えます
+          （<a href="#kept-secret-values"></a> を参照）。画像では、それができません。</li>
+      <li><a>settings</a> の <code>contentTypePolicies</code> が空でない。メディア型の方針は、
+          応答のメディア型で応答に当たります。メディア型は応答が届いてからしか分からず、producer は、
+          取り込んだページが見せた応答の全部のメディア型を見るわけではありません —— 別サイトの
+          フレームの中の応答と、取り込みの終わりまでに届かなかった応答は見えません。
+          だから producer には、そうした方針が入れないはずだった本文を
+          どの画像も写していない、とは言えません。BrowserHive は自前のメディア型の方針を
+          持たないので、当てはまるのは、その方針を設定された取り込みだけです。</li>
+      <li><a>document</a> が <code>withheld</code> を持つ。ページ由来の記録についての
+          <a>document</a> の決まりを、もう一歩進めたものです: パッケージは、前の時点の
+          スクリーンショットも持ちません。どの文書が書いた行であれ、取り込んだページがログに
+          書いた行を持たないのと同じです。</li>
+      <li><code>archive/</code> の WARC ファイルが、<code>action</code> が
+          <code>no-archive</code> の
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-withheld-requests">withheld request のレコード</a>を持ち、
+          そのレコードの <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
+          <code>Media</code> のどれかであるか、そのレコードが <code>resourceType</code> を
+          持たない。</li>
+      <li><code>archive/</code> の WARC ファイルが、<code>truncated</code> が
+          <code>url-policy</code> の
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>を持ち、
+          そのレコードが指す <code>response</code> レコードを <code>record</code> で名指す
+          <code>trace/events.jsonl</code> の行（<a href="#trace-lines"></a> を参照）の
+          <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
+          <code>Media</code> のどれかであるか、その行が <code>resourceType</code> を持たない。
+          あるいは、その <code>response</code> レコードを名指す行が無い（producer が trace から
+          行を省いたときなど）。応答の status は問いません: body not kept のレコードが
+          リダイレクトのものであれば、それも、ほかの応答のものと同じに数えます。</li>
+    </ol>
+    <p>
+      上の 4 番目と 5 番目の条件では、<a>urlPolicies</a> の <code>no-archive</code> か
+      <code>no-body</code> の項目が、文書・画像・メディアの要求に当たっています。
+      方針は要求に当たるもので、producer は、応答がどうなるかを知る前に、要求の時点で決めます。
+      そのため、取り込んだページに見せる本文が応答に在ったかどうかは問わず、条件はリダイレクトの
+      中継にも当てはまります。これは、<a>document</a> が引く線 —— リダイレクトの中継だけに
+      当たった方針は何も伏せない —— とは別の線です: スクリーンショットは、1 つの文書に
+      ついてではなく、取り込みの全体について決めるからです。
+    </p>
+    <p>
+      <code>Document</code>・<code>Image</code>・<code>Media</code> は、レコードや行の
+      <code>resourceType</code> の値と、1 文字ずつ比べます。これらは browser の語で、
+      本プロファイルは定義しません（<a href="#trace-lines"></a> を参照）。browser がほかの語を
+      使う producer は、この 3 つが指す要求 —— 文書（フレームの文書を含む）の要求、画像の要求、
+      音声や動画の要求 —— を同じに扱います。
+    </p>
+    <p>
+      ある時点のスクリーンショットは、その時点で主フレームにあった文書を写します。パッケージは、
+      <a>document</a> の決まりが文書を伏せる時点のスクリーンショットも、撮っている間に
+      主フレームの文書が替わったために、どの文書を写しているかを producer が言えない
+      スクリーンショットも、持ってはなりません（<em class="rfc2119">MUST NOT</em>）。
+      <a>snapshots</a> が <code>"withheld"</code> と記録する時点の項目は、
+      <code>skipped</code> を持たなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p>
+      4 番目と 5 番目の条件の後ろには、producer を縛る決まりが在ります。
+      producer は、ある要求の URL に最初に当たる <a>urlPolicies</a> の項目の action が
+      <code>no-archive</code> か <code>no-body</code> で、producer が読むその要求の報告の
+      どれかで、browser がその要求を <code>Document</code>・<code>Image</code>・
+      <code>Media</code> と伝えた取り込みのスクリーンショットを、残してはなりません
+      （<em class="rfc2119">MUST NOT</em>）。browser は、1 つの要求を 2 か所以上で、同じでない語で
+      伝えることがあります: Chromium は、動画の字幕の要求を、producer が要求を止める所では
+      <code>Media</code>、記録する所では <code>TextTrack</code> と呼び、<code>object</code> や
+      <code>embed</code> の要素が読み込む画像を、<code>Other</code> と <code>Image</code> と
+      呼びます。そうした報告が 1 つ在れば足ります。
+      この決まりは、その要求がどうなったか —— 応答を本文なしで記録した、リダイレクトされた、
+      失敗した、取り込みの終わりまでに応答が届かなかった —— には関わらず、取り込んだページの
+      どこが要求を出したかにも関わりません。producer がレコードを書かない、別サイトの
+      フレームの中も入ります。
+    </p>
+    <p>
+      その 2 つの条件と、この決まりは、同じ取り込みを覆うわけではありません。2 つの条件は、
+      要求の種類をパッケージが示せないときにも当てはまります: レコードや行が
+      <code>resourceType</code> を持たないとき、producer がその行を trace から省いたときです。
+      producer は、browser が何と伝えたかに関わらず、そうした取り込みのスクリーンショットも
+      残さず、項目は <code>"withheld"</code> を持ちます。逆の向きでは、パッケージを読む道具に、
+      この決まりが届く要求の全部は見えません。producer がレコードを書かなかった要求 ——
+      別サイトのフレームの中で出された要求、<code>no-body</code> の項目が当たって応答が
+      届かなかった要求、送る本文の無い応答が返った要求（[[BROWSERHIVE-WARC-PROFILE]] は、
+      その応答にそのレコードを求めません）—— は見えません。レコードが、数えられた報告とは
+      別の語で要求を呼んでいるときも、その要求が数えられたことは見えません。そのとき項目は
+      <code>"withheld"</code> を持ち、パッケージのほかのどこも、その理由を述べません。
+    </p>
+    <p class="note" title="スクリーンショットを外さないもの">
+      <code>deny</code> の項目は外しません: 送られなかった要求は、取り込んだページに見せるものを
+      何も運んでいません。その項目が主フレームの遷移を止めたときは、文書の場所に browser の
+      誤りのページが在り、<a>document</a> が <code>withheld</code> を持ちます。大きさの上限で
+      落とした本文も外しません。理由は、ほかのページ由来の記録を伏せないのと同じです
+      （<a>document</a> を参照）: 上限は取り込みの側のもので、要求者のものではありません。
+      ほかの種類だとパッケージが示す要求 —— スクリプトやスタイルシートの要求など —— に
+      だけ当たり、その要求を、producer が読んだどの報告も文書・画像・メディアと呼ばなかった
+      <a>urlPolicies</a> の項目も外しません。それが画像に何を残すかは、
+      <a href="#security-and-privacy-considerations"></a> に書きます。
+    </p>
+    <p class="note" title="なぜ 1 枚ごとでなく、取り込みの全体を見るのか">
+      producer には、どの画像がどの応答を写しているかが分かりません。browser は、取り込んだ
+      ページが応答を見せるよりずっと前に、その応答を持っていることがあるからです。そのため、
+      条件は取り込みの全体を見ます。方針が、画像を撮った後に出された要求に当たることも
+      あります —— viewport より下の画像は、behavior がそこまで scroll して初めて要求されます。
+      だから producer は、記録を止めるまで画像を持っておき、そのときにまとめて書くか、まとめて
+      捨てることになります。先に WARC ファイルへ書いた画像は、取り出せません。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、スクリーンショットに、producer が撮り始めたときの
+      viewport の大きさ・device pixel ratio・scroll の位置のままの、取り込んだページを
+      写させます。だから producer は、画像のためにそのどれも変えません。パッケージでは、これが、
+      取り込みが画像より後に記録したものの全部について、<a>settings</a> を正しいままにします:
+      そのページは、<a>settings</a> が挙げる viewport と、device pixel ratio のどれかの下で先へ
+      進んでいます。取り込んだページが変えられたかどうかは、パッケージを読む道具には見えません。
+    </p>
+    <p>
+      main thread を手放さないページは、取り込みが待てるより長く、browser に画像を
+      渡させないことがあります。producer は、自分の決めた時間の後でスクリーンショットを
+      諦めてよく（<em class="rfc2119">MAY</em>）、1 枚を諦めた producer は、その取り込みの
+      その後のスクリーンショットを試さなくてもかまいません（<em class="rfc2119">MAY</em>）。
+      producer は、そのどれも <code>"failed"</code> と記録します。
+    </p>
+    <p>
+      スクリーンショットは、<code>pages/pages.jsonl</code> にエントリを持ちません。読み手が
+      開くページではないからです（<a href="#pages"></a> を参照）。その <code>resource</code>
+      レコードは CDXJ 索引に在り（<a href="#archive-files"></a> を参照）、読み手は、項目の
+      <code>url</code> と <code>date</code> でそれを見つけます。
+    </p>
+    <p>
+      この版に適合するパッケージが持つ項目は、上の 2 つの時点のものだけです。本プロファイルの
+      後の版は、別の種類の項目 —— 時点で撮るのではないスクリーンショットの項目 —— を
+      足すことがあり、[[BROWSERHIVE-WARC-PROFILE]] はそのための余地を残しています。
+    </p>
+    <p class="note" title="なぜスクリーンショットの無い時点も並べるのか">
+      スクリーンショットの無いパッケージは、撮らない producer のものかもしれず、画像を
+      残せなかった取り込みのものかもしれず、撮れなかった取り込みのものかもしれません。項目は
+      そのどれかを述べるので、読み手は、取り込みが残してはならなかった画像を、撮り損ねた画像と
+      取り違えず、取り込みを見せる道具は、画像が無い理由を言えます。
+    </p>
+  </section>
+
+  <section id="trace">
+    <h3><code>trace</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、取り込みの trace が何行を持ち、producer がそこから
+      何行を残さなかったかを述べる <dfn>trace</dfn> member を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。trace そのものは、エントリ
+      <code>trace/events.jsonl</code> です（<a href="#trace-directory"></a> を参照）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>lines</code></td><td>number</td><td>はい</td>
+            <td><code>trace/events.jsonl</code> の行の数。0 以上の整数。</td></tr>
+        <tr><td><code>dropped</code></td><td>number</td><td>はい</td>
+            <td>producer が作り、その後、trace を自分の決めた上限に収めるためにそのエントリに
+            残さなかった行の数（<a href="#trace-lines"></a> を参照）。0 以上の整数。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"trace": {
+  "lines": 44,
+  "dropped": 0
+}</pre>
+    <p>
+      <code>lines</code> はエントリが持つ行の数でなければならず
+      （<em class="rfc2119">MUST</em>）、<code>dropped</code> は producer が残さなかった行の数で
+      なければなりません（<em class="rfc2119">MUST</em>）—— 残さなかった行が 1 行も無ければ 0 です。
+      2 つを足すと、producer が作った行の数になります。
+    </p>
+    <p class="note" title="なぜ数をここに置くのか">
+      残さなかった行は、エントリに跡を残しません。そのため、間の抜けた trace は、全部そろった
+      trace と同じように読めます。パッケージがそのどちらを持つのかを述べる場所がこの member で、
+      読み手は、エントリを開く前に、<code>datapackage.json</code> だけでそれを見分けられます。
+    </p>
+  </section>
+
+  <section id="tls">
+    <h3><code>tls</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、各 HTTPS 接続について browser が見たものを記録する
+      <dfn>tls</dfn> member を持っても<em class="rfc2119">よい</em>。存在する場合、
+      <code>hosts</code> と <code>chains</code> を持た<em class="rfc2119">なければならない</em>。
+    </p>
+
+    <section id="tls-hosts">
+    <h4><code>tls.hosts</code></h4>
+    <p>host を鍵とするオブジェクト。各値は以下の member を持つオブジェクトか、<code>null</code>。</p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>protocol</code></td><td>string</td><td>はい</td><td>ネゴシエートされた TLS の版。</td></tr>
+        <tr><td><code>cipher</code></td><td>string</td><td>はい</td><td>ネゴシエートされた cipher。</td></tr>
+        <tr><td><code>subject</code></td><td>string</td><td>はい</td><td>subject の common name。browser が報告したそのまま。</td></tr>
+        <tr><td><code>san</code></td><td>array of string</td><td>はい</td>
+            <td>その証明書が有効な host 名の一覧 (subjectAltName)。SAN を持たない証明書では空。</td></tr>
+        <tr><td><code>issuer</code></td><td>string</td><td>はい</td><td>issuer の common name。</td></tr>
+        <tr><td><code>validFrom</code></td><td>string</td><td>はい</td><td>証明書の有効期間の開始。</td></tr>
+        <tr><td><code>validTo</code></td><td>string</td><td>はい</td><td>その終了。</td></tr>
+        <tr><td><code>chainRef</code></td><td>string</td><td>いいえ</td><td><code>tls.chains</code> への鍵。チェーンを取得できなかったときは存在しない。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      HTTPS で到達したが接続が何も明かさなかった host は、値 <code>null</code> として記録され
+      <em class="rfc2119">なければならない</em>。鍵ごと省くと「この host は素の HTTP だった」と
+      読めてしまいますが、それは別の事実です。
+    </p>
+    <p>
+      host 名の照合に使われるのは <code>subject</code> ではなく <code>san</code> です。
+      <code>subject</code> が記録するのは common name であり、現在の読み手はこれを照合に
+      用いません —— <code>subject</code> の値をもって「その host 名で通用した」と読んでは
+      <em class="rfc2119">ならない</em>。
+    </p>
+    <p>
+      <code>chainRef</code> が無いことを「この host は証明書を提示しなかった」と読んでは
+      <em class="rfc2119">ならない</em>。チェーンの取得は host と無関係な理由でも失敗します。
+    </p>
+
+    </section>
+    <section id="tls-chains">
+    <h4><code>tls.chains</code></h4>
+    <p>
+      鍵が <code>chainRef</code> の値であり、値が base64 符号化された DER 証明書の配列である
+      オブジェクト。各配列はリーフを先頭として並んで<em class="rfc2119">いなければならない</em>。
+    </p>
+    <p>
+      チェーンを共有する host は 1 つの項目を共有<em class="rfc2119">すべきである</em>。
+      1 ページの host 間で証明書が再利用されることは多く、host ごとに複製を持つとパッケージが
+      何の利得もなく膨らみます。
+    </p>
+    <p class="note">
+      チェーンは参照ではなく保存します。Certificate Transparency が同じバイト列を持っては
+      いますが、第三者のサービスが到達可能であり続けることに依存する証拠は、その分だけ弱く
+      なります —— そして検討する価値のある事例である私設 CA のチェーンは、そもそもそこに
+      記録されたことがありません。
+    </p>
+
+    <pre class="json">
+"tls": {
+  "hosts": {
+    "example.com": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "example.com",
+      "san": ["example.com", "www.example.com"],
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-06-30T20:37:58.000Z",
+      "validTo": "2026-09-28T21:37:55.000Z",
+      "chainRef": "9a57318f8c89976c"
+    },
+    "cdn.example.net": {
+      "protocol": "QUIC",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "san": ["*.example.net", "example.net"],
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "img.example.net": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_128_GCM",
+      "subject": "*.example.net",
+      "san": ["*.example.net", "example.net"],
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-08-05T20:42:14.000Z",
+      "validTo": "2026-10-28T20:42:13.000Z",
+      "chainRef": "c52653c92800f6fd"
+    },
+    "api.example.org": {
+      "protocol": "TLS 1.3",
+      "cipher": "AES_256_GCM",
+      "subject": "api.example.org",
+      "san": ["api.example.org"],
+      "issuer": "Example Issuing CA",
+      "validFrom": "2026-05-14T09:03:11.000Z",
+      "validTo": "2026-08-12T09:03:10.000Z"
+    },
+    "beacon.example.org": null
+  },
+  "chains": {
+    "9a57318f8c89976c": [
+      "MIIDbzCCAxSgAwIBAgIRALaMq73qMP3mE30B…",
+      "MIICjDCCAhKgAwIBAgIQf5wJDMcM1Y2ZBpFB…"
+    ],
+    "c52653c92800f6fd": [
+      "MIIIUDCCBzigAwIBAgIQHnJSlrCYIdkSw8c/…",
+      "MIIFCzCCAvOgAwIBAgIQVJ5xIVMKmZ0sNHxs…"
+    ]
+  }
+}</pre>
+    <p>
+      この例は 5 つの host を記録しています。上の規定がそれぞれどう現れるかを見てください。
+    </p>
+    <ul>
+      <li><code>cdn.example.net</code> と <code>img.example.net</code> は<strong>同じ
+          <code>chainRef</code></strong> を指しています —— 同じ証明書を提示したので、チェーンは
+          <code>chains</code> に 1 度だけ保存されています。</li>
+      <li><code>api.example.org</code> には <code>chainRef</code> が<strong>ありません</strong>。
+          証明書は提示されており (<code>subject</code> 以下がその証拠です)、取れなかったのは
+          チェーンだけです。</li>
+      <li><code>beacon.example.org</code> は <code>null</code> です。HTTPS で到達しましたが、
+          接続は何も明かしませんでした。鍵ごと省いていないのは、省くと「この host は素の HTTP
+          だった」と読めてしまうためです。</li>
+      <li><code>cdn.example.net</code> の <code>protocol</code> は <code>"QUIC"</code> です。
+          この member は browser が報告した文字列であり、<strong>TLS の版とは限りません</strong>。</li>
+    </ul>
+    <p class="note">
+      <code>chains</code> の値は base64 符号化された DER です。例では読みやすさのため途中で
+      切ってありますが、実際には 1 通あたり 1–2 KB 程度の文字列になります。
+    </p>
+    </section>
+  </section>
+</section>
+
+<section id="package-name">
+  <h2>Package name</h2>
+  <p>
+    [[WACZ]] は、それに従う ZIP ファイルが拡張子 <code>.wacz</code> を使うことを求めます。
+    producer は <a>BrowserHive WACZ</a> に <code>.browserhive.wacz</code> で終わる名前を付ける
+    <em class="rfc2119">べきである</em>（<em class="rfc2119">SHOULD</em>）。[[WACZ]] が求める拡張子の前に
+    印を置き、ファイルを手にした人やプログラムが、開く前にそれが何かを分かるようにするためです。
+  </p>
+  <p>
+    印は手がかりであって、名乗りではありません。パッケージは写しのたびに名前を保ちも失いもし、
+    誰でもファイルにどんな名前でも付けられます。適合するパッケージは、<code>.wacz</code> で終わる
+    別の名前でも、印の有無にかかわらず適合し続け、印のある名前は何も証しません
+    （<a href="#conformance-declaration"></a> を参照）。
+  </p>
+</section>
+
+<section id="archive-files">
+  <h2>Archive files</h2>
+  <p>
+    [[WACZ]] は <code>archive/</code> ディレクトリに 1 本以上の WARC ファイルを置くこと
+    （GZIP で圧縮したものは拡張子 <code>.warc.gz</code>、圧縮しないものは望ましくは <code>.warc</code>）を
+    求め、名前についてそれ以外のこと、数、それぞれが何を持つかについては何も述べません。この節は名前と数を定めます。
+    読み手が、producer の書いたファイルをパッケージが全部持っているかを判定でき、producer が
+    1 本のファイルの大きさを抑えられるようにするためです。それぞれのファイルが何を持つかは
+    [[BROWSERHIVE-WARC-PROFILE]] が定めます。
+  </p>
+  <p>
+    <code>archive/</code> のどの WARC ファイルも
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/">BrowserHive WARC Profile 1.4.0</a> に適合し
+    <em class="rfc2119">なければならず</em>、その <code>warcinfo</code> レコードは
+    <code>conformsTo</code> でその版を名乗ら<em class="rfc2119">なければならない</em>
+    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
+    同仕様が定めます —— ペイロード、隠すシークレットの値を置き換えるレコード、
+    body not kept・withheld request・window not opened の
+    レコード、文書の写しと取り込んだページのスクリーンショット、各ファイルの先頭の
+    <code>warcinfo</code> レコード、1 つの交信のレコード・1 つの写しのレコード・1 つの
+    スクリーンショットのレコードが、それぞれ同じファイルに入ること。
+  </p>
+  <p>
+    <code>archive/</code> ディレクトリは、<code>data-NNN.browserhive.warc.gz</code> という名前の
+    ファイルだけを含ま<em class="rfc2119">なければならない</em>。<code>NNN</code> は 10 進 3 桁で、
+    <code>000</code> から飛びなく番号を振ります。レコードが 1 本に収まる取り込みは、ちょうど
+    <code>data-000.browserhive.warc.gz</code> を持ちます。名前は [[WACZ]] が求める拡張子の前に
+    印 <code>browserhive</code> を置きます。パッケージから取り出した WARC ファイルも、名前で
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#dfn-browserhive-warc">BrowserHive WARC</a> ファイルと
+    分かるようにするためです。パッケージの名前と同じく（<a href="#package-name"></a> を参照）、
+    印は手がかりであって、名乗りではありません。
+  </p>
+  <p>
+    <code>archive/</code> の各 WARC ファイルは GZIP で圧縮されて<em class="rfc2119">いなければならない</em>。
+    [[WACZ]] が、<code>.warc.gz</code> という名前のファイルにそれを求めるからです。
+  </p>
+  <p>
+    ファイルが <code>warcinfo</code> レコードの <code>WARC-Filename</code> に書く自分の名前は、
+    ディレクトリを付けない、<code>archive/</code> の中での名前で
+    <em class="rfc2119">なければならない</em>（<code>data-000.browserhive.warc.gz</code> であって
+    <code>archive/data-000.browserhive.warc.gz</code> ではない）。
+  </p>
+  <p>
+    producer は、いまのファイルが <code>maxWarcBytes</code> バイト以上のとき、次の交信を書く前に
+    新しいファイルを始め<em class="rfc2119">なければならない</em>（<a>settings</a> を参照）。
+    したがって最後のファイルを除くすべてのファイルは <code>maxWarcBytes</code> バイト以上で
+    <em class="rfc2119">なければならず</em>、ファイルがそれを超えるのは交信 1 つ分までで
+    <em class="rfc2119">あってよい</em>。
+  </p>
+  <p>
+    CDXJ の各行の <code>filename</code> field は、<code>archive/</code> からの相対でファイルを
+    名指さ<em class="rfc2119">なければならない</em>（<code>data-001.browserhive.warc.gz</code> であって
+    <code>archive/data-001.browserhive.warc.gz</code> ではない）。読み手はディレクトリを自分で前置します。
+  </p>
+  <p>
+    [[BROWSERHIVE-WARC-PROFILE]] が定める <code>metadata</code> レコード —— body not kept・
+    withheld request・window not opened のレコード —— は、パッケージの CDXJ 索引に現れることを
+    要求されません。これを探す読み手は WARC を読みます。
+  </p>
+  <p>
+    写しの <code>resource</code> レコードと、スクリーンショット（<a>screenshots</a> を参照）の
+    <code>resource</code> レコードは、どれも CDXJ 索引に現れなければなりません
+    （<em class="rfc2119">MUST</em>）。アーカイブしたページを配る読み手は、索引で写しを
+    見つけ、スクリーンショットを見せる読み手は、WARC ファイルを読み通さずに画像を
+    見つけるからです。その行の検索の鍵は、レコードの <code>WARC-Target-URI</code> そのまま
+    —— SURT の形を持たない <code>urn:browserhive:snapshot:</code> か
+    <code>urn:browserhive:screenshot:</code> の URI —— でなければならず
+    （<em class="rfc2119">MUST</em>）、行の JSON は <code>status</code> を持ってはなりません
+    （<em class="rfc2119">MUST NOT</em>）。どのサーバもステータスで答えていないからです。写しと
+    スクリーンショットの <code>metadata</code> レコードは、上のレコードと同じく、現れることを
+    要求されません。
+  </p>
+    <pre class="text">
+archive/data-000.browserhive.warc.gz    warcinfo (WARC-Filename: data-000.browserhive.warc.gz), exchanges &hellip;
+archive/data-001.browserhive.warc.gz    warcinfo (WARC-Filename: data-001.browserhive.warc.gz), exchanges &hellip;
+indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhive.warc.gz","offset":"153","length":"2048",&hellip;}</pre>
+  <p class="note" title="なぜファイルの大きさは抑え、数は抑えないのか">
+    リンクを辿る取り込みは、クロールが続く限り記録し、それとともに育つ 1 本のファイルは、
+    一部だけを読むことも、一部だけを検証することも、プロセスが死んだとき一部だけを無事に
+    残すこともできません。ファイルを抑えれば、閉じたファイルはどれも完全なまま残り、読み手は
+    手前を読まずに索引からパッケージの中へ seek できます。上限が本プロファイルの定数ではなく
+    producer の設定なのは、ちょうどよい大きさが、パッケージを置き読む場所に依るからです。
+    他所の慣習は 1 ギガバイトです。
+  </p>
+</section>
+
+<section id="pages">
+  <h2>Pages</h2>
+  <p>
+    [[WACZ]] はパッケージのページを <code>pages/pages.jsonl</code> に並べ、アーカイブした
+    ページを配る読み手は、エントリの <code>url</code> と <code>ts</code> でページを開きます。
+    この節はそのエントリを定め、取り込みを求められた文書と、そのどの写し（<a>snapshots</a> を
+    参照）も、ページとして開けるようにします。
+  </p>
+  <p>
+    <code>pages/pages.jsonl</code> の最初のエントリは、文書のエントリでなければなりません
+    （<em class="rfc2119">MUST</em>）。その後に、写しごとに 1 つのエントリを <a>snapshots</a>
+    の順に持たなければならず、ほかのエントリは持ちません（<em class="rfc2119">MUST</em>）。
+    文書のエントリは:
+  </p>
+  <ul>
+    <li><code>url</code> が、取り込みを求められた URL を、URL Standard の
+        <a href="https://url.spec.whatwg.org/#concept-url-serializer">URL serializer</a> が書くとおりに書き、fragment を除いたもので
+        なければなりません（<em class="rfc2119">MUST</em>）。これは、取り込みが文書のために出した
+        最初の要求の URL です。path が空の URL には、要求と同じく末尾の <code>/</code> が付きます。
+        producer は URL に隠すシークレットの値を持つ要求を断り、<a>残すシークレット</a>の値は
+        URL に残ります（<a href="#secret-values"></a> を参照）。</li>
+    <li><code>ts</code> は、取り込みを始めた時刻です。</li>
+    <li><code>stage</code> を持ってはなりません（<em class="rfc2119">MUST NOT</em>）。</li>
+    <li><code>id</code> が、ほかのどのエントリのものとも違わなければなりません
+        （<em class="rfc2119">MUST</em>）。</li>
+    <li><code>title</code> と <code>text</code> は、在るなら、behavior の後に、<a>document</a>
+        が名指す文書から読みます。</li>
+  </ul>
+  <p>写しのエントリは:</p>
+  <ul>
+    <li><code>url</code> と <code>ts</code> が、写しの <code>resource</code> レコードの
+        <code>WARC-Target-URI</code> と <code>WARC-Date</code> でなければなりません
+        （<em class="rfc2119">MUST</em>）。</li>
+    <li><code>stage</code> が、写しの時点でなければなりません（<em class="rfc2119">MUST</em>）。</li>
+    <li><code>id</code> が、ほかのどのエントリのものとも違わなければなりません
+        （<em class="rfc2119">MUST</em>）。読み手は、<code>id</code> が同じエントリを 1 つだけ
+        残し、ほかを捨てます。</li>
+    <li><code>title</code> と <code>text</code> は、在るなら、その時点の文書から読みます
+        （<a>document</a> を参照）。</li>
+  </ul>
+  <p>
+    <code>datapackage.json</code> の <code>mainPageURL</code> は、<code>pages/pages.jsonl</code>
+    の最初のエントリ、つまり文書のエントリの <code>url</code> と同じでなければなりません
+    （<em class="rfc2119">MUST</em>）。
+  </p>
+  <pre class="json">
+{"format":"json-pages-1.0","id":"pages","title":"All Pages"}
+{"id":"5f2c9a1e","url":"https://example.com/","ts":"2026-11-02T01:20:03.502Z","title":"Results for lamp","text":"3 results &hellip;"}
+{"id":"5f2c9a1e-after-load","url":"urn:browserhive:snapshot:after-load:https://example.com/","ts":"2026-11-02T01:20:05.118Z","stage":"after-load","title":"Search","text":"Search the shop &hellip;"}
+{"id":"5f2c9a1e-after-behaviors","url":"urn:browserhive:snapshot:after-behaviors:https://example.com/results","ts":"2026-11-02T01:20:07.415Z","stage":"after-behaviors","title":"Results for lamp","text":"3 results &hellip;"}</pre>
+  <p class="note" title="なぜ最初のエントリを文書にするのか">
+    写しは、頁の script を除いた文書の DOM の写しです。そのため、script が出すもの ——
+    アニメーションが終わってから置かれる絵や、要求で埋まる一覧 —— が、写しに無いことがあります。
+    文書のエントリは、記録した応答を頁の script を動かして開き、最初に見えた頁を出します。
+    文書を記録したなら、取り込みを求められた URL は記録を名指します: 文書を返した応答か、
+    そこへ導いた転送で、読み手は転送を辿ります。
+  </p>
+  <p class="note" title="読み手が最初に開くエントリ">
+    どこから開くかは、読み手によって違います。<code>mainPageURL</code> を開く読み手もいれば、
+    エントリを新しい順に並べ、文書を最後に置く読み手もいます。読み手に文書を見せたいリンクは、
+    その <code>url</code> と <code>ts</code> を名指します。
+  </p>
+</section>
+
+<section id="policies">
+  <h2>URL and media type policies</h2>
+  <p>
+    取り込みは、一部のリクエストを他と違う扱いにすることがあります ——
+    送らない、記録しない、本文なしで記録する。
+    <code>browserhive:capture.settings</code> は<b>何をしたか</b>を
+    <em class="rfc2119">MUST</em> 記録します。取り込みの設定に手が届かない読み手が、
+    そのどれであったかを判定できるようにするためです。
+  </p>
+  <p>
+    方針が働くのはネットワークの本文です。描画されたページから読む記録 —— ページの文字・
+    題・アクセシビリティツリー —— に方針が何をするかは、<a>document</a> で定め、取り込んだ
+    ページのスクリーンショットに何をするかは、<a>screenshots</a> で定めます。
+  </p>
+
+  <section id="urlpolicies">
+    <h3><code>urlPolicies</code></h3>
+    <p>
+      <dfn>urlPolicies</dfn> は順序付きの配列です。各項目は 2 つの member を持つ
+      オブジェクト:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>必須</th><th>説明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>pattern</code></td><td>string</td><td>はい</td>
+            <td>効いていたパターン。取り込みが設定されたとおりの綴りで。</td></tr>
+        <tr><td><code>action</code></td><td>string</td><td>はい</td>
+            <td>下の値のいずれか。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>pattern</code> は、リクエストの URL 全体に当てます。<code>*</code> は 0 字を含む
+      任意の文字の並びに当たり、ほかの文字は <code>?</code> も含めてその字だけに当たり、
+      大文字と小文字は区別します。そのため、パターンは query を見込んで書く必要があります ——
+      <code>*://example.com/a.js</code> は <code>https://example.com/a.js?v=2</code> に
+      当たりません。
+    </p>
+    <p>
+      取り込みは、シークレットの値を置き換える前の URL にパターンを当てます
+      （<a href="#secret-values"></a> を参照）。そのため、シークレットの名前を持つパッケージでは、
+      <code>***</code> を持つ URL は、取り込みが適用した項目と別の項目に当たることも、
+      どの項目にも当たらないこともあります。読み手は、そのような URL に当てた結果を、
+      取り込みがしたこととして受け取ってはなりません（<em class="rfc2119">MUST NOT</em>）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th><code>action</code></th><th>リクエストの送信</th><th>パッケージが持つもの</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>deny</code></td><td><strong>しない</strong></td>
+            <td>WARC の中のリクエストの記録と、trace の行（<a href="#trace-lines"></a> を参照）。
+            その URL について取り込みを行った機械から
+            出たものは無く、それを通じて取り込みを知ったオリジンも在りません。</td></tr>
+        <tr><td><code>no-archive</code></td><td>する</td>
+            <td>WARC の中のリクエストの記録と、trace の行。取り込みは要求を送らせましたが、
+            パッケージは、その交信のほかの何も保持しません。</td></tr>
+        <tr><td><code>no-body</code></td><td>する</td>
+            <td>request / response のレコード。ただし response の本文は含みません。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>deny</code> と <code>no-archive</code> の項目が残す記録は、
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      （[[BROWSERHIVE-WARC-PROFILE]]）です。その <code>action</code> は項目の
+      <code>action</code> で、<code>pattern</code> は、読み手が項目を見つけられるよう、項目の
+      <code>pattern</code> をここに現れるとおりの綴りで書か<em class="rfc2119">なければならない</em>。
+      <code>no-body</code> の項目はこの記録を残しません。交信はいつもどおり記録され、無い本文は
+      <code>truncated</code> が <code>url-policy</code> の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
+      サイズ上限で落とした本文としては扱いません（<a>completeness</a> を参照）。
+    </p>
+    <p>
+      <code>deny</code> の項目は、ページのどの部分が起こしたかに関わらず、取り込みが起こす
+      すべてのリクエストに働きます。主フレームの遷移（サーバのリダイレクトの先と、script が
+      始めた遷移を含む）、フレーム（別サイトのフレームを含む）、そして dedicated worker と
+      service worker です。これらのリクエストの 1 つでも取り込みを行う機械から出した
+      producer は、その項目を守っていません。取り込みの間、ページはウィンドウを開きません
+      （<a href="#windows"></a> を参照）。項目が届くべきウィンドウはありません。
+    </p>
+    <p>
+      最初の遷移に <code>deny</code> の項目が当たった取り込みは、パッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。何も読み込まれていないので、
+      <a>settle</a> の報告は走らなかった待ちを記述することになります。ページを読み込んだ後に
+      遷移を断られた取り込みは、パッケージを作ってもよく（<em class="rfc2119">MAY</em>）、
+      その <a>document</a> は <code>withheld: "deny"</code> を持ちます。
+    </p>
+    <p>
+      WebSocket の handshake は、ほかのリクエストのようには止められません。URL に
+      <code>deny</code> の項目が当たる WebSocket を開いた取り込みは、パッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。リクエストは送られており、
+      パッケージはそうでないと主張することになるからです。
+    </p>
+    <p>
+      この配列は空のときでも存在して <em class="rfc2119">MUST</em>、
+      空の配列は「効いていた policy が無い」という意味で
+      <em class="rfc2119">MUST</em>。この規則が無いと読み手は、
+      特別なものを何も要求しなかったページと、要求されたものを記録しないことにした
+      取り込みとを区別できません。同じパッケージについての、別の主張です。
+    </p>
+    <p>
+      順序は<strong>取り込みがパターンを評価した順</strong>であり、取り込みは
+      <strong>一致した最初の項目</strong>を適用して <em class="rfc2119">MUST</em>。
+      順序を記録することが、複数のパターンが当たりうる URL について
+      「どの policy が適用されたのか」に読み手が答えられる根拠になります。
+    </p>
+    <pre class="json">
+"urlPolicies": [
+  { "pattern": "*://cdn.example.com/tracker.js", "action": "deny" },
+  { "pattern": "*://cdn.example.com/*",          "action": "no-body" }
+]</pre>
+    <p>
+      この例では <code>tracker.js</code> へのリクエストは一度も送られず、
+      同じホストの他のものは取得されて本文なしで記録されます。2 つを入れ替えると
+      取り込みがしたことが変わります —— 広いほうのパターンが先に当たり、
+      tracker は取得されます。
+    </p>
+  </section>
+
+  <section id="contenttypepolicies">
+    <h3><code>contentTypePolicies</code></h3>
+    <p>
+      <dfn>contentTypePolicies</dfn> は、<code>prefix</code>
+      （応答のメディア型に当てる）と <code>action</code> を持つ項目の配列です。
+      この版が定める action は <code>no-body</code> のみ ——
+      メディア型は応答が届いてからしか分からないので、<code>deny</code> は
+      適用できません。
+    </p>
+    <p>
+      この配列も、空のときでも存在して <em class="rfc2119">MUST</em>。
+      理由は <a>urlPolicies</a> と同じです。この配列が空でないパッケージは、
+      スクリーンショットを持ちません（<a>screenshots</a> を参照）。
+    </p>
+    <pre class="json">
+"contentTypePolicies": [
+  { "prefix": "video/", "action": "no-body" }
+]</pre>
+  </section>
+</section>
+
+<section id="windows">
+  <h2>Windows the page asks for</h2>
+  <p>
+    取り込みは 1 つのページを記録します。取り込みの間、producer はページに新しい
+    top-level browsing context —— ウィンドウやタブ —— を与えてはなりません
+    （<em class="rfc2119">MUST NOT</em>）。誰が求めても同じです: ページ自身の script、
+    その中のフレーム、取り込みのリクエストが運んだ script。ページへの答えは、browser が
+    popup を止めたときと同じです: <code>window.open</code> は <code>null</code> を返し、
+    新しいウィンドウを target にした link や form は何も開きません。
+  </p>
+  <p>
+    ページが求めた 1 回ごとに、WARC には
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
+    （[[BROWSERHIVE-WARC-PROFILE]]）が残ります。ウィンドウの文書のリクエストは送られて
+    いないので、このレコードは <a>urlPolicies</a> の項目が URL に当たるかどうかに関わらず
+    書かれ、withheld request のレコードではありません。
+  </p>
+  <p>
+    それでもウィンドウが開いた取り込みは、パッケージを作ってはなりません
+    （<em class="rfc2119">MUST NOT</em>）。ウィンドウのリクエストはパッケージに現れない
+    まま相手のオリジンに届いており、パッケージは何も開かなかった取り込みとして自らを
+    記述することになるからです。
+  </p>
+  <p class="note" title="なぜページは断られるのか">
+    browser がウィンドウを開くのは、user activation —— 人の click や打鍵の痕跡 —— を
+    持つページに対してだけです。BrowserHive はそれをページに与えません。ページで評価する
+    コードは、リクエストが運ぶ behaviors と preload の script を含めて、activation なしで
+    走ります。ウィンドウを断るのはこれです。それらの script が、<code>window.open</code>・
+    Fullscreen API・clipboard への書き込みのような gesture の要る API を使えないのも、
+    同じ理由です。
+  </p>
+</section>
+
+<section id="secret-values">
+  <h2>Values of secrets</h2>
+  <p>
+    要求は、behavior に読ませる値を秘密として渡すことができ、<a>settings</a> がその名前を記録します。
+    behavior はその値をネットワークへ送ることができ、ページはそれを表示できるので、
+    取り込みは記録するものの中でその値に出会います。[[BROWSERHIVE-WARC-PROFILE]] の
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
+    語を定め、1 本の WARC ファイルがそれらをどう扱うかを述べます。この節は、パッケージの
+    シークレットのどれを隠すのかと、パッケージの残りがそれらをどう扱うかを述べます。
+  </p>
+  <p>
+    <code>secrets</code> の名前はどれも、シークレットを名指します。<code>secretArchive</code> が
+    名指すものが <dfn data-lt="kept secret">残すシークレット</dfn>で、ほかは隠すシークレットです。
+  </p>
+  <p>
+    この節の決まりが値を置き換えるのは、値が文字かバイト列として在る所です。
+    スクリーンショット（<a>screenshots</a> を参照）は画像です: 取り込んだページが見せた値を
+    写しえますが、そのバイト列の中に、producer が見つけて置き換えられる出現はありません。
+    そのため、<code>secrets</code> が空でないパッケージは、シークレットを隠すか残すかに
+    関わらず、スクリーンショットを持ちません。
+  </p>
+
+  <section id="secret-requests">
+    <h3>Requests a producer refuses</h3>
+    <p>
+      要求によっては、この節の決まりを破らずには実行できません。producer は次の要求を
+      断らなければならず（<em class="rfc2119">MUST</em>）、それらのためにパッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）:
+    </p>
+    <ul>
+      <li>隠すシークレットに 8 文字より短い値を渡す要求。そんなに短い値を置き換えると、
+          無関係の文字にも届きます。要求は、代わりにその値を残すことを求められます。</li>
+      <li>隠すシークレットの値の出現を持つ URL の取り込みを求める要求。
+          <code>pages/pages.jsonl</code> の最初のエントリと <code>mainPageURL</code> はその URL で
+          （<a href="#pages"></a> を参照）、読み手はそれで文書を開くので、置き換えられません。</li>
+      <li>隠すシークレットを持ち、パッケージに <code>storage/origins.jsonl</code> を持たせることに
+          なる要求。そのエントリは area が保持していたとおりの値を持ち、ページは behavior から
+          受け取ったものを保存できます（<a href="#storage-directory"></a> を参照）。</li>
+    </ul>
+  </section>
+
+  <section id="hidden-secret-values">
+    <h3>Hidden secrets</h3>
+    <p>
+      パッケージは、隠すシークレットの値の出現を、どのファイルにも持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）: <code>datapackage.json</code>、
+      <code>datapackage-digest.json</code>、展開した後の <code>archive/</code> の WARC ファイル、
+      およびほかのどのエントリにも。[[BROWSERHIVE-WARC-PROFILE]] はこれを 1 本の WARC ファイルに
+      ついて述べ、パッケージの残りについては述べようがありません。
+    </p>
+    <p>
+      本仕様がパッケージに URL を記録させる所では、producer はその中の出現を 3 文字の
+      <code>***</code> に置き換えなければならず（<em class="rfc2119">MUST</em>）、
+      同仕様が <code>WARC-Target-URI</code> を URI のままにするように、結果は URL のままです。
+      置き換えると URL の scheme が無くなるときは、producer は結果の前に元の scheme とコロンを書きます。
+      値が port の中から始まるときなど、それでも URL にならないときは、scheme とコロンと
+      <code>***</code> だけを書きます。対象は次のものです:
+    </p>
+    <ul>
+      <li><a>document</a> の <code>url</code>。</li>
+      <li><code>bodylessUrls</code>・<code>truncatedUrls</code>・<code>uninterceptedUrls</code> の
+          URL と、<code>crashedTargets</code> の <code>url</code>（<a>completeness</a> を参照）。</li>
+      <li><code>accessibility/axtree.jsonl</code> の各行と各ノードの <code>url</code>。</li>
+      <li>CDXJ の索引の各行の <code>url</code> と searchable key。<code>url</code> は、その行が名指す
+          レコードの <code>WARC-Target-URI</code> で、key は置き換えた後のそれから作ります。</li>
+      <li><a>snapshots</a> の <code>url</code> と、写しを挙げる <code>pages/pages.jsonl</code> の
+          エントリの <code>url</code>。これらは写しの <code>resource</code> レコードの
+          <code>WARC-Target-URI</code> で、そこでシークレットの値は既に置き換えてあります。</li>
+    </ul>
+    <p>
+      これらの URL を整列する配列は、置き換えた後の、書かれたとおりの字で整列します。
+      置き換えで 2 つの URL が同じになることがあり、URL を 1 度だけ挙げる配列は、その URL を
+      1 度だけ挙げます。置き換えた URL には印が無く、読み手はそこの <code>***</code> と URL の中の
+      同じ字とを区別できません。
+    </p>
+    <p>
+      producer は、<code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、
+      <code>datapackage.json</code> の <code>title</code>、
+      <code>accessibility/axtree.jsonl</code> のノードの <code>name</code> と <code>value</code>、
+      <code>logs/capture.jsonl</code> の行の <code>msg</code> と <code>data</code>
+      （<a href="#logs-lines"></a> を参照）、<code>trace/events.jsonl</code> の行の
+      <code>url</code>・<code>initiator</code> の <code>url</code>・<code>error</code>
+      （<a href="#trace-lines"></a> を参照）でも、出現を <code>***</code> に
+      置き換えなければなりません（<em class="rfc2119">MUST</em>）。
+      trace の行の <code>url</code> と、その <code>initiator</code> の <code>url</code> は、
+      上に挙げた URL には入りません: producer は文字と同じように置き換え、そこに書いたものが
+      URL のままであるとは限りません。切った URL、<code>data:</code> の URL の書き方、
+      残すシークレットの置き換えは、URL の形を保たないことがあるからです。
+    </p>
+    <p>
+      WARC ファイルの外では、パッケージのほかのものは何も置き換えません:
+      behavior と preload のスクリプトの <code>source</code>、<code>behaviors/runtime.js</code>、
+      <code>variables</code> や <a>urlPolicies</a> の項目、<a>tls</a> の host、<a>storage</a> の origin、
+      <code>trace/events.jsonl</code> の行のほかの member、
+      member の名前。これらのどこかに出現を書くことになる取り込みは、パッケージを作っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。
+    </p>
+    <p>
+      [[BROWSERHIVE-WARC-PROFILE]] は、ある種の cookie の値を、その cookie を設定した応答が届いた
+      瞬間から、隠すシークレットの値として producer に扱わせます。その値は <code>secrets</code> に
+      名前を持ちません。その瞬間から、producer は、この節が出現を置き換えさせる所でその値を
+      置き換えなければなりません（<em class="rfc2119">MUST</em>）。それ以上は求めません:
+      それより前に producer が受け取ったものや書いたもの、<code>pages/pages.jsonl</code> の最初の
+      エントリのように取り込みの要求から写すもの、置き換えないものは、その値を持っていることがあります。
+    </p>
+  </section>
+
+  <section id="kept-secret-values">
+    <h3>Kept secrets</h3>
+    <p>
+      要求がシークレットを残すのは、wire を渡ったものを読み手が見られるようにするためです。
+      <a>残すシークレット</a>の値は、写しのレコードを除き、WARC の <code>request</code>・
+      <code>response</code>・<code>metadata</code> のレコードに残ります。そうした交信と文書について
+      パッケージが記録する URL にも残ります: <a>document</a> の <code>url</code>、
+      <code>accessibility/axtree.jsonl</code> の各行の <code>url</code>、<a>completeness</a> の URL、
+      応答の CDXJ の行の <code>url</code> と searchable key です。取り込みを求められた URL が値を
+      持つときは、その URL に残ります: <code>pages/pages.jsonl</code> の最初のエントリ、
+      <code>mainPageURL</code>、そして producer がその URL を書くなら、<code>warcinfo</code> レコードの
+      <code>description</code> と <code>datapackage.json</code> の <code>title</code> です。
+      <a href="#hidden-secret-values"></a> が置き換えないと述べるものと、area が保持していたとおりの
+      値を持つ <code>storage/origins.jsonl</code> にも残ります。
+    </p>
+    <p>
+      パッケージは、残すシークレットの値を、そのままの形で、長さに関わらず、次のどこにも持っては
+      なりません（<em class="rfc2119">MUST NOT</em>）。producer はそこでは値を <code>***</code> に
+      置き換えます。
+    </p>
+    <ul>
+      <li>写しと、その URL（[[BROWSERHIVE-WARC-PROFILE]]）。</li>
+      <li><code>pages/pages.jsonl</code> のエントリの <code>text</code> と <code>title</code>、および
+          ページから読んだときの <code>datapackage.json</code> の <code>title</code>。</li>
+      <li><code>accessibility/axtree.jsonl</code> のノードの <code>name</code>・<code>value</code>・
+          <code>url</code>。</li>
+      <li><code>logs/capture.jsonl</code> の行の <code>msg</code> と <code>data</code>。</li>
+      <li><code>trace/events.jsonl</code> の行の <code>url</code>・<code>initiator</code> の
+          <code>url</code>・<code>error</code>（<a href="#trace-lines"></a> を参照）。</li>
+    </ul>
+    <p>
+      残す値が、隠すシークレットの値である、または持つときは、その値の分は置き換えます。
+      WARC のレコードでも、隠すシークレットの決まりが先です。
+    </p>
+    <p class="note" title="なぜ残すシークレットも、ページから読むものでは置き換えるのか">
+      シークレットを残すのは、何が送られ何が返ったかを読み手が見られるようにするためです。
+      ページから読むものは別の記録です。behavior が欄に打ったものを持ち、人が読み、検索する
+      ものです。これには代償があります。ノードの <code>url</code> は、URL に残すシークレットを持つ
+      資源のレコードを名指さなくなります。短い値は無関係の文字も置き換えます: 値が
+      <code>pro</code> なら、語 <code>probe</code> は <code>***be</code> になります。
+    </p>
+  </section>
+</section>
+
+<section id="storage">
+  <h2>The <code>storage</code> member</h2>
+  <p>
+    <code>browserhive:capture</code> は、取り込んだ origin が保持していた web
+    storage を記録する <dfn>storage</dfn> という member を
+    持た<em class="rfc2119">なければならない</em>（MUST）。この member が記録するのは、その storage の
+    <strong>存在と形</strong>です。保存されていた値を
+    含ん<em class="rfc2119">ではならない</em>（MUST NOT）。
+  </p>
+  <p class="note" title="これは「値を記録しない」という意味ではありません">
+    禁じているのはこの member であって、パッケージではありません。値そのものは
+    別のエントリ <code>storage/origins.jsonl</code> に入り、値を求められた取り込みの
+    パッケージがそれを運びます。<a href="#storage-directory"></a> を参照。
+    分けているのは、web storage が bearer token や session 識別子を日常的に持ち、
+    それらが WARC の payload のどこにも現れないからです ——
+    既定で記録すれば、パッケージはそれを行く先々へ運ぶことになります。
+    どちらをパッケージが持っているかは <code>valuesRecorded</code> が述べます。
+  </p>
+  <p>
+    web storage を記録するのは、後から復元できないからです。ネットワークを一度も
+    渡らないため、どの WARC レコードもこれを保持していません ——
+    <code>localStorage</code> から描画するページは、アーカイブが持っていない
+    データから描画しています。この member が無いと、読み手はそうしたページと
+    「本当に見せるものが無かったページ」を区別できません。
+    <a>completeness</a> は助けになりません ——
+    あれが報告するのはパッケージが保持していない <em>body</em> であり、
+    storage は一度も body になっていないからです。
+  </p>
+  <pre class="json">
+{
+  "browserhive:capture": {
+    "storage": {
+      "profile": "browserhive:storage/2",
+      "stage": "after-behaviors",
+      "valuesRecorded": false,
+      "origins": [
+        {
+          "origin": "https://www.example.co.jp",
+          "local": { "keys": 2, "bytes": 32, "digest": "sha256:b58f31fdc511fb94c356ae7f6d64ac71e5bf056584653c3f3ec61a1f08bfaa0f" },
+          "session": { "keys": 1, "bytes": 13, "digest": "sha256:8ce272dea9fc6d7902b23f10411da49a7fb2e3c954ba9f1580cc087292eaafc2" }
+        },
+        { "origin": "https://ads.example.net", "unreadable": true }
+      ]
+    }
+  }
+}
+  </pre>
+
+  <section id="storage-members">
+    <h3>Members</h3>
+    <p>
+      <code>storage</code> は <code>profile</code>、<code>stage</code>、
+      <code>valuesRecorded</code>、<code>origins</code> を
+      持た<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <ul>
+      <li>
+        <code>profile</code> —— この member が従う規則。本仕様のこの版では値は
+        <code>"browserhive:storage/2"</code> で<em class="rfc2119">なければならない</em>（MUST）。
+        記録する内容や digest の計算方法を変えた producer は、この値を
+        変え<em class="rfc2119">なければならない</em>（MUST）。
+      </li>
+      <li>
+        <code>stage</code> —— 取り込みのどの時点で storage を読んだか。この版では値は
+        <code>"after-behaviors"</code> で<em class="rfc2119">なければならない</em>（MUST）。
+        stage が規範なのは、内容が変わるからです ——
+        ページは動作しながら storage に書き込むので、behavior が走る前に読んだものと
+        後に読んだものは、別の状態を表します。
+      </li>
+      <li>
+        <code>valuesRecorded</code> —— このパッケージが、下で定義するディレクトリに
+        保存されていた値も併せて運んでいるかどうか。これは「値を求められた」ことを
+        述べるのであって、「すべての origin の値が在る」ことではありません ——
+        <code>valuesOversize</code> と印の付いた origin の値は在りません。
+        <a href="#storage-directory"></a> を参照。
+      </li>
+      <li>
+        <code>origins</code> —— 取り込みが観測できた origin ごとに 1 つの項目を持つ配列。
+      </li>
+    </ul>
+  </section>
+
+  <section id="storage-origin-entries">
+    <h3>Origin entries</h3>
+    <p>
+      各項目は <code>origin</code> を持た<em class="rfc2119">なければならない</em>（MUST） ——
+      値は [[WACZ]] の enclosing document と同じ直列化形式、すなわち scheme・host、
+      および既定でない場合の port です。
+    </p>
+    <p class="note" title="Why the list is keyed by origin">
+      web storage は origin ごとに区切られており、ページは日常的に自分以外の origin の
+      文書を埋め込みます —— 広告、計測のフレーム、埋め込みのプレイヤー。それらは
+      それぞれ自分の storage を持ち、<strong>ページ自身の origin からは見えません</strong>。
+      したがってこれは「そのページの storage」の記録ではありません ——
+      <strong>取り込みが観測できた origin ごとに 1 項目</strong>であり、
+      第三者の origin の項目が在ることは異常ではなく想定どおりです。
+      <br><br>
+      そもそも storage を持てない origin —— <code>about:blank</code> の文書や
+      <code>data:</code> URL のような opaque origin —— は記録するものが無いので
+      現れません。
+    </p>
+    <p>
+      各項目は、<code>local</code> と <code>session</code> の両方を持つか、あるいは
+      <code>unreadable</code> という単一の member を値 <code>true</code> で持つかの
+      いずれかで<em class="rfc2119">なければならない</em>（MUST）。後者は「その origin の storage を
+      取り込みが読めなかった」という意味です。これは storage が空だった origin
+      —— <code>"keys": 0</code> の area として書かれる —— とは<strong>別</strong>です。
+      同じ形で記録すると、この member が取り除こうとしている曖昧さが戻ってきます。
+    </p>
+    <p class="note" title="An entry and a line describe the same origin">
+      ここの項目と <code>storage/origins.jsonl</code> の行は、1 つの記録の
+      <strong>2 つの半分</strong>です。項目はその origin の storage が
+      <em>どう見えたか</em>を述べ —— 鍵がいくつ、何バイト、digest は何 ——
+      常に在ります。行は<em>何が入っていたか</em>を述べ、値を求められたときにだけ
+      在ります。どちらをパッケージが持っているかは <code>valuesRecorded</code> が
+      述べます。値を求められてもなお行を持たない origin は 2 通りあります ——
+      行に入れるものが無かった（<code>unreadable</code> として記録）か、
+      行に入れるものが大きすぎた（<code>valuesOversize</code> として記録）か。
+      その 2 つを区別するのが項目で、だからこそ項目のほうが常に書かれます。
+    </p>
+    <p>
+      <code>local</code> と <code>session</code> はそれぞれ以下を
+      持た<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <ul>
+      <li><code>keys</code> —— その area が保持していた鍵の数。</li>
+      <li>
+        <code>bytes</code> —— その area の合計の大きさ。すべての鍵と値の
+        <strong>UTF-8 表現</strong>で数えます。browser 自身の quota 会計が使う
+        UTF-16 コード単位ではありません。
+      </li>
+      <li>
+        <code>digest</code> —— <code>"sha256:"</code> に続けて、その area の SHA-256 を
+        小文字の 16 進で。計算は、鍵をコードポイント順に並べ、各要素が
+        <code>key</code> U+0000 <code>value</code> U+0000 を UTF-8 で寄与する形で行います。
+        並べ方と区切りは規範です —— これを決めないと同じ内容が別の digest になり、
+        取り込みをまたいで比較するという digest の目的が失われます。
+      </li>
+    </ul>
+    <p>
+      digest を値へのコミットメントとして扱っ<em class="rfc2119">てはならない</em>（MUST NOT）。
+      値はしばしばエントロピーが低く —— フラグ、テーマ名、時刻 ——
+      そのような digest は推測で容易に逆算できます。
+    </p>
+    <p>
+      項目は <code>valuesOversize</code> を値 <code>true</code> で
+      持っ<em class="rfc2119">てもよい</em>（MAY）。これは「この origin の保存値は
+      大きすぎたため運ばれなかった」こと、したがって「この項目がその origin について
+      パッケージが持つすべてである」ことを述べます。
+      <code>unreadable</code> と並べ<em class="rfc2119">てはならず</em>（MUST NOT） ——
+      読めなかった storage には、超えるべき大きさがありません ——
+      <code>valuesRecorded</code> が <code>false</code> のときにも
+      置い<em class="rfc2119">てはならない</em>（MUST NOT）。そこではどの origin の値も
+      もともと運ばれる予定が無く、この member は<strong>誰も下していない判断</strong>を
+      報告することになります。
+    </p>
+    <p>
+      <code>valuesOversize</code> を持つ項目は、それでも <code>local</code> と
+      <code>session</code> を持た<em class="rfc2119">なければならない</em>（MUST）。
+      ここが <code>unreadable</code> との違いで、意図的なものです ——
+      取り込みはこの origin を<strong>読めています</strong>。鍵がいくつあり、
+      どれだけ大きかったかを知っています。その数字が member の隣に在れば、
+      読み手は「値が欠けていること」と「どれだけ欠けているか」の両方を知り、
+      上限を上げて撮り直すかどうかを判断できます。area を落として項目を書くのは、
+      すでに手元にある計測を捨てることです。
+    </p>
+    <pre class="json">
+{
+  "origin": "https://heavy.example",
+  "local": { "keys": 1, "bytes": 2129905, "digest": "sha256:1aeb74b512b17f6fc43ade8575d452df142ade5d1515a4afcaf05dd199688c38" },
+  "session": { "keys": 0, "bytes": 0, "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+  "valuesOversize": true
+}
+    </pre>
+  </section>
+</section>
+
+<section id="storage-directory">
+  <h2>The <code>storage</code> directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を避け、
+    <code>datapackage.json</code> の <code>resources</code> に列挙する限り、追加の
+    ファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは <code>storage/origins.jsonl</code> というエントリを
+    持っ<em class="rfc2119">てもよい</em>（MAY）。存在する場合、他のファイルと同様に
+    <code>resources</code> で宣言し<em class="rfc2119">なければならず</em>（MUST）、
+    JSON Lines で<em class="rfc2119">なければならない</em>（MUST） —— 1 行 1 つの JSON
+    オブジェクトで、各オブジェクトは 1 つの origin が保持していた web storage を
+    記録します。
+  </p>
+  <p>
+    このエントリが存在する場合、<code>valuesRecorded</code> は
+    <code>true</code> で<em class="rfc2119">なければならない</em>（MUST）。存在しない場合、
+    <code>valuesRecorded</code> は <code>false</code> で<em class="rfc2119">なければならない</em>（MUST）。
+    したがって読み手は、アーカイブ本体を開かずに、そのパッケージが保存されていた値を
+    運んでいるかどうかを判別できます。
+  </p>
+  <p>
+    隠すシークレットを持つパッケージは、このエントリを持っては
+    <em class="rfc2119">ならない</em>（MUST NOT）。したがってその <code>valuesRecorded</code> は
+    <code>false</code> です（<a href="#secret-requests"></a> を参照）。
+  </p>
+  <pre class="json">
+{
+  "profile": "browserhive:storage/2",
+  "origin": "https://www.example.co.jp",
+  "takenAt": "2026-09-06T01:22:14.881Z",
+  "stage": "after-behaviors",
+  "areas": {
+    "local": { "feed.cache": "[{\"id\":1}]", "ui.theme": "dark" },
+    "session": { "nav.scroll": "820" }
+  }
+}
+  </pre>
+  <p>
+    各行は <code>profile</code>、<code>origin</code>、[[RFC3339]] のタイムスタンプと
+    しての <code>takenAt</code>、<code>stage</code>、<code>areas</code> を
+    持た<em class="rfc2119">なければならない</em>（MUST）。<code>areas</code> は
+    <code>local</code> と <code>session</code> を
+    持た<em class="rfc2119">なければならない</em>（MUST） ——
+    それぞれ、area が保持していたとおりに鍵を値へ写像するオブジェクトです。
+    <a>storage</a> で <code>unreadable</code> または
+    <code>valuesOversize</code> として記録された origin は、
+    ここに行を持っ<em class="rfc2119">てはならない</em>（MUST NOT）。
+    したがってエントリは 1 行も持たないことがあり<em class="rfc2119">えます</em>（MAY） ——
+    値を求められたが、どの origin の値も運べなかった場合です。これは
+    エントリが<strong>不在</strong>であること（＝そもそも値を求められなかった）とは
+    別の主張です。
+  </p>
+</section>
+
+<section id="accessibility">
+  <h2>The accessibility directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは <code>accessibility/axtree.jsonl</code> というエントリを
+    持ってもよい（<em class="rfc2119">MAY</em>）。存在する場合、他のファイルと同様に
+    <code>resources</code> で宣言しなければならず（<em class="rfc2119">MUST</em>）、
+    <a href="https://jsonlines.org/">JSON Lines</a> でなければなりません
+    （<em class="rfc2119">MUST</em>）—— 1 行 1 つの JSON オブジェクトで、各
+    オブジェクトは、取り込んだページに対して browser が計算したアクセシビリティ
+    ツリーのスナップショット 1 枚を記録します。
+  </p>
+  <p>
+    <a>document</a> が <code>withheld</code> を持つパッケージは、このエントリを含んでは
+    なりません（<em class="rfc2119">MUST NOT</em>）。この木は描画されたページから読むので、
+    方針がその文書の本文を archive に入れなかったときも、文書の文字を運んでしまいます。
+  </p>
+  <p class="note">
+    この木を記録するのは、後から作り直せないからです。DOM <strong>とレイアウト
+    ツリーの両方</strong>から作られ、対応する DOM ノードを持たないノード（CSS の
+    生成内容、リストの記号）を含み、<code>aria-owns</code> がノードの親を付け替える
+    ため、その形は文書の木とは異なります。将来の browser で archive を再生しても、
+    別の木ができます。<code>tls</code> を参照ではなく記録している理由と同じです。
+  </p>
+
+  <section id="accessibility-snapshot">
+    <h3>Snapshot members</h3>
+    <p>
+      各行は <code>profile</code>・<code>url</code>・<code>takenAt</code>・
+      <code>stage</code>・<code>tree</code> を含まなければなりません
+      （<em class="rfc2119">MUST</em>）。
+    </p>
+    <ul>
+      <li><code>profile</code> —— その行が従う刈り込み規則。本仕様のこの版では、値は
+          <code>"browserhive:axtree/1"</code> でなければなりません
+          （<em class="rfc2119">MUST</em>）。刈り込み規則を変える producer は、この値も
+          変えなければなりません（<em class="rfc2119">MUST</em>）—— 読み手が、何が
+          捨てられたのかを言えるようにするためです。</li>
+      <li><code>url</code> —— そのスナップショットを読んだ文書の URL。<a>document</a> の
+          <code>url</code> と等しくなければなりません（<em class="rfc2119">MUST</em>）。</li>
+      <li><code>takenAt</code> —— 撮った時刻。[[RFC3339]] のタイムスタンプ。</li>
+      <li><code>stage</code> —— 取り込みのどの時点で撮ったか。この版では値は
+          <code>"after-behaviors"</code> でなければなりません
+          （<em class="rfc2119">MUST</em>）。<strong>時点が規範的なのは、木が変わる
+          からです。</strong> autoscroll は lazy load を発火させるので、behavior の
+          前に撮った木と後に撮った木は、別のページを記述しています。</li>
+      <li><code>tree</code> —— ノードの配列。次節を参照。</li>
+    </ul>
+    <p>
+      各行はさらに <code>devicePixelRatio</code>・<code>viewport</code>・
+      <code>nodes</code> を持つべきです（<em class="rfc2119">SHOULD</em>）——
+      順に、そのスナップショットがどのパスのものか、効いていた viewport、そして
+      刈り込む<strong>前</strong>のノード数。最後の 1 つによって、読み手はどれだけ
+      捨てられたのかを見ることができます。
+    </p>
+    <pre class="json">
+{
+  "profile": "browserhive:axtree/1",
+  "url": "https://www.iana.org/",
+  "takenAt": "2026-08-22T02:55:56.759Z",
+  "stage": "after-behaviors",
+  "devicePixelRatio": 1,
+  "viewport": { "width": 1280, "height": 800 },
+  "nodes": 255,
+  "tree": [
+    {
+      "role": "RootWebArea",
+      "name": "Internet Assigned Numbers Authority",
+      "children": [
+        { "role": "heading", "name": "Domain Names", "level": 2 },
+        { "role": "image", "name": "logo",
+          "url": "https://www.iana.org/_img/iana-logo-header.svg" }
+      ]
+    }
+  ]
+}
+    </pre>
+    <p class="note">
+      読みやすさのため複数行で示しています。ファイル中では、各スナップショットは
+      ちょうど 1 行を占めます。
+    </p>
+  </section>
+
+  <section id="accessibility-nodes">
+    <h3>Node shape</h3>
+    <p>
+      すべてのノードは <code>role</code> を持たなければなりません
+      （<em class="rfc2119">MUST</em>）。ノードは <code>role</code>・
+      <code>name</code>・<code>level</code>・<code>url</code>・<code>checked</code>・
+      <code>expanded</code>・<code>disabled</code>・<code>required</code>・
+      <code>value</code>・<code>children</code> 以外の member を持ってはなりません
+      （<em class="rfc2119">MUST NOT</em>）。
+    </p>
+    <p>
+      このうち 2 つは、他より重い意味を持ちます:
+    </p>
+    <ul>
+      <li><code>level</code> —— 見出しの深さ。これが無いと <code>heading</code> の
+          ノードを互いに区別できず、この木が記録するために在る文書構造そのものが
+          失われます。</li>
+      <li><code>url</code> —— 画像やリンクが指す先。ノードと <code>archive/</code> に
+          記録されたレスポンスを結ぶのはこれで、「ここに図があった」から「その図の
+          バイト列」へ辿れるようになります。</li>
+    </ul>
+    <p>
+      値が無い・空・<code>false</code> の member は書いてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。全ノードに既定値を書くと、それが囲んでいる
+      中身より嵩が大きくなります。
+    </p>
+  </section>
+
+  <section id="accessibility-pruning">
+    <h3>Pruning</h3>
+    <p>
+      browser が ignored と印を付けたノードは <code>tree</code> に現れてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。その子は残し、最も近い残されたノードの
+      下に付けなければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <p class="note">
+      これが、隠されたテキストを記録に持ち込まないための仕掛けです。
+      <code>aria-hidden</code> や <code>display: none</code> で外された部分木は
+      ignored なノードなので、そもそもこのファイルに届きません。したがって読み手は、
+      この木を「<strong>見えていたもの</strong>」の記述として扱えます —— WARC の
+      本文だけからは支えられない、より強い主張です。
+    </p>
+    <p>
+      role が <code>generic</code>・<code>none</code>・<code>InlineTextBox</code> の
+      ノードも <code>tree</code> に現れてはならず（<em class="rfc2119">MUST NOT</em>）、
+      その子は同じように残さなければなりません（<em class="rfc2119">MUST</em>）。
+      これらの role はそれ自体では意味を持たず、残すと木の深さが倍になるだけで、
+      読み手が使えるものは何も増えません。
+    </p>
+    <p>
+      viewport の外にあることを理由にノードを落としてはなりません
+      （<em class="rfc2119">MUST NOT</em>）。エージェントにとっては妥当な判断です ——
+      見えないものは操作できないので。しかし、誰もスクロールしなかった部分を捨てた
+      アーカイブは、そのページの記録ではありません。
+    </p>
+  </section>
+</section>
+
+<section id="behaviors-directory">
+  <h2>The behaviors directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは、取り込みが保存の前にページ上で走らせたコードを運ぶ
+    <dfn>behaviors</dfn> の下のエントリを持っ<em class="rfc2119">てもよい</em>（MAY）。
+    存在する場合、各エントリは他のファイルと同様に <code>resources</code> で
+    宣言し<em class="rfc2119">なければなりません</em>（MUST）。
+  </p>
+  <p class="note">
+    コードを記録するのは、後から取り戻せないからです。producer が同梱するコードは
+    少なくとも <a>build</a> が固定していますが、リクエストが運んできたコードは
+    リクエストと共に来て、応答を捨てた時点で失われます —— しかも、それが走った名前は
+    提供した側が決めたものなので、同じ名前で中身の違うコードが走った 2 回は
+    他の手段では区別が付きません。<code>tls</code> を参照ではなく記録している理由と
+    同じです。
+  </p>
+
+  <section id="behaviors-runtime">
+    <h3>Runtime</h3>
+    <p>
+      適合するパッケージは <code>behaviors/runtime.js</code> というエントリを
+      持っ<em class="rfc2119">てもよい</em>（MAY）。存在する場合、それは producer が
+      ページの中で評価したソースを、<strong>バイト単位でそのまま</strong>
+      持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      producer がそのようなソースを評価したときは在ら<em class="rfc2119">なければならず</em>
+      （MUST）、そうでなければ在っては<em class="rfc2119">なりません</em>（MUST NOT）。
+      したがってその存在は「ページ上でコードが走った」ことを述べます ——
+      その後どの behavior が何かをしたかどうかとは無関係に。
+    </p>
+    <p>
+      そのソースを評価した後、producer はソースが定めた関数を、引数を付けて
+      呼ん<em class="rfc2119">でもよい</em>（MAY）。その呼び出しと引数はソースの一部ではなく、
+      このエントリには記録されません。引数のうち、変数は <code>settings.variables</code> に、
+      シークレットの名前は <code>settings.secrets</code> に在ります。シークレットの値は、
+      引数としてはどこにも記録されず、producer はそれをソースに書いては
+      <em class="rfc2119">なりません</em>（MUST NOT）。behavior の手に渡った後の値がどうなるかは
+      <a href="#secret-values"></a> が述べます。
+    </p>
+    <p class="note" title="Why the values are not in the source">
+      これが、producer の作るどの取り込みでも runtime を同じバイト列に保ちます。値をソースに
+      書き込む producer は、取り込みごとに違う <code>runtime.js</code> を記録することになり ——
+      シークレットも一緒に記録してしまいます。
+    </p>
+    <p class="note">
+      要求しているのは「バイト単位でそのまま」であって、読みやすさではありません。
+      runtime を minify する producer は minify された形を記録します ——
+      それがページの受け取ったものだからです。人が読める形が要る読み手には
+      <a>build</a> があり、それがパッケージを作ったソフトウェアを名指しします。
+    </p>
+  </section>
+
+  <section id="behaviors-custom">
+    <h3>Request-supplied behaviors</h3>
+    <p>
+      適合するパッケージは <code>behaviors/custom.jsonl</code> というエントリを
+      持っ<em class="rfc2119">てもよい</em>（MAY）。存在する場合、それは
+      <a href="https://jsonlines.org/">JSON Lines</a> で
+      なけれ<em class="rfc2119">ばなりません</em>（MUST） ——
+      1 行に 1 つの JSON オブジェクトで、各オブジェクトは取り込みのリクエストと共に
+      届いた behavior を 1 つ記録します。
+    </p>
+    <pre class="json">
+{
+  "profile": "browserhive:behaviors/1",
+  "id": "example.com:gallery",
+  "source": "class { static id = \"example.com:gallery\"; … }"
+}
+    </pre>
+    <p>
+      各行は <code>profile</code>・<code>id</code>・<code>source</code> を
+      持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <ul>
+      <li>
+        <code>profile</code> &mdash; その行が従う規則。本仕様のこの版では値は
+        <code>"browserhive:behaviors/1"</code> で
+        なけれ<em class="rfc2119">ばなりません</em>（MUST）。
+      </li>
+      <li>
+        <code>id</code> &mdash; その behavior が登録された名前。
+        <code>settings.behaviors</code> のうち <code>origin</code> が
+        <code>"custom"</code> である項目は、すべてここに行を
+        持た<em class="rfc2119">なければなりません</em>（MUST）。
+        <strong>逆は成り立ちません</strong> —— 対応する項目を持たない行が
+        在っ<em class="rfc2119">てもよい</em>（MAY）。behavior はページに置かれた
+        うえで、何もしないことを選べるためです。
+      </li>
+      <li>
+        <code>source</code> &mdash; 届いたままのコード。バイト単位でそのまま。
+      </li>
+    </ul>
+    <p>
+      producer がリクエスト由来の behavior をページに置いたときは
+      在ら<em class="rfc2119">なければならず</em>（MUST）、そうでなければ
+      在っては<em class="rfc2119">なりません</em>（MUST NOT）。したがってその不在は
+      「このパッケージはリクエストから来たコードを持たない」ことを述べます。
+    </p>
+    <p class="note" title="Placed, not run">
+      条件は「置いたか」であって「走ったか」ではありません ——
+      <a href="#behaviors-runtime">runtime</a> と同じ条件です。ページに置かれた
+      コードは、そのあと何を決めたにせよ、そこで走っています。<strong>作用したコードだけ</strong>を
+      記録するアーカイブは、実行されたコードを取りこぼします。
+    </p>
+    <p class="note" title="Why the names are not file names">
+      behavior の名前は、それを提供した側が決めるもので、何の制約もありません ——
+      現に使われている名前には <code>:</code> も <code>/</code> も含まれます。
+      それをエントリのパスに使うと、<strong>名前がパッケージの中の置き場所を
+      決めてしまいます</strong>。ファイル 1 つ・behavior 1 つにつき 1 行という形は、
+      名前を経路ではなく値のままに保ちます。
+    </p>
+  </section>
+
+  <section id="behaviors-reading">
+    <h3>Reading these entries</h3>
+    <p>
+      読み手は <a>behaviors</a> の中身を実行しては<em class="rfc2119">なりません</em>
+      （MUST NOT）。あれは producer が何を走らせたかの記録であって、保存されたページの
+      一部ではありません。パッケージを replay するのに、それらを再び走らせることを
+      求めるものは何もありません。
+    </p>
+    <p class="note">
+      これを明記するのは、適合するパッケージの中で中身が実行可能なエントリが
+      これだけであることと、パッケージを replay する読み手は既に実行の context を
+      開いているためです。
+    </p>
+  </section>
+</section>
+
+<section id="preload-directory">
+  <h2>The preload directory</h2>
+  <p>
+    適合するパッケージは <dfn>preload</dfn> の下に項目を持って
+    <em class="rfc2119">よい</em>（MAY）。取り込んだページ自身の script より
+    <em>前</em>に走らせるために、リクエストが持ち込んだコードです。在るときは、
+    他のファイルと同じく <code>resources</code> で申告し
+    <em class="rfc2119">なければならない</em>（MUST）。
+  </p>
+  <p class="note" title="なぜ behaviors に足さず、別のディレクトリなのか">
+    <a>behaviors</a> のコードは、ページが読み込まれた後に、主フレームで 1 度だけ走り、
+    何を判断したかを報告できます。<a>preload</a> のコードは、ページ自身の script より前に、
+    サブフレームを含むすべてのフレームで、遷移のたびに走り、<strong>報告する手段を持ちません</strong>。
+    「このコードは何を見えたか、何回走ったか」という問いへの答えが両者で違うので、
+    1 つの一覧に混ぜたパッケージは、どちらの問いにも答えられなくなります。
+  </p>
+
+  <section id="preload-scripts">
+    <h3>Supplied scripts</h3>
+    <p>
+      preload のスクリプトを走らせた適合パッケージは、それらを
+      <code>preload/scripts.jsonl</code> に、1 行 1 つの JSON オブジェクトとして、
+      <strong>登録した順</strong>に記録し<em class="rfc2119">なければならない</em>（MUST）。
+      各行は <code>profile</code>（文字列 <code>"browserhive:preload/1"</code>）・
+      <code>id</code>（持ち込まれた名前）・<code>source</code>（評価されたとおりの
+      スクリプト）を持た<em class="rfc2119">なければならない</em>（MUST）。
+    </p>
+    <p>
+      <code>id</code> が、パッケージの中での項目の名前を決めては
+      <em class="rfc2119">ならない</em>（MUST NOT）。それは行の中の値です。
+    </p>
+    <p class="note">
+      名前は送った側が決めたもので、制約がありません。経路に見える名前は、
+      そうでなければ項目の置き場所を決めてしまいます。リクエストが持ち込む behavior と
+      同じ規則で、理由も同じです。
+    </p>
+  </section>
+
+  <section id="preload-reading">
+    <h3>Reading these entries</h3>
+    <p>
+      読み手は <a>preload</a> の中身を実行しては<em class="rfc2119">ならない</em>
+      （MUST NOT）。<a>behaviors</a> と同じく、producer が走らせたものの記録であって、
+      アーカイブされたページの一部ではありません。
+    </p>
+    <p>
+      <code>preload/scripts.jsonl</code> が無いことと、<a>settings</a> の
+      <code>preload</code> が空であることは、合わせて「そのようなコードは走らなかった」と
+      述べます。読み手はこの 2 つを 1 つの主張として扱わ
+      <em class="rfc2119">なければならない</em>（MUST）——
+      ファイルを持つのに member を欠く（またはその逆の）パッケージは適合しません。
+    </p>
+  </section>
+</section>
+
+<section id="logs-directory">
+  <h2>The logs directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは、その取り込みのログである <code>logs/capture.jsonl</code> という
+    エントリを持た<em class="rfc2119">なければなりません</em>（MUST）。それは他のファイルと
+    同様に <code>resources</code> で宣言し<em class="rfc2119">なければならず</em>（MUST）、
+    <a href="https://jsonlines.org/">JSON Lines</a> で<em class="rfc2119">なければなりません</em>
+    （MUST） —— 1 行に 1 つの JSON オブジェクトで、各オブジェクトはログの 1 行を記録します。
+  </p>
+  <p>
+    このエントリは、ログに 1 行も無いときも、空のファイルとして在ら
+    <em class="rfc2119">なければなりません</em>（MUST）。空のログを、書き漏らしではなく
+    主張にするためです。このエントリを持たないパッケージは、この版に適合しません。
+    このエントリを定めていなかった以前の版に向けて書かれたパッケージでは、その不在は、
+    取り込みがログに何を書いたかについて何も述べません。
+  </p>
+  <p class="note" title="なぜログがパッケージと共に旅をするのか">
+    producer のログは、ふつう取り込みを走らせた機械に残り、機械と共に失われます。それでも
+    ログこそが、取り込みが何を待ったか、behavior が何をしたか、ページがどんな誤りを出したかを
+    述べる場所です —— アーカイブの中のページが思っていたものと違うときに、読み手が要るものです。
+    <code>resources</code> で宣言したエントリは、パッケージの digest に覆われ、署名があれば
+    署名にも覆われます。
+  </p>
+
+  <section id="logs-lines">
+    <h3>Log lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:log/1",
+  "at": "2026-11-04T05:12:04.551Z",
+  "ms": 4522,
+  "dpr": 1,
+  "source": "script",
+  "script": "example.com:gallery",
+  "level": "info",
+  "msg": "searched the gallery",
+  "data": { "query": "gallery", "results": 24 }
+}
+    </pre>
+    <p class="note">
+      読みやすさのため複数行で示しています。ファイル中では、各オブジェクトはちょうど 1 行を
+      占めます。
+    </p>
+    <p>
+      各行は <code>profile</code>・<code>at</code>・<code>ms</code>・<code>source</code>・
+      <code>level</code>・<code>msg</code> を持た<em class="rfc2119">なければならず</em>（MUST）、
+      <code>dpr</code>・<code>script</code>・<code>data</code>・<code>truncated</code> を
+      持っ<em class="rfc2119">てもよい</em>（MAY）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profile</code></td><td>string</td><td>はい</td>
+            <td>その行が従う規則。本仕様のこの版では、値は <code>"browserhive:log/1"</code> で
+            <em class="rfc2119">なければなりません</em>（MUST）。</td></tr>
+        <tr><td><code>at</code></td><td>string</td><td>はい</td>
+            <td>producer がその行を受け取った時刻。[[RFC3339]] のタイムスタンプ。</td></tr>
+        <tr><td><code>ms</code></td><td>number</td><td>はい</td>
+            <td>取り込みの始まりから、producer がその行を受け取るまでのミリ秒。<code>at</code> と
+            同じ時計で測った、0 以上の整数。</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>いいえ</td>
+            <td>その行が書かれた読み込みの device pixel ratio。<a>settings</a> の
+            <code>devicePixelRatios</code> の要素のどれか。どの読み込みの間でもなく書かれた行
+            —— たとえば producer がほかの形式を書いている間や、パッケージを組んでいる間の行 ——
+            には無い。</td></tr>
+        <tr><td><code>source</code></td><td>string</td><td>はい</td>
+            <td>その行を書いたもの: <code>"script"</code>・<code>"page"</code>・
+            <code>"browserhive"</code>（下を参照）。</td></tr>
+        <tr><td><code>script</code></td><td>string</td><td><code>source</code> が <code>"script"</code> のとき</td>
+            <td>producer がその行の書き手とみなした behavior。<a>settings</a> の
+            <code>behaviors</code> の項目の <code>id</code>。</td></tr>
+        <tr><td><code>level</code></td><td>string</td><td>はい</td>
+            <td>書いた側が付けた、その行の重さ: <code>"debug"</code>・<code>"info"</code>・
+            <code>"warn"</code>・<code>"error"</code>。</td></tr>
+        <tr><td><code>msg</code></td><td>string</td><td>はい</td>
+            <td>その行の文。</td></tr>
+        <tr><td><code>data</code></td><td>any</td><td>いいえ</td>
+            <td>書いた側がその行に添えた JSON の値。</td></tr>
+        <tr><td><code>truncated</code></td><td>boolean</td><td>いいえ</td>
+            <td>producer が、行を自分の決めた大きさに収めるために <code>msg</code> か
+            <code>data</code> を切ったとき <code>true</code>（下を参照）。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>source</code> は次のどれか、<code>level</code> は上の 4 つの値のどれかで
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <ul>
+      <li><code>"browserhive"</code> &mdash; producer 自身による取り込みの申告: 通った段、何を
+          待ち、待ちがどう終わったか、何をあきらめたか、そして残さなかった行（下を参照）。</li>
+      <li><code>"script"</code> &mdash; behavior が runtime（<a href="#behaviors-runtime"></a>
+          を参照）を通して書いた行、または behavior が失敗したときの誤り。</li>
+      <li><code>"page"</code> &mdash; 取り込んだページが書いた行: ページのスクリプトと、
+          <a>preload</a> の下で持ち込まれたコードが console に書いたもの、それらが捕まえなかった
+          誤り、そして runtime を通して書かれたが、producer がどの behavior のものとも言えない行。</li>
+    </ul>
+    <p>
+      <code>script</code> は、<code>source</code> が <code>"script"</code> の行には
+      在ら<em class="rfc2119">なければならず</em>（MUST）、それ以外の行には在っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。その値は、<a>settings</a> の
+      <code>behaviors</code> の項目の <code>id</code> で<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      行は producer が受け取った順に並ば<em class="rfc2119">なければならず</em>（MUST）、
+      <code>ms</code> は前の行の値より小さくては<em class="rfc2119">なりません</em>（MUST NOT）。
+      エントリは、producer がパッケージを組むまでにその取り込みについて受け取ったすべての行を、
+      下に述べるとおり残さない行を除いて、持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p class="note" title="ログはパッケージを組んだところで終わる">
+      パッケージは組んだ時点で閉じます —— resources のハッシュを取り、そのハッシュに署名する
+      こともあります。そのため、その後に起きたことは入りえません: producer がパッケージを
+      保管庫に置くこと、置いたパッケージに対して走らせる検査、遅れて発火したタイマーから
+      behavior が書いた行。そうした行が無いことは、それらの出来事について何も述べません。
+    </p>
+    <p class="note" title="誰の時計か">
+      <code>at</code> と <code>ms</code> は、各行が届いたときに読んだ producer の時計で、
+      ページの時計ではありません。ページは自分のスクリプトが読む時刻を変えられますし、
+      どの読み込みの行も 1 つの時計で並べて読む必要があります。
+    </p>
+    <p>
+      producer は、行を自分の決めた大きさに収めるために <code>msg</code> か <code>data</code> を
+      切っ<em class="rfc2119">てもよい</em>（MAY）。切った行は、値が <code>true</code> の
+      <code>truncated</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。
+      <code>data</code> を切ると、その場所に文字列 —— 値の JSON の文字の頭 —— が残ることが
+      あります。
+    </p>
+    <p>
+      producer は、ログを自分の決めた上限に収めるために、行を残さ
+      <em class="rfc2119">なくてもよい</em>（MAY）。そうする producer は、残さなかった最初の行が
+      在ったはずの場所に、その行と同じ <code>at</code> と <code>ms</code> を持ち、
+      <code>source</code> が <code>"browserhive"</code> の行を書いて、何行をなぜ残さなかったかを
+      述べ<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <pre class="json">
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:02.377Z","ms":2348,"dpr":1,"source":"page","level":"error","msg":"Uncaught TypeError: Cannot read properties of null (reading 'offsetTop')"}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:03.016Z","ms":2987,"source":"browserhive","level":"warn","msg":"dropped 1250 lines to stay within the capture's log limits","data":{"dropped":1250}}
+{"profile":"browserhive:log/1","at":"2026-11-04T05:12:04.551Z","ms":4522,"dpr":1,"source":"script","script":"example.com:gallery","level":"info","msg":"searched the gallery","data":{"query":"gallery","results":24}}</pre>
+    <p>
+      この抜き出しでは、ページが読み込みの間に誤りを投げ、その後あまりに多くの行を書いたので、
+      producer はそのうち 1,250 行を残さず、その最初の行が在った場所でそう述べています。
+      behavior の行はその後に続きます。<code>msg</code> の文と <code>data</code> の member は
+      書いた側が決めるもので、ここに挙げたものをこのプロファイルが定めているわけでは
+      ありません。
+    </p>
+    <p>
+      <a>document</a> が <code>withheld</code> を持つとき、エントリは、どの文書が書いたかに
+      関わらず、<code>source</code> が <code>"page"</code> の行を含んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。<code>document</code> が
+      <code>withheld</code> を持たなくても、<a>snapshots</a> がある時点を
+      <code>"withheld"</code> と記録したときは、producer はそうした行を全部残さ
+      <em class="rfc2119">なくてもよい</em>（MAY）—— 行はどの文書が書いたかを名乗らないので、
+      残された文書の行を残すと、伏せられた文書の行まで残しかねないからです。どちらの理由で
+      行を残さなかった producer も、<code>source</code> が <code>"browserhive"</code> の行を
+      書いて、何行をなぜ残さなかったかを述べ<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      <code>msg</code> と、<code>data</code> のどの深さも（値だけでなく鍵も）、隠すシークレットの
+      値の出現も、残すシークレットのそのままの値も、長さに関わらず持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）（<a href="#secret-values"></a> を参照）。
+    </p>
+    <p class="note" title="置き換えてから切る">
+      順番が大事です。シークレットの値を置き換える前に行を切る producer は、切り口に値の頭を
+      残しかねず、そこにはもう何も当たりません。行の JSON の文字の上で置き換える producer は、
+      JSON が escape した値を見逃します。
+    </p>
+    <p class="note" title="答えと同じ行">
+      producer は、ログをパッケージの外でも伝えることがあります。BrowserHive は取り込みの
+      要求への答えで伝え、そこにある行は、このエントリの行から <code>profile</code> を除いた
+      ものです —— producer はパッケージを組む直前に、ログを 1 度だけ閉じるからです。
+    </p>
+  </section>
+
+  <section id="logs-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      読み手は <code>logs/capture.jsonl</code> の中身を実行しては<em class="rfc2119">なりません</em>
+      （MUST NOT）。行は取り込みの記録であって、アーカイブされたページの一部ではありません。
+      行の中に現れるコードは、ページか behavior が書き留めたものであり、パッケージの何も
+      それを走らせることを求めていません。
+    </p>
+    <p>
+      読み手は、<code>source</code> が <code>"page"</code> の行を producer の申告として読んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。producer は取り込んだページが書いたものを
+      取り次ぐだけで、言葉を選んだのはページです —— producer の言葉のように読める言葉も含めて。
+    </p>
+    <p>
+      <code>source</code> が <code>"script"</code> の行も、behavior が書いた証拠ではありません。
+      behavior はページの main world に在る通り道を通して行を書き、そこではページ自身の
+      スクリプトも走ります。producer は各行を、それが出てきたコードから behavior のものとし、
+      それが分からないときは、そのとき走っていた behavior のものとします。そのためページの
+      スクリプトは、behavior のもののように読める行を書けます。producer 自身の申告は、
+      <code>source</code> が <code>"browserhive"</code> の行だけです。
+    </p>
+    <p class="note">
+      ページの行が無いログは、ページが何も書かなかったことを述べません。producer は、ページが
+      書きうるすべての場所 —— たとえばあらゆる種類の worker —— を聞いているとは限らず、
+      残さなかった行は数えるだけで、持ちません。
+    </p>
+  </section>
+</section>
+
+<section id="trace-directory">
+  <h2>The trace directory</h2>
+  <p>
+    [[WACZ]] は、<code>archive</code>・<code>indexes</code>・<code>pages</code> を
+    避け、<code>datapackage.json</code> の <code>resources</code> に列挙する限り、
+    追加のファイルやディレクトリを認めています。適合するパッケージは、その許可を
+    使っ<em class="rfc2119">てもよい</em>（MAY）。
+  </p>
+  <p>
+    適合するパッケージは、その取り込みの trace である <code>trace/events.jsonl</code> という
+    エントリを持た<em class="rfc2119">なければなりません</em>（MUST）。trace は、取り込みが
+    始まりを見た要求と、そのそれぞれがどうなったかです。エントリは他のファイルと同様に
+    <code>resources</code> で宣言し<em class="rfc2119">なければならず</em>（MUST）、
+    <a href="https://jsonlines.org/">JSON Lines</a> で<em class="rfc2119">なければなりません</em>
+    （MUST） —— 1 行に 1 つの JSON オブジェクトで、各オブジェクトは 1 つの要求を記録します。
+  </p>
+  <p>
+    このエントリは、trace に 1 行も無いときも、空のファイルとして在ら
+    <em class="rfc2119">なければなりません</em>（MUST）。空の trace を、書き漏らしではなく
+    主張にするためです。このエントリを持たないパッケージは、この版に適合しません。
+    このエントリを定めていなかった以前の版に向けて書かれたパッケージでは、その不在は、
+    取り込みが出した要求について何も述べません。
+  </p>
+  <p>
+    このプロファイルは、エントリを ZIP ファイルの中にどう収めるかについて何も求めません。
+    パッケージのほかの文字のエントリと同じく、そこで圧縮し<em class="rfc2119">てもよい</em>（MAY）——
+    読み手はこのエントリを丸ごと読み、WARC ファイルに対してするように offset で途中から
+    読むことはありません。
+  </p>
+  <p class="note" title="なぜ trace がパッケージと共に旅をするのか">
+    [[BROWSERHIVE-WARC-PROFILE]] が定めるレコードは、取り込みが残した交信を持ち、それぞれが
+    いつ始まったかを述べます。交信にどれだけ掛かったか、取り込んだページの何がそれを求めたかは
+    述べず、取り込みを止めたときにまだ応答の届いていなかった要求については何も持ちません。
+    アーカイブの中のページに何かが欠けているときに読み手が要るのは、それです —— その要求は
+    出されなかったのか、出されて失敗したのか、まだ途中だったのか。<code>resources</code> で
+    宣言したエントリは、パッケージの digest に覆われ、署名があれば署名にも覆われます。
+  </p>
+
+  <section id="trace-lines">
+    <h3>Trace lines</h3>
+    <pre class="json">
+{
+  "profile": "browserhive:trace/1",
+  "kind": "request",
+  "id": "1234.56",
+  "hop": 0,
+  "dpr": 1,
+  "url": "https://example.com/api/items?page=2",
+  "method": "GET",
+  "resourceType": "Fetch",
+  "initiator": { "type": "script", "url": "https://example.com/app.js", "line": 12 },
+  "startedAt": "2026-11-13T05:00:01.412Z",
+  "ms": 987,
+  "response": { "status": 200, "protocol": "h2" },
+  "timing": { "dnsMs": 0, "connectMs": 1, "tlsMs": 0, "sendMs": 0, "waitMs": 1539, "receiveMs": 2 },
+  "durationMs": 1543,
+  "encodedBytes": 214,
+  "outcome": "finished",
+  "record": "urn:uuid:5c1f0b8e-2a77-4a5e-9d3e-0f6f3b1d2c4a"
+}
+    </pre>
+    <p class="note">
+      読みやすさのため複数行で示しています。ファイル中では、各オブジェクトはちょうど 1 行を
+      占めます。
+    </p>
+    <p>
+      各行は <code>profile</code>・<code>kind</code>・<code>id</code>・<code>hop</code>・
+      <code>url</code>・<code>method</code>・<code>startedAt</code>・<code>ms</code>・
+      <code>outcome</code> を持た<em class="rfc2119">なければならず</em>（MUST）、
+      <code>dpr</code>・<code>urlCut</code>・<code>resourceType</code>・<code>initiator</code>・
+      <code>response</code>・<code>timing</code>・<code>durationMs</code>・
+      <code>encodedBytes</code>・<code>error</code>・<code>endUnobservable</code>・
+      <code>record</code> を持っ<em class="rfc2119">てもよい</em>（MAY）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profile</code></td><td>string</td><td>はい</td>
+            <td>その行が従う規則。本仕様のこの版では、値は <code>"browserhive:trace/1"</code> で
+            <em class="rfc2119">なければなりません</em>（MUST）。</td></tr>
+        <tr><td><code>kind</code></td><td>string</td><td>はい</td>
+            <td>その行が何を記録するか。本仕様のこの版では、値は <code>"request"</code> で
+            <em class="rfc2119">なければなりません</em>（MUST）。</td></tr>
+        <tr><td><code>id</code></td><td>string</td><td>はい</td>
+            <td>browser がその要求に付けた識別子。1 つのリダイレクトの連なりの各段の行は、
+            同じ値を持ちます。</td></tr>
+        <tr><td><code>hop</code></td><td>number</td><td>はい</td>
+            <td>その行が、リダイレクトの連なりのどの段を記録するか: 取り込んだページが最初に
+            出したままの要求は 0 で、リダイレクトに続いて出た要求ごとに 1 つ増えます。
+            0 以上の整数。</td></tr>
+        <tr><td><code>dpr</code></td><td>number</td><td>いいえ</td>
+            <td>その要求が始まった読み込みの device pixel ratio。<a>settings</a> の
+            <code>devicePixelRatios</code> の要素のどれか。どの読み込みの間でもなく作られた行
+            には無い。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>はい</td>
+            <td>要求の URL。シークレットの値は置き換えてあります（下を参照）。行が
+            <code>urlCut</code> を持つときは、URL の全体ではありません。</td></tr>
+        <tr><td><code>urlCut</code></td><td>boolean</td><td>いいえ</td>
+            <td><code>url</code> が URL の全体でないとき <code>true</code>: producer が切ったか、
+            <code>data:</code> の URL だった（下を参照）。そうでなければ無い。</td></tr>
+        <tr><td><code>method</code></td><td>string</td><td>はい</td>
+            <td>要求の method。</td></tr>
+        <tr><td><code>resourceType</code></td><td>string</td><td>いいえ</td>
+            <td>取り込んだページが取りに行っていたものの種類を、browser 自身の語で:
+            <code>Document</code>・<code>Stylesheet</code>・<code>Image</code>・
+            <code>Fetch</code> など。</td></tr>
+        <tr><td><code>initiator</code></td><td>object</td><td>いいえ</td>
+            <td>その要求を出させたもの。browser が伝えたとおり（下を参照）。</td></tr>
+        <tr><td><code>startedAt</code></td><td>string</td><td>はい</td>
+            <td>browser が要求を始めた時刻。browser が伝えたとおりの、タイムスタンプ。
+            <code>outcome</code> が <code>"denied"</code> の行では、producer がその要求を
+            止めた時刻。</td></tr>
+        <tr><td><code>ms</code></td><td>number</td><td>はい</td>
+            <td>取り込みの始まりから、要求の始まりまでのミリ秒。<code>logs/capture.jsonl</code> の
+            行の <code>ms</code> と同じ軸の上の値です（<a href="#logs-lines"></a> を参照）。
+            0 以上の整数。</td></tr>
+        <tr><td><code>response</code></td><td>object</td><td>いいえ</td>
+            <td>応答のヘッダが届くまでに producer が知ったこと（下を参照）。producer に応答の
+            ヘッダが届かなかったときは無い。</td></tr>
+        <tr><td><code>timing</code></td><td>object</td><td>いいえ</td>
+            <td>交信の長さの内訳。ミリ秒（下を参照）。</td></tr>
+        <tr><td><code>durationMs</code></td><td>number</td><td>いいえ</td>
+            <td>要求の始まりから終わりまでのミリ秒。browser の単調な時計で測った、0 以上の整数。
+            producer が終わりを見た行 —— <code>outcome</code> が <code>"finished"</code>・
+            <code>"redirected"</code>・<code>"failed"</code> の行 —— だけが持ちます。</td></tr>
+        <tr><td><code>encodedBytes</code></td><td>number</td><td>いいえ</td>
+            <td>wire を渡った応答の全体の大きさ（バイト）。ヘッダを含みます。0 以上の整数。
+            <code>outcome</code> が <code>"finished"</code> の行だけが持ちます。</td></tr>
+        <tr><td><code>outcome</code></td><td>string</td><td>はい</td>
+            <td>その要求がどうなったか。下の値のどれか。</td></tr>
+        <tr><td><code>error</code></td><td>string</td><td><code>outcome</code> が <code>"failed"</code> のとき</td>
+            <td>その要求がどう失敗したか。browser の言葉か、producer の言葉。</td></tr>
+        <tr><td><code>endUnobservable</code></td><td>boolean</td><td>いいえ</td>
+            <td><code>outcome</code> が <code>"pending"</code> の行で、producer がその要求の
+            終わりを見ることができなかったとき <code>true</code>（下を参照）。そうでなければ
+            無い。</td></tr>
+        <tr><td><code>record</code></td><td>string</td><td>いいえ</td>
+            <td>その交信の <code>response</code> レコードの <code>WARC-Record-ID</code> の URI。
+            その欄が付ける山括弧は付けません。パッケージがそのレコードを持つときだけ
+            在ります。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>initiator</code> は、在るときは object です:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>type</code></td><td>string</td><td>はい</td>
+            <td>要求を出させたものの種類を、browser 自身の語で: <code>parser</code>・
+            <code>script</code>・<code>preload</code>・<code>other</code> など。</td></tr>
+        <tr><td><code>url</code></td><td>string</td><td>いいえ</td>
+            <td>要求を出させた文書かスクリプトの URL。browser が call stack を伝えたときは、
+            そのいちばん上の枠の URL。シークレットの値は置き換えてあり、producer はこれを
+            切っ<em class="rfc2119">てもよい</em>（MAY）。<code>urlCut</code> は、この member に
+            ついては何も述べません。</td></tr>
+        <tr><td><code>line</code></td><td>number</td><td>いいえ</td>
+            <td>その文書かスクリプトの中の行。1 から数えます。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>response</code> は、在るときは object です:
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>status</code></td><td>number</td><td>はい</td>
+            <td>応答の status code。</td></tr>
+        <tr><td><code>protocol</code></td><td>string</td><td>いいえ</td>
+            <td>その交信を運んだ protocol を、browser 自身の語で: <code>http/1.1</code>・
+            <code>h2</code> など。</td></tr>
+        <tr><td><code>fromCache</code></td><td>boolean</td><td>いいえ</td>
+            <td>browser が、disk cache から答えたと伝えたとき <code>true</code>。無いことは、
+            browser が cache から答えなかったことを意味しません。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>timing</code> は、在るときは object で、その member はどれも必須です。どれも
+      0 以上の整数のミリ秒で、その交信に無かった区間は 0 です。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>dnsMs</code></td><td>host 名を引く。</td></tr>
+        <tr><td><code>connectMs</code></td><td>接続を開く。</td></tr>
+        <tr><td><code>tlsMs</code></td><td>TLS の handshake。</td></tr>
+        <tr><td><code>sendMs</code></td><td>要求を送る。</td></tr>
+        <tr><td><code>waitMs</code></td><td>送り終えてから、応答のヘッダが届くまで。</td></tr>
+        <tr><td><code>receiveMs</code></td><td>応答のヘッダから、要求の終わりまで。producer が
+            終わりを見なかったときは 0。</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>outcome</code> は次のどれかで<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <ul>
+      <li><code>"finished"</code> &mdash; browser が応答を終わりまで読んだ。</li>
+      <li><code>"redirected"</code> &mdash; 応答がリダイレクトで、browser がそれに従った。
+          続いて出た要求は、同じ <code>id</code> と次の <code>hop</code> を持つ行です。</li>
+      <li><code>"failed"</code> &mdash; 要求が失敗した。どう失敗したかは <code>error</code> が
+          述べます。</li>
+      <li><code>"pending"</code> &mdash; producer が記録を止めたとき、その要求の終わりを
+          まだ見ていなかった。</li>
+      <li><code>"not-archived"</code> &mdash; URL に最初に当たる <a>urlPolicies</a> の項目の
+          action が <code>no-archive</code>: 要求は送られ、パッケージは、その交信の
+          <code>request</code> レコードも <code>response</code> レコードも持たない。</li>
+      <li><code>"denied"</code> &mdash; URL に最初に当たる <a>urlPolicies</a> の項目の
+          action が <code>deny</code>: producer がその要求を送らせなかった。</li>
+      <li><code>"evicted"</code> &mdash; producer が、同時に追う要求の数を抑えるために、
+          終わりを見る前にその要求を追うのをやめた。</li>
+    </ul>
+    <p>
+      各行は 1 つの要求を記録します: browser が始めた要求か、producer が送らせなかった要求です。
+      producer は要求が始まったときに行を作り、応答・終わり・失敗が届くたびに埋めていきます。
+      そのため、producer が記録を止めたときに終わっていなかった要求も、<code>"pending"</code> と
+      して trace に入ります。リダイレクトする応答は、[[BROWSERHIVE-WARC-PROFILE]] で交信を
+      終わらせるのと同じく、その行を終わらせ、続く要求は別の行を始めます。同じ <code>id</code> を
+      持つ行は <code>hop</code> の昇順に並ば<em class="rfc2119">なければならず</em>（MUST）、
+      そのうちの 2 行が同じ <code>hop</code> を持っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。
+    </p>
+    <p>
+      行は producer が作った順に並ば<em class="rfc2119">なければなりません</em>（MUST）。
+      これは時刻の順ではありません: <code>startedAt</code> も <code>ms</code> も、前の行の値以上で
+      あることを求めません。エントリは、producer が記録を止めるまでに、始まりが producer に
+      届いたすべての要求と、producer が送らせなかったすべての要求の行を、下に述べるとおり
+      残さない行を除いて、持た<em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p class="note" title="なぜ並びは時刻の順ではないのか">
+      要求の始まりは、2 つの道のどちらかで producer に届きます。取り込んだページの側で始まった
+      要求は browser が伝え、その時刻は browser の時計です。producer が送らせなかった要求は、
+      producer 自身の決定から trace に入り、その時刻は producer の時計です。BrowserHive が作る行は
+      この 2 種類で、送らせなかった要求は、取り込んだページのどこで出されたものでも —— 別サイトの
+      フレームや worker の中のものも —— 行になります。行を何かの時刻で並べ替えると、誰もその順では
+      見ていない出来事のあいだに、順番を主張することになります。順番が要る読み手は、自分で
+      <code>ms</code> で並べ、そうしたことを知ったうえで読みます。
+    </p>
+    <p class="note" title="trace は記録を止めたところで終わる">
+      producer は、通信の記録を止めた後、パッケージを組む前に、trace を 1 度だけ閉じます。
+      取り込んだページがその後に出した要求は入らず、producer がまだ埋めていた行は、その時点の
+      ままになります: その <code>outcome</code> は <code>"pending"</code> です。
+    </p>
+    <p>
+      <code>record</code> は、在るときは <code>archive/</code> の中の <code>response</code>
+      レコード —— その行が記録する交信のもの —— を名指さ<em class="rfc2119">なければなりません</em>
+      （MUST）。そうした行の <code>startedAt</code> は、そのレコードの <code>WARC-Date</code> と
+      1 文字ずつ同じで<em class="rfc2119">なければなりません</em>（MUST）。2 つの行が同じ
+      <code>record</code> を持っては<em class="rfc2119">なりません</em>（MUST NOT）。交信の
+      <code>response</code> レコードがパッケージに無い行は、<code>record</code> を持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）: <code>outcome</code> が
+      <code>"finished"</code> で <code>record</code> の無い行は、browser が終わりまで読んだが、
+      producer がレコードを書かなかった応答です —— たとえば、producer が本文を受け取る前に
+      取り込みが止まったとき。<a>trace</a> の
+      <code>dropped</code> が 0 のとき、<code>archive/</code> の中のどの <code>response</code>
+      レコードも、いずれかの行の <code>record</code> に名指されてい
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p class="note" title="3 つの時計">
+      行は 3 つの時計を読んでいて、それらを混ぜてはいけません。<code>startedAt</code> は browser の
+      壁時計です —— <code>outcome</code> が <code>"denied"</code> の行だけは producer の時計で、
+      browser はその要求を始めていません。browser の壁時計は <code>WARC-Date</code> を読むのと
+      同じ時計で、だから行とレコードを並べて読めます。ただし壁時計は取り込みの間に合わせ直されることがあるので、2 つの行の
+      <code>startedAt</code> の差は時間の長さではありません。<code>durationMs</code> と
+      <code>timing</code> は browser の単調な時計の差で、こちらは跳びません。<code>ms</code> は
+      行を、ログの行と同じ軸の上に置きます。producer は行ごとに自分の時計を読むとは限りません:
+      BrowserHive は最初の要求で 1 度だけ読み、その後は browser の単調な時計で過ぎた分を足します。
+    </p>
+    <p class="note" title="長さには producer 自身の扱いの時間が入る">
+      <code>durationMs</code> は、browser が伝えた要求の始まりから終わりまでです。そのため、
+      producer が要求や応答を調べるために止めていた時間 —— URL を方針に照らす間や、本文を
+      読む間 —— を含み、<code>timing</code> の各区間も含むことがあります。ここでの長さは、同じ
+      交信が、誰も記録していない browser で掛かる長さより長いことがあります。
+    </p>
+    <p>
+      <code>outcome</code> が <code>"not-archived"</code> か <code>"denied"</code> の行は、
+      <code>initiator</code>・<code>response</code>・<code>timing</code>・
+      <code>durationMs</code>・<code>encodedBytes</code>・<code>record</code> を持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。
+    </p>
+    <p class="note" title="なぜ伏せた要求の行は短いのか">
+      要求者が要求を伏せるのは、パッケージがその交信を残さないようにするためです。行が、応答の
+      status や大きさや、掛かった時間を運んだなら、trace は、残さないはずだったものを読める
+      2 つ目の場所になり、WARC については守られた方針が、パッケージについては守られないことに
+      なります。そこで行は、
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      が述べること —— 取り込んだページがその URL を、どの method で、どの種類の資源として
+      求めたか、producer がどう決めたか —— と、それがいつだったかのほかは、何も運びません。
+      それでも、行の並びは、応答について 1 つのことを示します。<code>no-archive</code> の項目に
+      当たった要求への応答がリダイレクトで、続く要求をどの方針も伏せないとき、続く要求は、同じ
+      <code>id</code> と次の <code>hop</code> を持つ自分の行を持ちます。そのため読み手は、伏せた
+      要求がリダイレクトされたことと、その行き先の URL を読み取れます。続く交信は、パッケージが
+      残すと決めたものなので、そのレコードはどのみち WARC に在ります。
+    </p>
+    <p>
+      <code>outcome</code> が <code>"failed"</code> の行は <code>error</code> を持た
+      <em class="rfc2119">なければならず</em>（MUST）、ほかの行は持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。<code>endUnobservable</code> は、
+      <code>outcome</code> が <code>"pending"</code> でない行に在っては
+      <em class="rfc2119">なりません</em>（MUST NOT）。<code>durationMs</code> は、
+      <code>outcome</code> が <code>"finished"</code>・<code>"redirected"</code>・
+      <code>"failed"</code> のどれでもない行に在っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。<code>encodedBytes</code> は、<code>outcome</code> が
+      <code>"finished"</code> でない行に在っては<em class="rfc2119">なりません</em>
+      （MUST NOT）。<code>urlCut</code>・
+      <code>endUnobservable</code>・<code>fromCache</code> は、在るときは値が <code>true</code> で
+      <em class="rfc2119">なければなりません</em>（MUST）。
+    </p>
+    <p>
+      producer は、取り込んだページが要求を出しうるすべての場所を聞いているわけではなく、要求の
+      終わりが、聞いていない場所に伝えられることがあります: 別サイトのフレームの文書は、
+      取り込んだページの側で始まり、フレームの側で終わります。<code>endUnobservable</code> を持つ
+      <code>"pending"</code> の行は、そうした要求です。その行が述べるのは、producer が終わりを
+      見ることができなかったことであって、終わりが無かったことではありません。
+    </p>
+    <p>
+      producer は、行を自分の決めた大きさに収めるために <code>url</code> を
+      切っ<em class="rfc2119">てもよい</em>（MAY）。<code>url</code> を切った行は
+      <code>urlCut</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。
+      <code>data:</code> の URL は中身を URL そのものに持ち、その中身は、パッケージが残さない
+      はずだった本文や、取り込んだページの文字でありえます。<code>url</code> も、
+      <code>initiator</code> の <code>url</code> も、<code>data:</code> の URL のデータを持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）: producer はそうした URL を、media type を
+      終えるコンマより先までは書かず、その URL が行の <code>url</code> のとき、行は
+      <code>urlCut</code> を持た<em class="rfc2119">なければなりません</em>（MUST）。データの
+      代わりに何を書くかは producer が決めます。BrowserHive は URL の長さを書きます。
+    </p>
+    <p>
+      producer は、trace を自分の決めた上限に収めるために、行を残さ
+      <em class="rfc2119">なくてもよい</em>（MAY）。そうする producer は、何行を残さなかったかを
+      <a>trace</a> の <code>dropped</code> で述べ<em class="rfc2119">なければなりません</em>
+      （MUST）。エントリの中には、それらがどこに在ったかの印はありません。BrowserHive は、
+      はじめに作った行と最後に作った行を残し、その間の行を残しません: 取り込みが時間切れに
+      なったときに読み手が要るのは、最後の行だからです。
+    </p>
+    <pre class="json">
+{"profile":"browserhive:trace/1","kind":"request","id":"8B877D6D","hop":0,"dpr":1,"url":"http://example.com/","method":"GET","resourceType":"Document","initiator":{"type":"other"},"startedAt":"2026-11-13T05:00:00.749Z","ms":324,"response":{"status":301,"protocol":"http/1.1"},"timing":{"dnsMs":1,"connectMs":2,"tlsMs":0,"sendMs":0,"waitMs":4,"receiveMs":0},"durationMs":8,"outcome":"redirected","record":"urn:uuid:9aa34ae9-ea68-446d-b8f9-b4c76f76ebd6"}
+{"profile":"browserhive:trace/1","kind":"request","id":"8B877D6D","hop":1,"dpr":1,"url":"https://example.com/","method":"GET","resourceType":"Document","initiator":{"type":"other"},"startedAt":"2026-11-13T05:00:00.757Z","ms":332,"response":{"status":200,"protocol":"h2"},"timing":{"dnsMs":0,"connectMs":9,"tlsMs":6,"sendMs":0,"waitMs":21,"receiveMs":3},"durationMs":41,"encodedBytes":5120,"outcome":"finished","record":"urn:uuid:4341819f-dd00-4d59-9112-da0e5fb93f75"}
+{"profile":"browserhive:trace/1","kind":"request","id":"1234.57","hop":0,"dpr":1,"url":"https://www.example-analytics.com/collect?v=2","method":"POST","resourceType":"Ping","startedAt":"2026-11-13T05:00:01.630Z","ms":1205,"outcome":"not-archived"}
+{"profile":"browserhive:trace/1","kind":"request","id":"1234.58","hop":0,"dpr":1,"url":"https://example.com/stream","method":"GET","resourceType":"Fetch","initiator":{"type":"script","url":"https://example.com/app.js","line":40},"startedAt":"2026-11-13T05:00:01.700Z","ms":1275,"outcome":"pending"}</pre>
+    <p>
+      この抜き出しでは、取り込みは <code>http://example.com/</code> を求めてリダイレクトされました:
+      2 つの段は同じ <code>id</code> を持ち、それぞれが自分の交信の <code>response</code> レコードを
+      名指しています。方針は、<code>www.example-analytics.com</code> への要求を、残さずに
+      送らせました。そのためその行には、<code>initiator</code> も、応答についての member も在りません。最後の要求は、producer が記録を
+      止めたとき、まだ終わっていませんでした。<code>id</code>・<code>resourceType</code>・
+      <code>protocol</code> の値は browser のもの、<code>error</code> の文は browser か producer の
+      もので、このプロファイルが定めているわけではありません。
+    </p>
+    <p>
+      <code>url</code>・<code>initiator</code> の <code>url</code>・<code>error</code> は、
+      隠すシークレットの値の出現も、残すシークレットのそのままの値も、長さに関わらず持っては
+      <em class="rfc2119">なりません</em>（MUST NOT）（<a href="#secret-values"></a> を参照）。
+      ログの行と同じく、producer は置き換えてから切ります。
+    </p>
+    <p class="note" title="なぜ残すシークレットも、trace では置き換えるのか">
+      シークレットを残すというのは、WARC のレコードについての決定です: レコードを開いた読み手は、
+      wire を渡ったものを見ます。trace は、そのレコードとは別に読まれます。producer は同じ行を
+      自分の答えで伝え、道具はそれを画面に並べるので、行に残した値は、行の行く先のどこへでも ——
+      レコードを渡されていない人のところへも —— 付いて行きます。これには代償があります。要求が
+      残すシークレットを持っていた行の <code>url</code> は、その行が名指すレコードの
+      <code>WARC-Target-URI</code> と同じではありません。送られたとおりの URL は、そのレコードに
+      在ります。
+    </p>
+    <p class="note" title="trace と WARC のレコード">
+      <code>outcome</code> が <code>"not-archived"</code> か <code>"denied"</code> の行は、WARC が
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      を持つ要求で、そのレコードの <code>action</code> は <code>no-archive</code> か
+      <code>deny</code> です。<code>record</code> を持つ行は、WARC がレコードを持つ交信です。
+      失敗した要求と終わっていなかった要求については、このプロファイルも
+      [[BROWSERHIVE-WARC-PROFILE]] もレコードを定めていません: BrowserHive は独自の
+      <code>metadata</code> レコードを書きますが、その要求がどう終わったかをパッケージが述べる
+      場所は、この行です。
+    </p>
+    <p class="note" title="ページ由来の記録ではない">
+      行は、描画されたページからではなく、通信から読みます。そのため <a>document</a> の
+      ページ由来の記録には入らず、そこの <code>withheld</code> は trace から行を 1 つも
+      除きません。方針が行にすることは、この節が <code>"not-archived"</code> と
+      <code>"denied"</code> について述べることです。
+    </p>
+    <p class="note" title="答えと同じ行">
+      producer は、trace をパッケージの外でも伝えることがあります。BrowserHive は取り込みの
+      要求への答えで伝え、そこにある行は、このエントリの行から <code>profile</code> を除いた
+      ものです —— producer は trace を 1 度だけ閉じるからです。
+    </p>
+  </section>
+
+  <section id="trace-reading">
+    <h3>Reading this entry</h3>
+    <p>
+      読み手は、アーカイブされたページの一部として、<code>trace/events.jsonl</code> の行から
+      作った応答を配ったり、行から組み立て直した要求を見せたりしては
+      <em class="rfc2119">なりません</em>（MUST NOT）。行は取り込みの記録であって、
+      アーカイブされたページの一部ではありません: 行は、要求が出されたことと、それがどう
+      終わったかを述べ、何のヘッダも本文も持ちません。アーカイブされたページを配る読み手は、
+      WARC のレコードを配ります。行は在るがレコードの無い要求は、パッケージが持っていない
+      ものです。この決まりは、道具が行をほかのことに使うこと —— たとえば、要求が失敗した URL を
+      取り直すこと —— を妨げません。取り直したものは、パッケージの一部ではありません。
+    </p>
+    <p>
+      読み手は、<code>initiator</code> を producer の申告として読んでは
+      <em class="rfc2119">なりません</em>（MUST NOT）。browser が伝えるのは、call stack の
+      いちばん上に見つけたスクリプトで、その URL と行は、取り込んだページがそのスクリプトに
+      与えたものです。取り込んだページは、自分のスクリプトに好きな名前を付けられます。producer は
+      browser が述べたことを取り次ぐだけで、言葉を選んだのは取り込んだページです。
+    </p>
+    <p>
+      パッケージの digest が覆い、署名があれば署名が覆うのは、パッケージの中の行です。producer が
+      ほかの場所で伝える行や、道具が画面に出す行は、その写しで、写しをパッケージに結び付ける
+      ものは何もありません。行を頼りにする読み手は、パッケージから読みます。
+    </p>
+    <p class="note">
+      ある URL の行が無い trace は、取り込んだページがそれを求めなかったことを述べません。
+      producer は、取り込んだページが要求を出しうるすべての場所 —— たとえば別サイトのフレームや、
+      あらゆる種類の worker —— を聞いているとは限らず、残さなかった行は数えるだけで、持ちません。
+      <code>"pending"</code> の行も、要求が終わらなかったことは述べません: 述べるのは、producer が
+      記録を止めたとき、その終わりをまだ見ていなかったことです。
+    </p>
+  </section>
+</section>
+
+<section id="replay-constraints">
+  <h2>Constraints inherited from replay</h2>
+  <p>
+    この節の要求は [[WACZ]] に由来しません。既存の WACZ 読み手が実際に行っていることに由来し、
+    これらを無視したパッケージは、基底の仕様を満たしていても実務上は読めません。
+  </p>
+  <ul>
+    <li>
+      <code>datapackage.json</code> の <code>profile</code> member は
+      <code>"data-package"</code> で<em class="rfc2119">なければならない</em>。読み手はこの値で
+      分岐し、知らない値を拒むため、本プロファイルを識別する用途には使えません。
+      <a href="#conformance-declaration"></a> を参照。
+    </li>
+    <li>
+      <code>datapackage.json</code> の <code>config</code> と <code>metadata</code> を、本仕様が
+      定める値を運ぶために使っては<em class="rfc2119">ならない</em>。読み手がこれらに意味を
+      割り当てています。
+    </li>
+    <li>
+      CDXJ 索引の値は、数値に見えるものも含めて string で
+      <em class="rfc2119">なければならない</em>。
+    </li>
+    <li>
+      CDXJ 索引は非圧縮で、<code>.gz</code> で終わらないパスに格納され
+      <em class="rfc2119">なければならない</em>。読み手は拡張子で位置を特定し、
+      展開を行いません。
+    </li>
+    <li>
+      CDXJ の行の <code>filename</code> field は <code>archive/</code> からの相対で
+      <em class="rfc2119">なければならない</em>。読み手はディレクトリを自分で前置するので、
+      それを含む行は <code>archive/archive/…</code> に解決され、何も見つかりません。
+      <a href="#archive-files"></a> を参照。
+    </li>
+  </ul>
+  <p class="note">
+    ここに記すのは、パッケージの作成者がこれらを満たせるようにするためです。それぞれが
+    なぜ存在するかは実装史の問題であり、本仕様の外で文書化されています。同じ種類の制約が
+    もう 1 つありますが、それはパッケージではなく WARC のレコードに掛かるもの ——
+    response のペイロードの形 —— で、[[BROWSERHIVE-WARC-PROFILE]] に書いてあります。
+  </p>
+</section>
+
+<section id="security-and-privacy-considerations" class="informative">
+  <h2>Security and privacy considerations</h2>
+  <p>
+    <a>tls</a> は来歴の証明ではありません。証明書は公開情報で、誰でも取得して複製を提示できます。
+    これらのフィールドを持っていることは、誰が要求に応答したかについて何も言いません。保存する
+    価値があるのはもっと狭い 2 つです —— <code>issuer</code> は接続が傍受されたときに変わり、
+    有効期間は取り込みが主張する時刻と突き合わせられます。そしてどちらも、書き留めなければ
+    取り込みの後には残りません。
+  </p>
+  <p>
+    <a>completeness</a> が主張するのは不在であって、正しさではありません。このパッケージが
+    実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
+    とは主張しません。<code>complete</code> も、隠すシークレットの値を持つので落とした本文が無い、
+    とは言いません。それを言うのは、<code>truncated</code> が <code>secret</code> の
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
+  </p>
+  <p>
+    適合するパッケージが、保持している本文について主張するのは
+    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.4.0/ja/#payloads">Payloads</a> の節の
+    内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
+    digest であり、producer が符号を変えた写しのものではありません。例外は、
+    <code>BrowserHive-Redacted</code> の欄が <code>payload</code> を挙げる redacted のレコードです。
+    その本文では値を置き換えてあり、digest が保証するのはレコードが持つバイト列だけです。
+    どちらも、オリジンが URL の名指す相手だったことは言いません。<a>tls</a> を参照してください。
+  </p>
+  <p>
+    パッケージは <a>completeness</a> に URL を、<a>tls</a> に host 名を、trace に、取り込みが
+    始まりを見た各要求の URL を記録します。方針が伏せた要求と、応答の届かなかった要求の
+    URL も含みます。取り込んだ
+    ページが URL に個人データを載せていた場合、それらの URL はアーカイブとともに旅をします。
+  </p>
+  <p>
+    アクセシビリティツリーは、browser が要素に対して計算した名前を運びます。それは
+    ページの可視テキストから作られます。文書の本文が WARC の本文に入っているなら、
+    そのテキストはそこに<strong>既に入っています</strong>。しかも刈り込み規則によって、
+    露出は本文より狭くなります: ignored なノードを除くので、<code>aria-hidden</code> や
+    <code>display: none</code> で隠されたテキストは、レスポンス本文には在っても、この木には
+    現れません。方針が文書の本文を archive に入れなかったなら、そのテキストは本文に
+    <strong>入っていない</strong>ので、パッケージは、木も、ページの文字と題も、その文書から
+    読んだ写しも、スクリーンショットも、ページがログに書いた行も持ちません（<a>document</a> を参照）。
+  </p>
+  <p>
+    写しは、そのときのページの姿 —— 文字と、パスワードの欄を除く欄の値 —— を持ちます
+    （[[BROWSERHIVE-WARC-PROFILE]]）。木と違ってページより狭くはなく、ページが隠した文字も
+    入ります。<a>settings</a> のシークレットの値は写しの中で、少なくともそのままの形と HTML の
+    escape の形で置き換えられ、隠すシークレットの値は、出現の取りうるすべての綴りで置き換えられます。
+    それ以外にページが変換したシークレットや、誰もシークレットと告げなかった値は残ります。
+  </p>
+  <p>
+    この決まりは文書の単位で働きます。描画されたページには、副資源を通って届いた中身 ——
+    スクリプトが出した要求への応答や、frame の文書 —— が入りえます。方針がそうした本文の
+    どれかを archive に入れなくても、残された文書のページ由来の記録からは、その中身は
+    締め出されません。その中身を完全に締め出したい要求者は、文書ごと締め出す必要があります。
+    例外はスクリーンショットだけで、それも要求の種類によります（下を参照）。
+  </p>
+  <p>
+    スクリーンショットは、viewport が見せていたものを運びます: 取り込んだページの文字、画像、
+    再生中だった動画の 1 こま、フレームの文書（別サイトのフレームを含む）、そして、そのページと
+    behavior が欄に入れたもの。画像なので、その中の何かを探すことも、置き換えることも
+    できません。取り込みがシークレットを渡されたとき、メディア型の方針を持っていたとき、
+    <a>urlPolicies</a> の <code>no-archive</code> か <code>no-body</code> の項目が、browser が
+    文書・画像・メディアの要求と伝えた要求に当たったとき、文書が
+    伏せられたときに、パッケージが —— 何かを取り除いたスクリーンショットではなく ——
+    スクリーンショットを 1 枚も持たないのは、そのためです（<a>screenshots</a> を参照）。
+  </p>
+  <p>
+    この条件は、画像が写しうるものの全部には届きません。誰もシークレットと告げなかった値は、
+    取り込んだページが見せていれば、画像に写ります。<a>urlPolicies</a> の
+    <code>no-archive</code> か <code>no-body</code> の項目が当たった要求のうち、producer が読んだ
+    どの報告でも、browser が文書とも画像ともメディアとも伝えなかった要求への応答から、
+    そのページが描いたものも写ります:
+    スクリプトが取ってきてそのページに書き込んだ文字、スタイルシートが与えた見た目、フォントの
+    字形。決めるのは、browser がその要求を何と呼んだかです。スクリプトが自分で取ってきて自分で
+    描く画像は、browser にとってはスクリプトの要求です。スクリプトが小分けに取ってきて player に
+    渡す動画や音声も同じです: browser はそれらの要求をスクリプトの要求と伝えるので、
+    それらに当たる URL の方針は、スクリーンショットを外しません。メディア型の方針は
+    別で、その方針が 1 つでも在れば、スクリーンショットは外れます。producer に見えない要求にも、
+    この決まりは届きません。そうした中身も画像に入れたくない要求者は、文書ごと締め出すか、
+    スクリーンショットを撮らない producer に取り込ませる必要があります。
+  </p>
+  <p>
+    この条件は、画像が写すものより先にも届きます。方針が伏せる画像を 1 つでも読み込む
+    ページ —— 分析の host を伏せる方針の下の、誰にも見えない計測用の画像など —— は、どの
+    取り込みでもスクリーンショットを持ちません。producer は本文を残さないので、見えていた画像と
+    見えていなかった画像を区別できないからです。そうした方針が当たって、リダイレクトされた
+    だけの要求 —— 取り込んだページに見せるものを何も運ばなかった要求 —— も数えます。producer は
+    要求の時点で決めるからです。メディア型の方針は、応答がその方針に当たったかどうかに関わらず、
+    その下で撮ったどの取り込みからもスクリーンショットを外します。そして、画像を撮った後に
+    出された要求に当たった方針も、その画像を外します。producer には、どの画像がどの応答を
+    写しているかが分からないからです。
+  </p>
+  <p>
+    パッケージを読む道具に確かめられるのは、パッケージが持つ印です:
+    <code>secrets</code>、<code>contentTypePolicies</code>、<a>document</a> と
+    <a>snapshots</a> の <code>withheld</code>、withheld request のレコード、そして trace の行と
+    突き合わせた body not kept のレコード。これらの印は、producer を縛る決まりの全部では
+    ありません。producer がレコードを書かなかった要求 —— 別サイトのフレームの中で出された要求や、
+    応答が届かなかった要求 —— は道具に見えず、画像を撮ることが取り込んだページを変えたか
+    どうかも見えません。パッケージだけを
+    持つ者には、ピクセルが browser の見せたものであることも確かめられません: パッケージの
+    digest と、在るなら署名は、画像のバイト列を覆いますが、それがどう作られたかは何も言いません。
+  </p>
+  <p>
+    ログは、ページが書いた文字を運びます。<code>source</code> が <code>"page"</code> の行は、
+    取り込んだページのスクリプトが console に書いたものと、それらが捕まえなかった誤りを持ち、
+    そこには URL・識別子・ページ自身の文字が日常的に入ります。文書が伏せられたとき、ログは
+    それらを 1 行も持ちません（<a href="#logs-lines"></a> を参照）。この要求が見るのは
+    <a>document</a> が名指す文書だけで、行はどの文書が書いたかを名乗らないので、ページが
+    伏せられた文書から残された文書へ移ったときは、はじめの文書の行が残ってしまいます。そこで
+    producer は、<a>snapshots</a> がある時点を <code>"withheld"</code> と記録したときは
+    いつでも、ページの行を全部省いてよく、省いた producer はそれを自分の行で述べます。読み手は、
+    ページの行が書かれなかったのではなく省かれたことを見分けられます。
+  </p>
+  <p>
+    ログの中で producer がシークレットの値を置き換えるのは、値がそのままの形で現れたところ
+    です —— <code>msg</code> にも <code>data</code> にも、鍵にも値にも、どの深さでも、長さに
+    関わらず。隠すシークレットの値は、出現の取りうるすべての綴りで置き換えます。シークレットを
+    ほかの形 —— ハッシュにしたものや、分けたもの —— で書く behavior は、
+    その形をパッケージに入れ、誰もシークレットと告げなかった値も残ります。そして behavior が
+    行を書く通り道はページの main world に在るので、ページのスクリプトは behavior のもののように
+    読める行を書けます（<a href="#logs-reading"></a> を参照）。
+  </p>
+  <p>
+    trace は、取り込んだページがどの URL を求めたか、その中の何がそれを求めたか、各交信に
+    どれだけ掛かったかを述べます。方針が伏せた要求については、行は、WARC と同じもの ——
+    URL・method・資源の種類 —— を運び、応答の status・大きさ・掛かった時間は運びません
+    （<a href="#trace-lines"></a> を参照）。それでも、応答について、行の並びから読めることが
+    1 つ在ります: <code>no-archive</code> の項目に当たった要求がリダイレクトされ、その先の URL を
+    どの方針も伏せないとき、次の行は同じ <code>id</code> と次の <code>hop</code> を持つので、
+    読み手は、伏せた要求がリダイレクトされたことと、その行き先を知ります。行き先の交信は、
+    パッケージが残すと決めたものなので、どのみち WARC に在ります。行の中で producer は、シークレットの値を、残すものも
+    隠すものも、URL と失敗の文に現れたところで置き換えます。ほかの形にした値は残り、誰も
+    シークレットと告げなかった値も残ります。<code>data:</code> の URL は、データを除いて
+    書きます。<code>initiator</code> が名指すものは、取り込んだページが自分について述べたこと
+    であって、producer の申告ではありません。そして、パッケージの digest と署名が覆うのは
+    パッケージの中の行だけです: ほかのどこかに出る同じ行は、写しです
+    （<a href="#trace-reading"></a> を参照）。
+  </p>
+  <p>
+    <a>storage</a> は、パッケージが既に保持している以上のものを晒しません。
+    記録するのは鍵の数・バイト数・digest です。値は記録せず、digest は値では
+    ありません —— ただし上に書いたとおり、エントロピーの低い内容に対する digest は
+    隠し場所にもなりません。
+  </p>
+  <p>
+    <code>storage/origins.jsonl</code> を併せて持つパッケージは、
+    <strong>より多くを晒します</strong>。web storage は bearer token、
+    セッション識別子、未送信の下書きを日常的に保持しており、そのどれも WARC の
+    payload には現れません。この profile の中で、取り込みがネットワークから
+    一度も受け取っていない資料を適合パッケージが運びうる場所は、ここだけです。
+    producer は既定でこのディレクトリを出力し<em class="rfc2119">ないべきである</em>（SHOULD）。
+    読み手は <code>valuesRecorded</code> によって、アーカイブ本体を開かずに
+    どちらであるかを判別できます。
+  </p>
+  <p>
+    シークレットの値を置き換えて締め出せるのはパッケージからであって、ページから
+    ではありません。behavior はページの main world に在る runtime から値を読み、そこではページ
+    自身のスクリプトも同じ値を読めます。別の実行 context を使わない限り、producer はそこで値を
+    隠せません。値をネットワークへ送る behavior —— URL・ヘッダ・本文のどれであれ —— は、
+    パッケージが何を記録するかに関わらず、値をオリジンに渡します。
+  </p>
+  <p>
+    隠すシークレットを隠せるのは、producer が値を認識できるところだけです。
+    [[BROWSERHIVE-WARC-PROFILE]] の Security の節が挙げるものは、パッケージにも残ります:
+    値から作られたもの（ハッシュ、暗号文、オリジンが本文で発行した token など）、出現でない綴り、
+    そして値がそこにあったという事実で、これは <code>***</code> がどこであれ示します。
+    storage の area の digest は、何かを置き換える前の area の中身から作るので、ページが保存した
+    値の候補を読み手に試させることがあります。シークレットの跡をアーカイブから完全に締め出したい
+    要求者は、それを送らない behavior を渡す必要があります。
+  </p>
+  <p>
+    パッケージが出現を持たないことは、パッケージだけを持つ読み手には確かめられません。パッケージが
+    値を持たないからです。パッケージを読む道具に確かめられるのは、producer がしたと述べることの
+    形だけです。確かめられるのは値を持つ producer で、パッケージを書く前に全部のファイルを探せます。
+  </p>
+  <p>
+    <code>secretArchive</code> を埋めるのは要求の側で、それが何を旅させるかを決めます。
+    <a>残すシークレット</a>の値は、WARC のレコードと、そこから取った URL の中で読めるままで、
+    パッケージを人に渡す者はそれも渡します。
+  </p>
+  <p>
+    対照的に <code>variables</code> は、意図して値のまま記録します。個人データを変数に入れた
+    要求者は、それをアーカイブに入れたことになります。2 つの線を引くのは要求の側です ——
+    このプロファイルは、秘密だと告げられたものと、そうでないものを、告げられたとおりに
+    記録します。
+  </p>
+  <p>
+    <a>browser</a> は記録を行った build を名指しし、これは必須です。origin へ別の身元を
+    提示する producer &mdash; たとえば <code>User-Agent</code> を差し替えた場合 &mdash; でも、
+    この member は変わりません。サーバへ送るものと、パッケージが報告するものは別です。
+    build の版を秘匿したい運用者は、適合するパッケージがそれを開示することを知っておく
+    必要があります。
+  </p>
+</section>
+</body>
+</html>
