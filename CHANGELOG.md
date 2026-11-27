@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.28.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/) | 2026-11-28 | `archive/` の WARC を WARC Profile 1.7.0 に上げる。`request`・`response` レコードの HTTP の長さはレコードの持つ payload を言い、`Transfer-Encoding` を持たない。得られなかった要求の本文は `WARC-Truncated: unspecified` が言い、`completeness` には載らない |
 | [1.27.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/) | 2026-11-15 | 写しと一緒に同じ origin の子フレームの文書も写し（WARC Profile 1.5.0 のフレームの写し）、どの枠を写したかを `snapshots` の `frames` と `frameCounts` に記録する。子の写しは CDXJ に載せ、ページ一覧には載せない |
 | [1.26.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/) | 2026-11-14 | 取り込んだページの JS が乱数として受け取った値を、求められたときに `random/values.jsonl` に記録し、記録したかどうかを `random` で述べる |
 | [1.25.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/) | 2026-11-14 | 適合するパッケージの呼び名「BrowserHive WACZ」を定め、中の WARC を `data-NNN.browserhive.warc.gz` と名付け、パッケージの名前に `.browserhive.wacz` を勧める（WARC Profile 1.4.0） |
@@ -65,6 +66,21 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.28.0
+
+`archive/` の WARC が適合する版を BrowserHive WARC Profile **1.7.0** に上げた（CAPTURE-366）。WARC Profile 1.7.0 は、
+`request`・`response` レコードの HTTP の `Content-Length` が、あるならレコードの持つ payload のバイト数を言い、HTTP メッセージが
+`Transfer-Encoding` を持たないことを求める（送る本文を持たないレスポンス —— リダイレクト・`304`・`HEAD` への答えなど —— も、
+本文のある要求も同じ）。producer が本文を得られなかった要求（ファイルや `Blob` を本文にした要求）の `request` レコードは
+`WARC-Truncated: unspecified` を持つ。いままでは、そうしたレコードにブラウザやサーバが送った長さや `chunked` が残っていた。
+WARC Profile 1.6.0（`response` だけを決めた版）は、どのパッケージも名乗らないまま 1.7.0 に替わった。
+
+- **`archive/` の WARC:** WARC Profile 1.7.0 に適合し、warcinfo でその版を名乗る（参照と localBiblio を 1.7.0 へ）。
+- **`completeness`:** 数える本文はレスポンスの本文で、得られなかったリクエストの本文は載らず `complete` を `false` にもしない
+  （`request` レコードの `WARC-Truncated` が言う）、と 1 段落足した。決まりは変えていない（今までもレスポンスだけを数えていた）。
+- **後方互換の注:** 1.27.0 向けのパッケージの WARC は 1.5.0 を名乗るので、1.28.0 に適合しない。以前の版の一覧に 1.27.0 を足した。
+- **head の注釈:** `latestVersion` の注の次の版を 1.29.0 に。
 
 ## 1.27.0
 
