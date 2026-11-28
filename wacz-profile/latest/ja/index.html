@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.29.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.30.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.30.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.31.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -71,7 +71,7 @@
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
       "BROWSERHIVE-WARC-PROFILE": {
         title: "BrowserHive WARC Profile",
-        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/",
+        href: "https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/",
         publisher: "BrowserHive",
         version: "1.7.0",
       },
@@ -84,7 +84,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.29.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.30.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -100,20 +100,17 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.29.0 は 1.28.0 に、任意の member を 1 つ足します">
-    この版は、<a>browserhive:capture</a> の <a>robotsOverride</a> を定めます
-    （<a href="#robotsoverride"></a> を参照）。取り込みを求められた URL を
-    <code>robots.txt</code> が断っていると要求者が判じ、それでも例外のもとで取り込ませた、という
-    要求者の申告です。パッケージがこの member を持つのは、取り込みの要求がその申告を持っていた
-    ときだけです。ほかは何も変わりません: パッケージの WARC ファイルは 1.28.0 と同じく
-    BrowserHive WARC Profile 1.7.0 に適合し、その <code>robots-policy: ignore</code> は、producer が
-    <code>robots.txt</code> を見ないことを今までどおり言います。1.28.0 向けの読み手は、認識しない
-    member をみな無視するのと同じに、この member を無視します。1.28.0 向けのパッケージは
-    <a>conformsTo</a> でその版を名乗り、この版の定めと違う同じ名前の member を持っていることも
-    ありうるので、そのまま 1.29.0 のパッケージになるわけではありません。
+  <p class="note" title="1.30.0 は 1.29.0 と後方互換ではありません">
+    この版は、<a>snapshots</a>・<a>screenshots</a> と、時点を名指すファイルの時点
+    <code>"after-behaviors"</code> を、<a>capture scripts</a> の名から
+    <code>"after-capture-scripts"</code> に改め（<a href="#snapshots"></a> を参照）、パッケージの
+    WARC ファイルに、時点を同じく改めた BrowserHive WARC Profile 1.8.0 への適合を求めます。
+    ほかは何も変わりません。1.29.0 向けのパッケージは時点を <code>"after-behaviors"</code> と書き、
+    WARC ファイルは WARC Profile 1.7.0 を名乗るので、1.30.0 に適合しません。この版のパッケージも
+    1.29.0 に適合しません。これは意図されたもので、
     <a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/">1.25.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/ja/">1.26.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/ja/">1.27.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/ja/">1.28.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/">1.25.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/ja/">1.26.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/ja/">1.27.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/ja/">1.28.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/ja/">1.29.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -209,7 +206,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.30.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -464,7 +461,7 @@
       本文が 1 つも落とされなかった場合でも <code>limits</code> は存在し
       <em class="rfc2119">なければならない</em>。切り詰めが<em>どの線</em>を超えたのかを
       アーカイブが言える場所は、ここだけです ——
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>は落とした事実と
       実際の大きさを運びますが、その大きさが多すぎたかどうかは線と並べて初めて分かります。
     </p>
     <p class="note">
@@ -538,7 +535,7 @@
         <tr><td><code>uninterceptedUrls</code></td><td>array of string</td><td>はい</td>
             <td>本文は wire を渡ったが、producer がバイト列として得られなかったので、
             アーカイブが本文を持たない URL（[[BROWSERHIVE-WARC-PROFILE]] の
-            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
+            <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#response-payloads">Response payloads</a> を参照）。</td></tr>
         <tr><td><code>crashedTargets</code></td><td>array of object</td><td>はい</td>
             <td>取り込みの間に renderer が落ちた、主文書以外の target
             （<a href="#completeness-crashed-targets"></a> を参照）。</td></tr>
@@ -563,7 +560,7 @@
       リクエストの本文はここに載らず、<code>complete</code> を <code>false</code> にもしません。
       欠けていることは、その <code>request</code> レコードが <code>WARC-Truncated: unspecified</code> で
       言います（[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#request-payloads">Request payloads</a> を参照）。
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#request-payloads">Request payloads</a> を参照）。
     </p>
     <p>
       次は、3 つの理由すべてで本文を欠いた取り込みです:
@@ -617,7 +614,7 @@
     <p>
       WARC は、同じ本文をレコード 1 つずつで述べます。サーバが送った本文を持たずに記録した
       応答には、それぞれ
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）が付き、その <code>truncated</code> が理由を言います。
       サイズ上限で落とした本文 —— <code>too-large</code> と <code>task-cap</code> —— の URL は
       <code>truncatedUrls</code> に、バイト列として得られなかった本文 ——
@@ -995,7 +992,7 @@
       読み、ある時点のスクリーンショットには、その文書が主フレームに
       在る間の、取り込んだページが写ります。<code>datapackage.json</code> の <code>title</code>
       と <code>accessibility/axtree.jsonl</code> は、behavior の後に、<code>document</code> が
-      名指す文書から読み、<code>"after-behaviors"</code> の時点の写しと、
+      名指す文書から読み、<code>"after-capture-scripts"</code> の時点の写しと、
       <code>pages/pages.jsonl</code> の文書のエントリの <code>title</code> と <code>text</code>
       も同じです。<code>logs/capture.jsonl</code> の <code>source</code> が
       <code>"page"</code> の行は、ある時点で読むのではなく取り込みの間ずっと書かれるもので、
@@ -1068,14 +1065,17 @@
       述べる配列の <dfn>snapshots</dfn> member を持たなければなりません
       （<em class="rfc2119">MUST</em>）。写しは、その時点のページの主フレームの文書の姿を写した
       もので、WARC に記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#snapshots">Snapshots</a>）。
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#snapshots">Snapshots</a>）。
       ある時点の写しと一緒に、producer はページのフレームのうち読める文書をフレームの写しとして
       写し（同仕様の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#frame-snapshots">Frame snapshots</a>）、
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#frame-snapshots">Frame snapshots</a>）、
       その時点の項目がどれを写したかを述べます。配列は、<code>"after-load"</code> の項目と、取り込みが behavior を走らせたとき
       （<a>settings</a> の <code>behaviors</code> が空でないとき）はその後に
-      <code>"after-behaviors"</code> の項目を持たなければならず（<em class="rfc2119">MUST</em>）、
+      <code>"after-capture-scripts"</code> の項目を持たなければならず（<em class="rfc2119">MUST</em>）、
       ほかの項目は持ちません。
+      時点の名は <dfn>capture scripts</dfn> から来ます。capture scripts は、取り込みを頼む側が送り、
+      producer がページで走らせるコード、つまり behavior（<a>settings</a> の <code>behaviors</code>）と
+      preload のスクリプト（<code>preload</code>）です。この時点は behavior が走った後です。
     </p>
     <p>
       producer が写しを取った時点の項目は、次を持たなければなりません
@@ -1087,7 +1087,7 @@
       </thead>
       <tbody>
         <tr><td><code>stage</code></td><td>string</td><td>はい</td>
-            <td>時点: <code>"after-load"</code> か <code>"after-behaviors"</code>。</td></tr>
+            <td>時点: <code>"after-load"</code> か <code>"after-capture-scripts"</code>。</td></tr>
         <tr><td><code>url</code></td><td>string</td><td>はい</td>
             <td>写しの <code>resource</code> レコードの <code>WARC-Target-URI</code>。</td></tr>
         <tr><td><code>date</code></td><td>string</td><td>はい</td>
@@ -1132,8 +1132,8 @@
     "frameCounts": { "read": 1, "unreadable": 1, "withheld": 1 }
   },
   {
-    "stage": "after-behaviors",
-    "url": "urn:browserhive:snapshot:after-behaviors:https://example.com/results",
+    "stage": "after-capture-scripts",
+    "url": "urn:browserhive:snapshot:after-capture-scripts:https://example.com/results",
     "date": "2026-11-02T01:20:07.415Z",
     "record": "urn:uuid:d6874c5c-9710-40d4-9fb8-ceb24bb0dfc8",
     "bytes": 26444,
@@ -1145,7 +1145,7 @@
     <p>
       producer が写しを取らなかった時点の項目は、<code>stage</code> と <code>skipped</code>
       だけを持たなければなりません（<em class="rfc2119">MUST</em>）—— たとえば
-      <code>{"stage": "after-behaviors", "skipped": "too-large"}</code>。この項目は
+      <code>{"stage": "after-capture-scripts", "skipped": "too-large"}</code>。この項目は
       <code>frames</code> も <code>frameCounts</code> も持ちません: 写しの無い時点では、producer は
       フレームも写しません。<code>skipped</code>
       は次のどれかでなければなりません（<em class="rfc2119">MUST</em>）:
@@ -1178,7 +1178,7 @@
       <p>
         <code>frames</code> と <code>frameCounts</code> は、その項目の時点でページのフレームが
         どうなったかを述べます。どのフレームが
-        <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#dfn-numbered-frame">番号を付けるフレーム</a>か、
+        <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#dfn-numbered-frame">番号を付けるフレーム</a>か、
         番号の付け方、フレームの写しの記録の仕方は [[BROWSERHIVE-WARC-PROFILE]] が述べます。
       </p>
       <p>
@@ -1271,12 +1271,12 @@
       述べる配列の <dfn>screenshots</dfn> member を持たなければなりません
       （<em class="rfc2119">MUST</em>）。スクリーンショットは、その時点に browser が見せていた、
       取り込んだページの画像で、WARC に 2 つのレコードで記録されます（[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#screenshots">Screenshots</a>）:
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#screenshots">Screenshots</a>）:
       画像を持つ <code>resource</code> レコード —— その <code>WARC-Target-URI</code> は
       <code>urn:browserhive:screenshot:</code> で始まります —— と、その画像が何であるかを述べる
       <code>metadata</code> レコードです。配列は、<code>"after-load"</code> の項目と、
       取り込みが behavior を走らせたとき（<a>settings</a> の <code>behaviors</code> が空でない
-      とき）はその後の <code>"after-behaviors"</code> の項目だけを持たなければなりません
+      とき）はその後の <code>"after-capture-scripts"</code> の項目だけを持たなければなりません
       （<em class="rfc2119">MUST</em>）。
     </p>
     <p>
@@ -1300,7 +1300,7 @@
       </thead>
       <tbody>
         <tr><td><code>stage</code></td><td>string</td><td>はい</td>
-            <td>時点: <code>"after-load"</code> か <code>"after-behaviors"</code>。</td></tr>
+            <td>時点: <code>"after-load"</code> か <code>"after-capture-scripts"</code>。</td></tr>
         <tr><td><code>url</code></td><td>string</td><td>はい</td>
             <td>スクリーンショットの <code>resource</code> レコードの <code>WARC-Target-URI</code>。</td></tr>
         <tr><td><code>date</code></td><td>string</td><td>はい</td>
@@ -1322,8 +1322,8 @@
     "bytes": 9344
   },
   {
-    "stage": "after-behaviors",
-    "url": "urn:browserhive:screenshot:after-behaviors:https://shop.example/results",
+    "stage": "after-capture-scripts",
+    "url": "urn:browserhive:screenshot:after-capture-scripts:https://shop.example/results",
     "date": "2026-11-02T01:20:07.512Z",
     "record": "urn:uuid:8f3a1c7e-52d4-4b9a-b6e0-1d7c9a4f2e35",
     "bytes": 18764
@@ -1393,13 +1393,13 @@
           書いた行を持たないのと同じです。</li>
       <li><code>archive/</code> の WARC ファイルが、<code>action</code> が
           <code>no-archive</code> の
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-withheld-requests">withheld request のレコード</a>を持ち、
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-withheld-requests">withheld request のレコード</a>を持ち、
           そのレコードの <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
           <code>Media</code> のどれかであるか、そのレコードが <code>resourceType</code> を
           持たない。</li>
       <li><code>archive/</code> の WARC ファイルが、<code>truncated</code> が
           <code>url-policy</code> の
-          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>を持ち、
+          <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>を持ち、
           そのレコードが指す <code>response</code> レコードを <code>record</code> で名指す
           <code>trace/events.jsonl</code> の行（<a href="#trace-lines"></a> を参照）の
           <code>resourceType</code> が <code>Document</code>・<code>Image</code>・
@@ -1685,7 +1685,7 @@
       <code>robots.txt</code> を読みません: ページを取り込むかどうかを決めるのは要求者で、
       <code>warcinfo</code> レコードの <code>robots-policy: ignore</code> がそれを言います
       （[[BROWSERHIVE-WARC-PROFILE]] の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#warcinfo">The warcinfo record</a> を参照）。この member はそれを変えません。
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#warcinfo">The warcinfo record</a> を参照）。この member はそれを変えません。
       producer は、申告が主張することも確かめません: <code>robots.txt</code> がその URL を断っていたことも、
       例外が在ることも、例外がその URL に当たることも、取り込みが走ったときに例外が効いていたことも。
     </p>
@@ -1885,10 +1885,10 @@
   </p>
   <p>
     <code>archive/</code> のどの WARC ファイルも
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/">BrowserHive WARC Profile 1.7.0</a> に適合し
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/">BrowserHive WARC Profile 1.8.0</a> に適合し
     <em class="rfc2119">なければならず</em>、その <code>warcinfo</code> レコードは
     <code>conformsTo</code> でその版を名乗ら<em class="rfc2119">なければならない</em>
-    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
+    （同仕様の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#warcinfo">The warcinfo record</a> を参照）。レコードについては
     同仕様が定めます —— ペイロード、隠すシークレットの値を置き換えるレコード、
     body not kept・withheld request・window not opened の
     レコード、文書とそのフレームの写しと取り込んだページのスクリーンショット、各ファイルの先頭の
@@ -1901,7 +1901,7 @@
     <code>000</code> から飛びなく番号を振ります。レコードが 1 本に収まる取り込みは、ちょうど
     <code>data-000.browserhive.warc.gz</code> を持ちます。名前は [[WACZ]] が求める拡張子の前に
     印 <code>browserhive</code> を置きます。パッケージから取り出した WARC ファイルも、名前で
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#dfn-browserhive-warc">BrowserHive WARC</a> ファイルと
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#dfn-browserhive-warc">BrowserHive WARC</a> ファイルと
     分かるようにするためです。パッケージの名前と同じく（<a href="#package-name"></a> を参照）、
     印は手がかりであって、名乗りではありません。
   </p>
@@ -2012,7 +2012,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
 {"format":"json-pages-1.0","id":"pages","title":"All Pages"}
 {"id":"5f2c9a1e","url":"https://example.com/","ts":"2026-11-02T01:20:03.502Z","title":"Results for lamp","text":"3 results &hellip;"}
 {"id":"5f2c9a1e-after-load","url":"urn:browserhive:snapshot:after-load:https://example.com/","ts":"2026-11-02T01:20:05.118Z","stage":"after-load","title":"Search","text":"Search the shop &hellip;"}
-{"id":"5f2c9a1e-after-behaviors","url":"urn:browserhive:snapshot:after-behaviors:https://example.com/results","ts":"2026-11-02T01:20:07.415Z","stage":"after-behaviors","title":"Results for lamp","text":"3 results &hellip;"}</pre>
+{"id":"5f2c9a1e-after-capture-scripts","url":"urn:browserhive:snapshot:after-capture-scripts:https://example.com/results","ts":"2026-11-02T01:20:07.415Z","stage":"after-capture-scripts","title":"Results for lamp","text":"3 results &hellip;"}</pre>
   <p class="note" title="なぜ最初のエントリを文書にするのか">
     写しは、頁の script を除いた文書の DOM の写しです。そのため、script が出すもの ——
     アニメーションが終わってから置かれる絵や、要求で埋まる一覧 —— が、写しに無いことがあります。
@@ -2025,7 +2025,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     <code>src</code> の URL について記録したもの、つまりサーバが送ったとおりの文書を見せます。
     フレームの要素の <code>data-browserhive-snapshot</code> 属性を読む読み手は、代わりに、その
     属性が名指すフレームの写しを見せることがあり（[[BROWSERHIVE-WARC-PROFILE]] の
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#frame-snapshot-references">Naming a frame snapshot from its parent</a>）、
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#frame-snapshot-references">Naming a frame snapshot from its parent</a>）、
     それを CDXJ 索引で見つけます。
   </p>
   <p class="note" title="読み手が最初に開くエントリ">
@@ -2099,13 +2099,13 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     </table>
     <p>
       <code>deny</code> と <code>no-archive</code> の項目が残す記録は、
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       （[[BROWSERHIVE-WARC-PROFILE]]）です。その <code>action</code> は項目の
       <code>action</code> で、<code>pattern</code> は、読み手が項目を見つけられるよう、項目の
       <code>pattern</code> をここに現れるとおりの綴りで書か<em class="rfc2119">なければならない</em>。
       <code>no-body</code> の項目はこの記録を残しません。交信はいつもどおり記録され、無い本文は
       <code>truncated</code> が <code>url-policy</code> の
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>が述べます ——
       サイズ上限で落とした本文としては扱いません（<a>completeness</a> を参照）。
     </p>
     <p>
@@ -2188,7 +2188,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   </p>
   <p>
     ページが求めた 1 回ごとに、WARC には
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-windows-not-opened">window not opened のレコード</a>
     （[[BROWSERHIVE-WARC-PROFILE]]）が残ります。ウィンドウの文書のリクエストは送られて
     いないので、このレコードは <a>urlPolicies</a> の項目が URL に当たるかどうかに関わらず
     書かれ、withheld request のレコードではありません。
@@ -2215,7 +2215,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     要求は、behavior に読ませる値を秘密として渡すことができ、<a>settings</a> がその名前を記録します。
     behavior はその値をネットワークへ送ることができ、ページはそれを表示できるので、
     取り込みは記録するものの中でその値に出会います。[[BROWSERHIVE-WARC-PROFILE]] の
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#redacted-records">Redacted records</a> の節が、シークレット・隠すシークレット・出現・redacted のレコード・文字の本文という
     語を定め、1 本の WARC ファイルがそれらをどう扱うかを述べます。この節は、パッケージの
     シークレットのどれを隠すのかと、パッケージの残りがそれらをどう扱うかを述べます。
   </p>
@@ -2401,7 +2401,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   "browserhive:capture": {
     "storage": {
       "profile": "browserhive:storage/2",
-      "stage": "after-behaviors",
+      "stage": "after-capture-scripts",
       "valuesRecorded": false,
       "origins": [
         {
@@ -2432,7 +2432,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       </li>
       <li>
         <code>stage</code> —— 取り込みのどの時点で storage を読んだか。この版では値は
-        <code>"after-behaviors"</code> で<em class="rfc2119">なければならない</em>（MUST）。
+        <code>"after-capture-scripts"</code> で<em class="rfc2119">なければならない</em>（MUST）。
         stage が規範なのは、内容が変わるからです ——
         ページは動作しながら storage に書き込むので、behavior が走る前に読んだものと
         後に読んだものは、別の状態を表します。
@@ -2578,7 +2578,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   "profile": "browserhive:storage/2",
   "origin": "https://www.example.co.jp",
   "takenAt": "2026-09-06T01:22:14.881Z",
-  "stage": "after-behaviors",
+  "stage": "after-capture-scripts",
   "areas": {
     "local": { "feed.cache": "[{\"id\":1}]", "ui.theme": "dark" },
     "session": { "nav.scroll": "820" }
@@ -2649,7 +2649,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
           <code>url</code> と等しくなければなりません（<em class="rfc2119">MUST</em>）。</li>
       <li><code>takenAt</code> —— 撮った時刻。[[RFC3339]] のタイムスタンプ。</li>
       <li><code>stage</code> —— 取り込みのどの時点で撮ったか。この版では値は
-          <code>"after-behaviors"</code> でなければなりません
+          <code>"after-capture-scripts"</code> でなければなりません
           （<em class="rfc2119">MUST</em>）。<strong>時点が規範的なのは、木が変わる
           からです。</strong> autoscroll は lazy load を発火させるので、behavior の
           前に撮った木と後に撮った木は、別のページを記述しています。</li>
@@ -2667,7 +2667,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
   "profile": "browserhive:axtree/1",
   "url": "https://www.iana.org/",
   "takenAt": "2026-08-22T02:55:56.759Z",
-  "stage": "after-behaviors",
+  "stage": "after-capture-scripts",
   "devicePixelRatio": 1,
   "viewport": { "width": 1280, "height": 800 },
   "nodes": 255,
@@ -3442,7 +3442,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       status や大きさや、掛かった時間を運んだなら、trace は、残さないはずだったものを読める
       2 つ目の場所になり、WARC については守られた方針が、パッケージについては守られないことに
       なります。そこで行は、
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       が述べること —— 取り込んだページがその URL を、どの method で、どの種類の資源として
       求めたか、producer がどう決めたか —— と、それがいつだったかのほかは、何も運びません。
       それでも、行の並びは、応答について 1 つのことを示します。<code>no-archive</code> の項目に
@@ -3523,7 +3523,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     </p>
     <p class="note" title="trace と WARC のレコード">
       <code>outcome</code> が <code>"not-archived"</code> か <code>"denied"</code> の行は、WARC が
-      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-withheld-requests">withheld request のレコード</a>
       を持つ要求で、そのレコードの <code>action</code> は <code>no-archive</code> か
       <code>deny</code> です。<code>record</code> を持つ行は、WARC がレコードを持つ交信です。
       失敗した要求と終わっていなかった要求については、このプロファイルも
@@ -3960,11 +3960,11 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     実証的に保持していない本文を報告します。保持している本文がオリジンの配信したものである、
     とは主張しません。<code>complete</code> も、隠すシークレットの値を持つので落とした本文が無い、
     とは言いません。それを言うのは、<code>truncated</code> が <code>secret</code> の
-    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
+    <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#records-of-bodies-not-kept">body not kept のレコード</a>です。
   </p>
   <p>
     適合するパッケージが、保持している本文について主張するのは
-    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#payloads">Payloads</a> の節の
+    [[BROWSERHIVE-WARC-PROFILE]] の <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.8.0/ja/#payloads">Payloads</a> の節の
     内容です —— それは wire を渡ったバイト列なので、payload digest はオリジンが送ったものの
     digest であり、producer が符号を変えた写しのものではありません。例外は、
     <code>BrowserHive-Redacted</code> の欄が <code>payload</code> を挙げる redacted のレコードです。
