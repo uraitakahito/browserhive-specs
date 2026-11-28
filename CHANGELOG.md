@@ -95,7 +95,8 @@ BrowserHive WACZ Profile の版ごとの変更。
 - **参照:** `pathPattern` の書き方のために RFC 9309 を localBiblio に足した（引く参照は 5 つ）。Introduction の並びにも 1 句足した。
 - **head の注釈:** `latestVersion` の注の次の版を 1.30.0 に。
 
-**訂正（2026-11-28・t-6bc6）:** `grantedAt`・`expiresAt` を「UTC の RFC 3339 の date-time」と定め直した。初めの文は
+**訂正（2026-11-28・t-6bc6）:** `grantedAt`・`expiresAt` を「UTC の RFC 3339 の date-time で、offset は `Z` と書く」と定め直した
+（`+00:00` と `-00:00` は通さない。producer と読み手が、同じ字を形として見るため）。初めの文は
 「producer は UTC に書き直さない」とだけ言い、表は UTC を求めていなかったので、時差つきの申告を変えずに書いたパッケージが
 Conformance の節の「timestamp は UTC」とぶつかりえた。時刻が UTC でない申告は形に合わず、producer は断る。公開から
 この訂正までの間に、この版を名乗る producer は出ていない。
