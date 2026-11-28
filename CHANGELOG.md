@@ -80,7 +80,7 @@ BrowserHive WACZ Profile の版ごとの変更。
   `grantedBy`・`grantedAt`・`expiresAt`（RFC 3339 の date-time）をみな持つ（MUST）。`random`・`document` と同じ並びに置き、
   `settings` には入れない（`settings` は、パッケージの持つバイト列を決めた設定の記録）。
 - **producer の決まり:** 要求に申告が無いときはこの member を書いてはならず（MUST NOT）、在るときは、要求が渡した値を
-  変えずに書く（MUST）。`grantedAt`・`expiresAt` も UTC に書き直さない。申告が形に合わない要求は断る
+  変えずに書く（MUST）。`grantedAt`・`expiresAt` も書き直さない。申告が形に合わない要求は断る
   （MUST。適合しないパッケージを書かない。producer が申告について確かめるのは形だけ）。
 - **在る・無いが言うこと:** 在るパッケージは「要求者が、その URL を `robots.txt` が断っていると判じ、例外で外した」と言う。
   無いパッケージは「外していない」か「申告しなかった」のどちらかで、`robots.txt` が許していたとは言わない。
@@ -94,6 +94,12 @@ BrowserHive WACZ Profile の版ごとの変更。
   「後方互換ではありません」の題をやめ、任意の member を 1 つ足す版だと書いた。以前の版の一覧に 1.28.0 を足した。
 - **参照:** `pathPattern` の書き方のために RFC 9309 を localBiblio に足した（引く参照は 5 つ）。Introduction の並びにも 1 句足した。
 - **head の注釈:** `latestVersion` の注の次の版を 1.30.0 に。
+
+**訂正（2026-11-28・t-6bc6）:** `grantedAt`・`expiresAt` を「UTC の RFC 3339 の date-time で、offset は `Z` と書く」と定め直した
+（`+00:00` と `-00:00` は通さない。producer と読み手が、同じ字を形として見るため）。初めの文は
+「producer は UTC に書き直さない」とだけ言い、表は UTC を求めていなかったので、時差つきの申告を変えずに書いたパッケージが
+Conformance の節の「timestamp は UTC」とぶつかりえた。時刻が UTC でない申告は形に合わず、producer は断る。公開から
+この訂正までの間に、この版を名乗る producer は出ていない。
 
 ## 1.28.0
 
