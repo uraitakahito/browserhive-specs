@@ -29,6 +29,8 @@ jobs:
           # 版を足したらここにも足す。焼かれない版は、壊れていても気づけない。
           - wacz-profile/1.29.0
           - wacz-profile/1.29.0/ja
+          - wacz-profile/1.30.0
+          - wacz-profile/1.30.0/ja
           - wacz-profile/1.28.0
           - wacz-profile/1.28.0/ja
           - wacz-profile/1.27.0

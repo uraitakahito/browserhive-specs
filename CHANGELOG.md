@@ -13,6 +13,7 @@ BrowserHive は最新版しか出力しないが、古い版の文書は
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.30.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.30.0/) | 2026-11-28 | 時点 `after-behaviors` を `after-capture-scripts` に改め（`snapshots`・`screenshots`・storage と accessibility tree の file）、語 capture scripts を定義し、archive/ の WARC を WARC Profile 1.8.0 に上げる。1.29.0 と後方互換ではない |
 | [1.29.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/) | 2026-11-28 | 取り込みを求めた側が「この URL は `robots.txt` が断っていたが、例外で外した」と申告したとき、その申告を任意の member `robotsOverride` に記録する。producer は `robots.txt` を読まず、申告を確かめない（WARC Profile は 1.7.0 のまま） |
 | [1.28.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/) | 2026-11-28 | `archive/` の WARC を WARC Profile 1.7.0 に上げる。`request`・`response` レコードの HTTP の長さはレコードの持つ payload を言い、`Transfer-Encoding` を持たない。得られなかった要求の本文は `WARC-Truncated: unspecified` が言い、`completeness` には載らない |
 | [1.27.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/) | 2026-11-15 | 写しと一緒に同じ origin の子フレームの文書も写し（WARC Profile 1.5.0 のフレームの写し）、どの枠を写したかを `snapshots` の `frames` と `frameCounts` に記録する。子の写しは CDXJ に載せ、ページ一覧には載せない |
@@ -72,6 +73,20 @@ BrowserHive は最新版しか出力しないが、古い版の文書は
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.30.0
+
+取り込みを頼む側が送り、producer がページで走らせるコード（behavior と preload のスクリプト）を **capture scripts** と呼び、
+写しとスクリーンショットの時点の名 `after-behaviors` を `after-capture-scripts` に改めた。「behaviors」の時点は、ページ自身の
+JavaScript のことと読まれやすかった（CAPTURE-506）。
+
+- **時点の名:** `snapshots`・`screenshots` の項目、web storage と accessibility tree の file の `stage`（どちらも
+  `"after-capture-scripts"` でなければならない）、`pages/pages.jsonl` の行の `stage`・`id`、写しとスクリーンショットの URN
+- **語 capture scripts:** `snapshots` の節で定義した。behavior の語と、`settings.behaviors`・`behaviors/` の名は変えない
+- **archive/ の WARC:** BrowserHive WARC Profile 1.8.0（時点を同じく改めた版）に上げた
+- **file の版は上げない:** `browserhive:storage/2`・`browserhive:axtree/1` のまま。file の版を変えるのは記録する物・
+  digest の計算・刈り込みの規則を変えた時で、時点の値は仕様の版（`conformsTo`）に結んである
+- **互換:** 1.29.0 と後方互換ではない。1.29.0 までのパッケージは古い名のまま。読み手は `conformsTo` の版で読み分ける
 
 ## 1.29.0
 
