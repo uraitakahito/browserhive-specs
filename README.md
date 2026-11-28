@@ -51,9 +51,13 @@ WARC のレコードの決まりは [browserhive-warc-spec](https://github.com/u
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/) | 1.1.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/) |
 | [BrowserHive WACZ Profile](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/) | 1.0.0 | [あり](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/) |
 
-Profile の版どうしは**後方互換ではない**。BrowserHive は最新版しか出力しないが、古い版の文書は
+Profile の版どうしは、**そのままでは移らない**。パッケージは `conformsTo` で 1 つの版を名乗るので、
+前の版向けのパッケージが、そのまま次の版のパッケージになるわけではない。要求を変える版
+（WARC Profile を上げる版など）は後方互換ではない。任意の member を足すだけの版（1.29.0 など）では、
+前の版向けの読み手は、その member を認識しない member として無視できる。
+BrowserHive は最新版しか出力しないが、古い版の文書は
 それぞれの URL に残す —— 既存アーカイブの `conformsTo` がそこを指しており、消すと
-「何に適合していたか」を辿れなくなるため。版ごとに何が変わったかは
+「何に適合していたか」を辿れなくなるため。版ごとに何が変わったか（互換を含む）は
 [変更履歴](CHANGELOG.md)。
 
 版を固定せず参照するなら
