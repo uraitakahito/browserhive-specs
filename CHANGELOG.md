@@ -76,11 +76,12 @@ BrowserHive WACZ Profile の版ごとの変更。
 例外で外して撮ったパッケージと、そうでないパッケージを、パッケージだけからは見分けられなかった。
 
 - **`robotsOverride`（新しい節 `robotsoverride`）:** 在ってもなくてもよい（MAY）。在るなら `exemptionId`・`reason`
-  （1〜500 文字）・`pathPattern`（`/` で始まり、`robots.txt` の規則の path と同じ書き方）・`scope`（`"seeds"` か `"links"`）・
+  （code point で 1〜500）・`pathPattern`（`/` で始まり、`robots.txt` の規則の path と同じ書き方）・`scope`（`"seeds"` か `"links"`）・
   `grantedBy`・`grantedAt`・`expiresAt`（RFC 3339 の date-time）をみな持つ（MUST）。`random`・`document` と同じ並びに置き、
   `settings` には入れない（`settings` は、パッケージの持つバイト列を決めた設定の記録）。
 - **producer の決まり:** 要求に申告が無いときはこの member を書いてはならず（MUST NOT）、在るときは、要求が渡した値を
-  変えずに書く（MUST）。`grantedAt`・`expiresAt` も UTC に書き直さない。
+  変えずに書く（MUST）。`grantedAt`・`expiresAt` も UTC に書き直さない。申告が形に合わない要求は断る
+  （MUST。適合しないパッケージを書かない。producer が申告について確かめるのは形だけ）。
 - **在る・無いが言うこと:** 在るパッケージは「要求者が、その URL を `robots.txt` が断っていると判じ、例外で外した」と言う。
   無いパッケージは「外していない」か「申告しなかった」のどちらかで、`robots.txt` が許していたとは言わない。
 - **申告は要求者のもの:** producer は `robots.txt` も申告の中身も確かめない。Security の節に、パッケージは申告を試せるものを

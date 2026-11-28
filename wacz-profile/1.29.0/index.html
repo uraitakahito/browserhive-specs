@@ -1868,7 +1868,7 @@
             requester keeps: 1 character or more.</td></tr>
         <tr><td><code>reason</code></td><td>string</td><td>yes</td>
             <td>The reason for the exemption, as the person who registered it
-            wrote it: 1 to 500 characters.</td></tr>
+            wrote it: 1 to 500 Unicode code points.</td></tr>
         <tr><td><code>pathPattern</code></td><td>string</td><td>yes</td>
             <td>The pattern of the paths the exemption covers. It begins with
             <code>/</code> and is written as the path of a rule of
@@ -1907,7 +1907,7 @@
       says so (see
       <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/#warcinfo">The warcinfo record</a>
       in [[BROWSERHIVE-WARC-PROFILE]]). This member does not change that. Nor
-      does the producer check what the declaration says: not that
+      does the producer check what the declaration claims: not that
       <code>robots.txt</code> disallowed the URL, not that the exemption
       exists or covers the URL, and not that it was in force when the capture
       ran.
@@ -1920,6 +1920,10 @@
       <em class="rfc2119">MUST</em> hold the value the request gave, without
       change. That holds for <code>grantedAt</code> and
       <code>expiresAt</code> too: the producer does not rewrite them in UTC.
+      A producer <em class="rfc2119">MUST</em> refuse a capture request whose
+      declaration does not have the form above, rather than write a package
+      that does not conform: the form is the one thing about the declaration
+      that it checks.
     </p>
     <p>
       A package that carries <code>robotsOverride</code> says that the

@@ -1654,7 +1654,7 @@
         <tr><td><code>exemptionId</code></td><td>string</td><td>はい</td>
             <td>要求者が持つ、例外の記録の識別子。1 文字以上。</td></tr>
         <tr><td><code>reason</code></td><td>string</td><td>はい</td>
-            <td>例外の理由。例外を登録した人が書いたとおり。1 文字以上 500 文字以下。</td></tr>
+            <td>例外の理由。例外を登録した人が書いたとおり。Unicode の code point で 1 以上 500 以下。</td></tr>
         <tr><td><code>pathPattern</code></td><td>string</td><td>はい</td>
             <td>例外が当たる path の型。<code>/</code> で始まり、<code>robots.txt</code> の
             規則の path と同じ書き方をします（[[RFC9309]]）: <code>*</code> は任意の文字の並びを、
@@ -1686,7 +1686,7 @@
       <code>warcinfo</code> レコードの <code>robots-policy: ignore</code> がそれを言います
       （[[BROWSERHIVE-WARC-PROFILE]] の
       <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#warcinfo">The warcinfo record</a> を参照）。この member はそれを変えません。
-      producer は、申告の中身も確かめません: <code>robots.txt</code> がその URL を断っていたことも、
+      producer は、申告が主張することも確かめません: <code>robots.txt</code> がその URL を断っていたことも、
       例外が在ることも、例外がその URL に当たることも、取り込みが走ったときに例外が効いていたことも。
     </p>
     <p>
@@ -1696,6 +1696,9 @@
       要求が渡した値を、変えずに持たなければなりません（<em class="rfc2119">MUST</em>）。
       <code>grantedAt</code> と <code>expiresAt</code> も同じです: producer はそれらを UTC に
       書き直しません。
+      申告が上の形をしていない取り込みの要求を、producer は断らなければなりません
+      （<em class="rfc2119">MUST</em>）。適合しないパッケージを書くのではなく、です:
+      producer が申告について確かめるのは、形だけです。
     </p>
     <p>
       <code>robotsOverride</code> を持つパッケージは、取り込みを求められた URL を
