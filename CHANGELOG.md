@@ -8,6 +8,7 @@ BrowserHive WACZ Profile の版ごとの変更。
 
 | 版 | 日付 | 一言で |
 |---|---|---|
+| [1.29.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/) | 2026-11-28 | 取り込みを求めた側が「この URL は `robots.txt` が断っていたが、例外で外した」と申告したとき、その申告を任意の member `robotsOverride` に記録する。producer は `robots.txt` を読まず、申告を確かめない（WARC Profile は 1.7.0 のまま） |
 | [1.28.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/) | 2026-11-28 | `archive/` の WARC を WARC Profile 1.7.0 に上げる。`request`・`response` レコードの HTTP の長さはレコードの持つ payload を言い、`Transfer-Encoding` を持たない。得られなかった要求の本文は `WARC-Truncated: unspecified` が言い、`completeness` には載らない |
 | [1.27.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/) | 2026-11-15 | 写しと一緒に同じ origin の子フレームの文書も写し（WARC Profile 1.5.0 のフレームの写し）、どの枠を写したかを `snapshots` の `frames` と `frameCounts` に記録する。子の写しは CDXJ に載せ、ページ一覧には載せない |
 | [1.26.0](https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/) | 2026-11-14 | 取り込んだページの JS が乱数として受け取った値を、求められたときに `random/values.jsonl` に記録し、記録したかどうかを `random` で述べる |
@@ -66,6 +67,32 @@ BrowserHive WACZ Profile の版ごとの変更。
 合うこと、ja の冒頭の版が置き場の版と合うこと。
 
 ---
+
+## 1.29.0
+
+`browserhive:capture` に、任意の member **`robotsOverride`** を足した（t-6bc6）。`robots.txt` を判じるのは取り込みを求める側
+（要求者）で、producer は `robots.txt` を読まない。要求者が「取り込みを求める URL は `robots.txt` が断っていたが、登録された
+例外で外した」と決めたとき、取り込みの要求にその申告を付け、producer はそれを確かめずにパッケージへ書く。いままでは、
+例外で外して撮ったパッケージと、そうでないパッケージを、パッケージだけからは見分けられなかった。
+
+- **`robotsOverride`（新しい節 `robotsoverride`）:** 在ってもなくてもよい（MAY）。在るなら `exemptionId`・`reason`
+  （1〜500 文字）・`pathPattern`（`/` で始まり、`robots.txt` の規則の path と同じ書き方）・`scope`（`"seeds"` か `"links"`）・
+  `grantedBy`・`grantedAt`・`expiresAt`（RFC 3339 の date-time）をみな持つ（MUST）。`random`・`document` と同じ並びに置き、
+  `settings` には入れない（`settings` は、パッケージの持つバイト列を決めた設定の記録）。
+- **producer の決まり:** 要求に申告が無いときはこの member を書いてはならず（MUST NOT）、在るときは、要求が渡した値を
+  変えずに書く（MUST）。`grantedAt`・`expiresAt` も UTC に書き直さない。
+- **在る・無いが言うこと:** 在るパッケージは「要求者が、その URL を `robots.txt` が断っていると判じ、例外で外した」と言う。
+  無いパッケージは「外していない」か「申告しなかった」のどちらかで、`robots.txt` が許していたとは言わない。
+- **申告は要求者のもの:** producer は `robots.txt` も申告の中身も確かめない。Security の節に、パッケージは申告を試せるものを
+  持たないことと、`reason`・`grantedBy` が人の書いた言葉と呼び名を運ぶことを足した。
+- **隠すシークレット:** 置き換えないものの並びに `robotsOverride` の member を足した（申告は変えずに書くので、
+  そこに出現を書くことになる取り込みはパッケージを作らない、という今の決まりに入る）。
+- **`archive/` の WARC:** WARC Profile 1.7.0 のまま。warcinfo の `robots-policy: ignore` は、producer が `robots.txt` を
+  見ないことを今までどおり言う。
+- **互換:** 読み手は認識しない member を無視する、という決まりは変えていない。1.28.0 向けの読み手は困らない。sotd の注は
+  「後方互換ではありません」の題をやめ、任意の member を 1 つ足す版だと書いた。以前の版の一覧に 1.28.0 を足した。
+- **参照:** `pathPattern` の書き方のために RFC 9309 を localBiblio に足した（引く参照は 5 つ）。Introduction の並びにも 1 句足した。
+- **head の注釈:** `latestVersion` の注の次の版を 1.30.0 に。
 
 ## 1.28.0
 
