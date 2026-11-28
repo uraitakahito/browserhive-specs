@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.28.0</title>
+<title>BrowserHive WACZ Profile 1.29.0</title>
 <!--
   ReSpec is the copy bundled in this repository, loaded by a relative path:
   ../../assets/js/respec-w3c.js climbs from wacz-profile/<version>/ to the
@@ -27,7 +27,7 @@
     //
     // It points at the moving `latest/`, a copy of whichever version is newest.
     // It is not a redirect: each release overwrites it with the new version. That
-    // is what makes the row still true once 1.29.0 exists: this document would
+    // is what makes the row still true once 1.30.0 exists: this document would
     // then no longer be the latest, and saying so is the row's whole job.
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/",
@@ -39,7 +39,7 @@
     // **本文と無関係に CI が赤くなる**。実際 2026-08 以降 409 (Cloudflare 1001) を
     // 返し続けており、PR #23 はそれだけの理由で止まっていた。
     //
-    // 引く参照は 4 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
+    // 引く参照は 5 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
     // しておく理由が無い。
     localBiblio: {
       WACZ: {
@@ -63,6 +63,14 @@
         href: "https://www.rfc-editor.org/rfc/rfc3339",
         authors: ["G. Klyne", "C. Newman"],
         date: "July 2002",
+        publisher: "IETF",
+      },
+      // robots.txt の path の書き方（robotsOverride の pathPattern が借りる）。
+      RFC9309: {
+        title: "Robots Exclusion Protocol",
+        href: "https://www.rfc-editor.org/rfc/rfc9309",
+        authors: ["M. Koster", "G. Illyes", "H. Zeller", "L. Sassman"],
+        date: "September 2022",
         publisher: "IETF",
       },
       // WARC のレコードの決まりは 1.16.0 からこちらに在る。archive/ の WARC が名乗る版に
@@ -95,22 +103,26 @@
     no standing beyond that project and is not endorsed by the publishers of
     [[WACZ]].
   </p>
-  <p class="note" title="1.28.0 is not backward compatible with 1.27.0">
-    This version has the WARC files of a package conform to BrowserHive WARC
-    Profile 1.7.0, in which the HTTP message of a <code>request</code> or
-    <code>response</code> record states no length but that of the payload the
-    record holds and has no <code>Transfer-Encoding</code>, even for a response
-    that has no body to send, and a <code>request</code> record whose body the
-    producer could not obtain says so with <code>WARC-Truncated</code> (see
-    <a href="#archive-files"></a>). A package written against 1.27.0 has WARC
-    files that name WARC Profile 1.5.0, which let such records keep the length
-    the browser or the server sent, so it does not conform to 1.28.0.
-    This is intended, and it is why
+  <p class="note" title="1.29.0 adds one optional member to 1.28.0">
+    This version defines <a>robotsOverride</a> in <a>browserhive:capture</a>
+    (see <a href="#robotsoverride"></a>): a declaration of the requester that
+    it judged <code>robots.txt</code> to disallow the URL the capture was
+    asked for, and had it captured all the same under an exemption. A package
+    carries the member only when the capture request carried the declaration.
+    Nothing else changes: the WARC files of a package conform to BrowserHive
+    WARC Profile 1.7.0, as they do in 1.28.0, and their
+    <code>robots-policy: ignore</code> still says that the producer does not
+    consult <code>robots.txt</code>. A reader written against 1.28.0 ignores
+    the member, as it ignores every member it does not recognise. A package
+    written against 1.28.0 names that version in <a>conformsTo</a>, and it
+    may hold a member of this name that is not what this version defines, so
+    it is not thereby a package of 1.29.0.
+    That is why
     <a>conformsTo</a> names a version: a reader holding an older package can
     still tell what it was written against.
     Earlier versions &mdash;
     <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/">1.0.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/">1.1.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/">1.2.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/">1.3.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/">1.4.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/">1.5.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/">1.6.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/">1.7.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/">1.8.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/">1.9.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/">1.10.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/">1.11.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/">1.12.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/">1.13.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/">1.14.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/">1.15.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/">1.16.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/">1.17.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/">1.18.0</a>,
-    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/">1.25.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/">1.26.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/">1.27.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
+    <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/">1.19.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/">1.20.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/">1.21.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/">1.22.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/">1.23.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/">1.24.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/">1.25.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/">1.26.0</a>, <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/">1.27.0</a> and <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/">1.28.0</a> &mdash; remain published at their own URLs for that reason, but BrowserHive no longer produces them.
   </p>
   <p class="note" title="Why the wait is recorded">
     A capture has to decide when a page is ready to be taken, and every way of
@@ -148,8 +160,10 @@
     which of them it kept, which certificates the origins presented, the log
     the capture wrote as it ran, the requests it saw begin, with how each
     one ended, whether it kept pictures of the page, with the reason when
-    it kept none, and, when it was asked to record them, the values the
-    page's scripts received at random. None of these change
+    it kept none, when it was asked to record them, the values the
+    page's scripts received at random, and, when the requester declared one,
+    the exemption under which it set <code>robots.txt</code> aside. None of
+    these change
     what [[WACZ]] means. They record what would otherwise be unrecoverable.
   </p>
 </section>
@@ -214,7 +228,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/"
 }</pre>
     <p>
       The declaration is carried here rather than in the
@@ -1833,6 +1847,102 @@
     </p>
   </section>
 
+  <section id="robotsoverride">
+    <h3><code>robotsOverride</code></h3>
+    <p>
+      <code>browserhive:capture</code> <em class="rfc2119">MAY</em> contain a
+      member <dfn>robotsOverride</dfn> that carries a declaration of the
+      requester: that it judged <code>robots.txt</code> to disallow the URL
+      the capture was asked for, and asked for the capture all the same, under
+      an exemption registered with it. If present it
+      <em class="rfc2119">MUST</em> be an object that contains every member
+      below.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>exemptionId</code></td><td>string</td><td>yes</td>
+            <td>The identifier of the record of the exemption that the
+            requester keeps: 1 character or more.</td></tr>
+        <tr><td><code>reason</code></td><td>string</td><td>yes</td>
+            <td>The reason for the exemption, as the person who registered it
+            wrote it: 1 to 500 Unicode code points.</td></tr>
+        <tr><td><code>pathPattern</code></td><td>string</td><td>yes</td>
+            <td>The pattern of the paths the exemption covers. It begins with
+            <code>/</code> and is written as the path of a rule of
+            <code>robots.txt</code> is ([[RFC9309]]): <code>*</code> stands
+            for any run of characters, and a <code>$</code> at the end stands
+            for the end of what the pattern is matched against.</td></tr>
+        <tr><td><code>scope</code></td><td>string</td><td>yes</td>
+            <td><code>"seeds"</code> or <code>"links"</code>: whether the
+            exemption covers only the URLs the requester starts from, or also
+            the URLs it reaches by following links from them.</td></tr>
+        <tr><td><code>grantedBy</code></td><td>string</td><td>yes</td>
+            <td>Who registered the exemption, as the requester names them:
+            1 character or more.</td></tr>
+        <tr><td><code>grantedAt</code></td><td>string</td><td>yes</td>
+            <td>When the exemption was registered: an [[RFC3339]]
+            date-time.</td></tr>
+        <tr><td><code>expiresAt</code></td><td>string</td><td>yes</td>
+            <td>When the exemption ends: an [[RFC3339]] date-time.</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"robotsOverride": {
+  "exemptionId": "42",
+  "reason": "The publisher agreed in writing that its press releases may be archived.",
+  "pathPattern": "/press/*",
+  "scope": "links",
+  "grantedBy": "user:204",
+  "grantedAt": "2026-11-20T02:15:00Z",
+  "expiresAt": "2027-11-20T02:15:00Z"
+}</pre>
+    <p>
+      The declaration is the requester's, not the producer's. A producer does
+      not read <code>robots.txt</code>: whether a page is to be captured at
+      all is for the requester to decide, and the
+      <code>robots-policy: ignore</code> of a <code>warcinfo</code> record
+      says so (see
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/#warcinfo">The warcinfo record</a>
+      in [[BROWSERHIVE-WARC-PROFILE]]). This member does not change that. Nor
+      does the producer check what the declaration claims: not that
+      <code>robots.txt</code> disallowed the URL, not that the exemption
+      exists or covers the URL, and not that it was in force when the capture
+      ran.
+    </p>
+    <p>
+      A producer <em class="rfc2119">MUST NOT</em> write
+      <code>robotsOverride</code> when the capture request carried no such
+      declaration. When the request carried one, the producer
+      <em class="rfc2119">MUST</em> write the member, and each member of it
+      <em class="rfc2119">MUST</em> hold the value the request gave, without
+      change. That holds for <code>grantedAt</code> and
+      <code>expiresAt</code> too: the producer does not rewrite them in UTC.
+      A producer <em class="rfc2119">MUST</em> refuse a capture request whose
+      declaration does not have the form above, rather than write a package
+      that does not conform: the form is the one thing about the declaration
+      that it checks.
+    </p>
+    <p>
+      A package that carries <code>robotsOverride</code> says that the
+      requester judged <code>robots.txt</code> to disallow the URL the capture
+      was asked for, and set that aside under the exemption the member names.
+      A package without it says one of two things, and not which: that the
+      requester set nothing aside, or that it did not declare what it set
+      aside. It does not say that <code>robots.txt</code> allowed the URL.
+    </p>
+    <p class="note" title="Why the declaration is here, and not in settings">
+      <a>settings</a> records what was in force for the capture: what decided
+      which bytes the package holds. An exemption decides nothing of that
+      kind. The capture runs the same with it and without it, and the
+      producer acts on no member of it. What it records is why the requester
+      asked for the capture at all, which a reader weighing the package may
+      need to know, and which nothing else in the package says.
+    </p>
+  </section>
+
   <section id="tls">
     <h3><code>tls</code></h3>
     <p>
@@ -2493,7 +2603,8 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       <code>source</code> of a behavior or a preload script,
       <code>behaviors/runtime.js</code>, <code>random/recorder.js</code>, an
       entry of <code>variables</code> or
-      <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>, the
+      <a>urlPolicies</a>, a host in <a>tls</a>, an origin in <a>storage</a>,
+      the members of <a>robotsOverride</a>, the
       other members of a line of <code>trace/events.jsonl</code> or of
       <code>random/values.jsonl</code> apart from <code>value</code>, the
       names of members. A capture that would write an occurrence in any of
@@ -4566,6 +4677,14 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     change this member: what is sent to the server and what the package reports
     are separate. Operators who treat their build version as sensitive should
     know that a conforming package discloses it.
+  </p>
+  <p>
+    <a>robotsOverride</a> is a claim, and the package holds nothing that tests
+    it: neither the <code>robots.txt</code> the requester read nor the record
+    of the exemption is in the package. A reader that needs to rely on the
+    claim has to ask the requester. The member also carries words a person
+    wrote and a name for that person, in <code>reason</code> and
+    <code>grantedBy</code>, and whoever passes the package on passes them on.
   </p>
 </section>
 

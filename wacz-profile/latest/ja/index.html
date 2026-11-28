@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>BrowserHive WACZ Profile 1.28.0 (日本語訳)</title>
+<title>BrowserHive WACZ Profile 1.29.0 (日本語訳)</title>
 <!--
   ReSpec は、この repo に同梱した写しを相対パスで読む（../../../assets/js/respec-w3c.js は
   wacz-profile/<版>/ja/ から repo の根まで上る）。Pages は main をそのまま配るので、
@@ -21,7 +21,7 @@
     // 書かなければ行が消えるのではなく、本物の URL を書いたときだけ埋まる。
     //
     // 指す先は動く `latest/ja/` で、その時点で最新の版の写し。転送ではなく、
-    // 版を出すたびに新しい版で上書きする。1.29.0 が出たときにこの文書が最新で
+    // 版を出すたびに新しい版で上書きする。1.30.0 が出たときにこの文書が最新で
     // なくなる —— それを言うのがこの行の役目なので、自分自身ではなく latest を指す。
     latestVersion:
       "https://uraitakahito.github.io/browserhive-specs/wacz-profile/latest/ja/",
@@ -33,7 +33,7 @@
     // <strong>本文と無関係に CI が赤くなる</strong>。実際 2026-08 以降 409 (Cloudflare 1001) を
     // 返し続けており、PR #23 はそれだけの理由で止まっていた。
     //
-    // 引く参照は 4 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
+    // 引く参照は 5 つしかない。外部サービスの可用性を、公開できるかどうかの条件に
     // しておく理由が無い。
     localBiblio: {
       WACZ: {
@@ -59,6 +59,14 @@
         date: "July 2002",
         publisher: "IETF",
       },
+      // robots.txt の path の書き方（robotsOverride の pathPattern が借りる）。
+      RFC9309: {
+        title: "Robots Exclusion Protocol",
+        href: "https://www.rfc-editor.org/rfc/rfc9309",
+        authors: ["M. Koster", "G. Illyes", "H. Zeller", "L. Sassman"],
+        date: "September 2022",
+        publisher: "IETF",
+      },
       // WARC のレコードの決まりは 1.16.0 からこちらに在る。archive/ の WARC が名乗る版に
       // 固定する —— 名乗る版が変われば、この profile の版も上がる。参照は英語原典を指す。
       "BROWSERHIVE-WARC-PROFILE": {
@@ -76,7 +84,7 @@
 
 <section id="abstract">
   <p class="note" title="非公式翻訳 (Unofficial translation)">
-    これは BrowserHive WACZ Profile 1.28.0 の日本語訳です。<strong>正典は
+    これは BrowserHive WACZ Profile 1.29.0 の日本語訳です。<strong>正典は
     <a href="../">英語原典</a></strong>であり、判断の根拠にする場面ではそちらを確認してください。
     訳と原典が食い違った場合は原典が優先します。
   </p>
@@ -92,18 +100,20 @@
     これは作業中の草案です。BrowserHive が現在書き出しているものを記述しています。同プロジェクト
     以外での位置づけを持たず、[[WACZ]] の発行者から承認されたものでもありません。
   </p>
-  <p class="note" title="1.28.0 は 1.27.0 と後方互換ではありません">
-    この版は、パッケージの WARC ファイルに BrowserHive WARC Profile 1.7.0 への適合を求めます。
-    その版では、<code>request</code> と <code>response</code> のレコードの HTTP メッセージは、
-    レコードが持つ payload の長さのほかの長さを言わず、<code>Transfer-Encoding</code> を持ちません。
-    送る本文を持たないレスポンスも同じです。また、producer が本文を得られなかった
-    <code>request</code> レコードは、そのことを <code>WARC-Truncated</code> で言います
-    （<a href="#archive-files"></a> を参照）。1.27.0 向けのパッケージの WARC ファイルは、
-    そのようなレコードにブラウザやサーバが送った長さを残してよい WARC Profile 1.5.0 を
-    名乗るので、1.28.0 に適合しません。これは
-    意図されたもので、<a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
+  <p class="note" title="1.29.0 は 1.28.0 に、任意の member を 1 つ足します">
+    この版は、<a>browserhive:capture</a> の <a>robotsOverride</a> を定めます
+    （<a href="#robotsoverride"></a> を参照）。取り込みを求められた URL を
+    <code>robots.txt</code> が断っていると要求者が判じ、それでも例外のもとで取り込ませた、という
+    要求者の申告です。パッケージがこの member を持つのは、取り込みの要求がその申告を持っていた
+    ときだけです。ほかは何も変わりません: パッケージの WARC ファイルは 1.28.0 と同じく
+    BrowserHive WARC Profile 1.7.0 に適合し、その <code>robots-policy: ignore</code> は、producer が
+    <code>robots.txt</code> を見ないことを今までどおり言います。1.28.0 向けの読み手は、認識しない
+    member をみな無視するのと同じに、この member を無視します。1.28.0 向けのパッケージは
+    <a>conformsTo</a> でその版を名乗り、この版の定めと違う同じ名前の member を持っていることも
+    ありうるので、そのまま 1.29.0 のパッケージになるわけではありません。
+    <a>conformsTo</a> が版を名指ししているのはそのためです —— 古い
     パッケージを持つ読み手も、それが何に対して書かれたかを辿れます。
-    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/">1.25.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/ja/">1.26.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/ja/">1.27.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
+    以前の版 —— <a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.0.0/ja/">1.0.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.1.0/ja/">1.1.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.2.0/ja/">1.2.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.3.0/ja/">1.3.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.4.0/ja/">1.4.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.5.0/ja/">1.5.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.6.0/ja/">1.6.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.7.0/ja/">1.7.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.8.0/ja/">1.8.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.9.0/ja/">1.9.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.10.0/ja/">1.10.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.11.0/ja/">1.11.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.12.0/ja/">1.12.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.13.0/ja/">1.13.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.14.0/ja/">1.14.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.15.0/ja/">1.15.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.16.0/ja/">1.16.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.17.0/ja/">1.17.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.18.0/ja/">1.18.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.19.0/ja/">1.19.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.20.0/ja/">1.20.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.21.0/ja/">1.21.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.22.0/ja/">1.22.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.23.0/ja/">1.23.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.24.0/ja/">1.24.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.25.0/ja/">1.25.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.26.0/ja/">1.26.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.27.0/ja/">1.27.0</a>・<a href="https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/ja/">1.28.0</a> —— がそれぞれの URL で公開され続けるのはこの理由によりますが、
     BrowserHive はもうそれらを出力しません。
   </p>
   <p class="note" title="なぜ待ちを記録するのか">
@@ -136,8 +146,9 @@
     どのシークレットを渡され、そのどれを残したか、
     各オリジンがどの証明書を提示したか、取り込みが走りながら書いたログ、取り込みが
     始まりを見た要求と、そのそれぞれがどう終わったか、取り込んだページの画像を残したか
-    どうかと、残さなかったときはその理由、そして、記録を求められたときは、取り込んだページの
-    スクリプトが乱数として受け取った値。これらは
+    どうかと、残さなかったときはその理由、記録を求められたときは、取り込んだページの
+    スクリプトが乱数として受け取った値、そして、要求者が申告したときは、<code>robots.txt</code> を
+    外した例外。これらは
     [[WACZ]] の意味を何ひとつ変えません。変えずに、そのままでは取り戻せないものを記録します。
   </p>
 </section>
@@ -198,7 +209,7 @@
     </p>
     <pre class="json">
 "browserhive:capture": {
-  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.28.0/"
+  "conformsTo": "https://uraitakahito.github.io/browserhive-specs/wacz-profile/1.29.0/"
 }</pre>
     <p>
       宣言をここに置き、<code>datapackage.json</code> の <code>profile</code> member に置かないのは、
@@ -1626,6 +1637,85 @@
     </p>
   </section>
 
+  <section id="robotsoverride">
+    <h3><code>robotsOverride</code></h3>
+    <p>
+      <code>browserhive:capture</code> は、要求者の申告を運ぶ <dfn>robotsOverride</dfn> member を
+      持ってもかまいません（<em class="rfc2119">MAY</em>）。申告とは、取り込みを求められた URL を
+      <code>robots.txt</code> が断っていると要求者が判じ、それでも、要求者に登録された例外のもとで
+      取り込みを求めた、というものです。存在する場合、それは下の member をみな持つオブジェクトで
+      なければなりません（<em class="rfc2119">MUST</em>）。
+    </p>
+    <table class="simple">
+      <thead>
+        <tr><th>Member</th><th>型</th><th>必須</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>exemptionId</code></td><td>string</td><td>はい</td>
+            <td>要求者が持つ、例外の記録の識別子。1 文字以上。</td></tr>
+        <tr><td><code>reason</code></td><td>string</td><td>はい</td>
+            <td>例外の理由。例外を登録した人が書いたとおり。Unicode の code point で 1 以上 500 以下。</td></tr>
+        <tr><td><code>pathPattern</code></td><td>string</td><td>はい</td>
+            <td>例外が当たる path の型。<code>/</code> で始まり、<code>robots.txt</code> の
+            規則の path と同じ書き方をします（[[RFC9309]]）: <code>*</code> は任意の文字の並びを、
+            末尾の <code>$</code> は、型を照らす相手の終わりを表します。</td></tr>
+        <tr><td><code>scope</code></td><td>string</td><td>はい</td>
+            <td><code>"seeds"</code> か <code>"links"</code>。例外が当たるのが、要求者が起点にする
+            URL だけか、そこから link を辿って着く URL もか。</td></tr>
+        <tr><td><code>grantedBy</code></td><td>string</td><td>はい</td>
+            <td>例外を登録した主体。要求者の呼び方のまま。1 文字以上。</td></tr>
+        <tr><td><code>grantedAt</code></td><td>string</td><td>はい</td>
+            <td>例外が登録された時刻。[[RFC3339]] の date-time。</td></tr>
+        <tr><td><code>expiresAt</code></td><td>string</td><td>はい</td>
+            <td>例外の期限。[[RFC3339]] の date-time。</td></tr>
+      </tbody>
+    </table>
+    <pre class="json">
+"robotsOverride": {
+  "exemptionId": "42",
+  "reason": "The publisher agreed in writing that its press releases may be archived.",
+  "pathPattern": "/press/*",
+  "scope": "links",
+  "grantedBy": "user:204",
+  "grantedAt": "2026-11-20T02:15:00Z",
+  "expiresAt": "2027-11-20T02:15:00Z"
+}</pre>
+    <p>
+      この申告は要求者のもので、producer のものではありません。producer は
+      <code>robots.txt</code> を読みません: ページを取り込むかどうかを決めるのは要求者で、
+      <code>warcinfo</code> レコードの <code>robots-policy: ignore</code> がそれを言います
+      （[[BROWSERHIVE-WARC-PROFILE]] の
+      <a href="https://uraitakahito.github.io/browserhive-warc-spec/1.7.0/ja/#warcinfo">The warcinfo record</a> を参照）。この member はそれを変えません。
+      producer は、申告が主張することも確かめません: <code>robots.txt</code> がその URL を断っていたことも、
+      例外が在ることも、例外がその URL に当たることも、取り込みが走ったときに例外が効いていたことも。
+    </p>
+    <p>
+      取り込みの要求がこの申告を持たなかったとき、producer は <code>robotsOverride</code> を
+      書いてはなりません（<em class="rfc2119">MUST NOT</em>）。要求が申告を持っていたとき、producer は
+      この member を書かなければならず（<em class="rfc2119">MUST</em>）、そのそれぞれの member は、
+      要求が渡した値を、変えずに持たなければなりません（<em class="rfc2119">MUST</em>）。
+      <code>grantedAt</code> と <code>expiresAt</code> も同じです: producer はそれらを UTC に
+      書き直しません。
+      申告が上の形をしていない取り込みの要求を、producer は断らなければなりません
+      （<em class="rfc2119">MUST</em>）。適合しないパッケージを書くのではなく、です:
+      producer が申告について確かめるのは、形だけです。
+    </p>
+    <p>
+      <code>robotsOverride</code> を持つパッケージは、取り込みを求められた URL を
+      <code>robots.txt</code> が断っていると要求者が判じ、この member が名指す例外でそれを外した、
+      と言います。持たないパッケージが言うのは次の 2 つのどちらかで、どちらなのかは言いません:
+      要求者が何も外さなかったか、外したことを申告しなかったか。<code>robots.txt</code> がその URL を
+      許していた、とは言いません。
+    </p>
+    <p class="note" title="なぜ申告をここに置き、settings に置かないのか">
+      <a>settings</a> が記録するのは、取り込みに効いていたもの、つまりパッケージがどのバイト列を
+      持つかを決めたものです。例外はそういうものを何も決めません。例外が在ってもなくても取り込みは
+      同じに走り、producer はそのどの member にも従って動きません。例外が記録するのは、要求者が
+      そもそもなぜ取り込みを求めたかです。パッケージの重みを量る読み手はそれを知る必要があるかも
+      しれず、パッケージのほかのどこもそれを言いません。
+    </p>
+  </section>
+
   <section id="tls">
     <h3><code>tls</code></h3>
     <p>
@@ -2216,6 +2306,7 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
       behavior と preload のスクリプトの <code>source</code>、<code>behaviors/runtime.js</code>、
       <code>random/recorder.js</code>、
       <code>variables</code> や <a>urlPolicies</a> の項目、<a>tls</a> の host、<a>storage</a> の origin、
+      <a>robotsOverride</a> の member、
       <code>trace/events.jsonl</code> と <code>random/values.jsonl</code> の行の（後者では
       <code>value</code> を除く）ほかの member、member の名前。これらのどこかに出現を書くことになる
       取り込みは、パッケージを作ってはなりません（<em class="rfc2119">MUST NOT</em>）。値の行の
@@ -4069,6 +4160,12 @@ indexes/index.cdxj                      &hellip; {"filename":"data-001.browserhi
     この member は変わりません。サーバへ送るものと、パッケージが報告するものは別です。
     build の版を秘匿したい運用者は、適合するパッケージがそれを開示することを知っておく
     必要があります。
+  </p>
+  <p>
+    <a>robotsOverride</a> は主張で、パッケージはそれを試せるものを何も持ちません: 要求者が読んだ
+    <code>robots.txt</code> も、例外の記録も、パッケージには在りません。この主張に頼る必要のある
+    読み手は、要求者に尋ねるしかありません。この member は、人が書いた言葉とその人の呼び名も
+    <code>reason</code> と <code>grantedBy</code> に運び、パッケージを人に渡す者はそれも渡します。
   </p>
 </section>
 </body>
