@@ -1884,9 +1884,9 @@
             1 character or more.</td></tr>
         <tr><td><code>grantedAt</code></td><td>string</td><td>yes</td>
             <td>When the exemption was registered: an [[RFC3339]]
-            date-time.</td></tr>
+            date-time in UTC.</td></tr>
         <tr><td><code>expiresAt</code></td><td>string</td><td>yes</td>
-            <td>When the exemption ends: an [[RFC3339]] date-time.</td></tr>
+            <td>When the exemption ends: an [[RFC3339]] date-time in UTC.</td></tr>
       </tbody>
     </table>
     <pre class="json">
@@ -1919,7 +1919,8 @@
       <em class="rfc2119">MUST</em> write the member, and each member of it
       <em class="rfc2119">MUST</em> hold the value the request gave, without
       change. That holds for <code>grantedAt</code> and
-      <code>expiresAt</code> too: the producer does not rewrite them in UTC.
+      <code>expiresAt</code> too: the producer does not rewrite them, and a
+      declaration whose times are not in UTC does not have the form above.
       A producer <em class="rfc2119">MUST</em> refuse a capture request whose
       declaration does not have the form above, rather than write a package
       that does not conform: the form is the one thing about the declaration
